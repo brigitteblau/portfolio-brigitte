@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+@layer utilities {
+  .bg-pink-100 { background-color: #ffe4ec; }
+  .bg-pink-300 { background-color: #f9a8d4; }
+  .bg-pink-400 { background-color: #f472b6; }
+  .bg-pink-500 { background-color: #ec4899; }
+
+  .text-pink-300 { color: #f9a8d4; }
+  .text-pink-400 { color: #f472b6; }
+
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+
+:root {
+  --color-pink-primary: #ec4899;
+  --color-pink-light: #fbcfe8;
+  --color-pink-dark: #be185d;
+  --color-pink-secondary: #f9a8d4;
+  --color-pink-bg: #fdf2f8;
+  --color-text: #1f2937;
+  --color-text-light: #6b7280;
+}
+
+.handwritten {
+  font-family: 'Caveat', cursive;
+}
+
+@keyframes drawArrow {
+  0% {
+    stroke-dashoffset: 200;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
