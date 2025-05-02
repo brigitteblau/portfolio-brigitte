@@ -1,5 +1,5 @@
 // components/Work.jsx
-// components/Work.jsx
+
 import React from "react";
 import { useLanguage } from '../context/LanguageContext';
 

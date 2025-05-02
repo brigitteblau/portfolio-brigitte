@@ -6,11 +6,14 @@ export default function Story() {
   const { t } = useLanguage();
 
   const images = [
-    { src: "/api/placeholder/600/600", caption: "Porto's rocky coast" },
-    { src: "/api/placeholder/600/600", caption: "Sunset at the beach" },
-    { src: "/api/placeholder/600/600", caption: "Mountain view" },
-    { src: "/api/placeholder/600/600", caption: "City skyline" },
-    { src: "/api/placeholder/600/600", caption: "Forest trail" }
+    { src: "/img/1.JPG", caption: "a trip that stayed in my memory" },
+    { src: "/img/2.jpg", caption: "some fiends and me :)" },
+    { src: "/img/3.jpg", caption: "a quote from my bullet journal" },
+    { src: "/img/4.jpg", caption: "my prayer book from Israel and in hebrew"},
+    { src:"/img/5.jpg", caption: "a picture with my mum and sister" },
+    { src:"/img/10.jpg", caption: "at the driving course" }, 
+    { src:"/img/8.jpg", caption: "skating" },
+    { src:"/img/9.jpg", caption: "being healthy and aesthethic" }
   ];
 
   const [currentIndex, setCurrentIndex] = useState(1);
