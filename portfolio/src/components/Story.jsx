@@ -1,3 +1,4 @@
+// components/Story.jsx
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -39,18 +40,18 @@ export default function Story() {
   }, [isTransitioning]);
 
   return (
- <div id='story'>
-      <h1 className="text-5xl font-black mb-12 text-center bg-gradient-to-r from-pink-500 to-pink-400 text-transparent bg-clip-text uppercase">
+    <div id='story' className="px-4 py-8 md:px-6 lg:px-8 max-w-screen-xl mx-auto">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 md:mb-8 lg:mb-12 text-center bg-gradient-to-r from-pink-500 to-pink-400 text-transparent bg-clip-text uppercase">
         <span className="block">{t.storyTitle1}</span>
         <span className="block">{t.storyTitle2}</span>
       </h1>
 
-      <p className="mt-6 text-center text-lg text-neutral-600 italic max-w-xl mx-auto">
+      <p className="mt-4 md:mt-6 text-center text-base md:text-lg text-neutral-600 italic max-w-xl mx-auto">
         {t.storyOutro}
       </p>
 
-      <div className="relative w-full max-w-3xl mx-auto my-10 overflow-hidden bg-gray-100 p-8 rounded-lg">
-        <div className="relative h-96 flex items-center justify-center">
+      <div className="relative w-full max-w-3xl mx-auto my-6 md:my-10 overflow-hidden bg-gray-100 p-4 md:p-8 rounded-lg">
+        <div className="relative h-72 sm:h-80 md:h-96 flex items-center justify-center">
           <div className="flex w-full justify-center relative h-full">
             {images.map((image, index) => {
               let position = index - currentIndex;
@@ -88,6 +89,16 @@ export default function Story() {
                 onClick = nextSlide;
               }
 
+              // Ajustar tamaño de imagen según el tamaño de pantalla
+              const imageContainerWidth = {
+                width: 'calc(280px * 0.8)',
+              };
+
+              // Para pantallas medianas y grandes
+              if (typeof window !== 'undefined' && window.innerWidth >= 640) {
+                imageContainerWidth.width = '280px';
+              }
+
               return (
                 <div
                   key={index}
@@ -95,16 +106,16 @@ export default function Story() {
                   style={{ zIndex }}
                   onClick={onClick}
                 >
-                  <div className="bg-white p-3 shadow-lg rounded-sm transform origin-bottom" style={{ width: '280px' }}>
+                  <div className="bg-white p-2 sm:p-3 shadow-lg rounded-sm transform origin-bottom" style={imageContainerWidth}>
                     <div className="w-full overflow-hidden">
                       <img 
                         src={image.src} 
                         alt={image.caption} 
-                        className="w-full h-64 object-cover"
+                        className="w-full h-48 sm:h-56 md:h-64 object-cover"
                       />
                     </div>
-                    <div className="mt-4 mb-1 text-center px-1">
-                      <p className="font-handwriting text-lg text-gray-800">{image.caption}</p>
+                    <div className="mt-2 sm:mt-4 mb-1 text-center px-1">
+                      <p className="font-handwriting text-sm sm:text-base md:text-lg text-gray-800">{image.caption}</p>
                     </div>
                   </div>
                 </div>
@@ -113,7 +124,7 @@ export default function Story() {
           </div>
         </div>
 
-        <div className="flex justify-center mt-4 gap-2">
+        <div className="flex justify-center mt-2 md:mt-4 gap-2">
           {images.map((_, index) => (
             <button
               key={index}
@@ -126,6 +137,6 @@ export default function Story() {
           ))}
         </div>
       </div>
-      </div>
+    </div>
   );
 }

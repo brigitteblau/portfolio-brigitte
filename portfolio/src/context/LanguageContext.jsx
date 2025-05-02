@@ -31,7 +31,7 @@ export function LanguageProvider({ children }) {
           title: "Tus Pruebas",
           icon: "📚",
           description:
-            "Una plataforma web académica creada para organizar y compartir resúmenes y materiales de examen para estudiantes de más de cinco escuelas secundarias. Comencé este proyecto desde cero, desarrollando inicialmente dos versiones con HTML, CSS y JavaScript. Hoy, está completamente reconstruido con React y utiliza Supabase con Prisma para la gestión de datos. El sitio recibe más de 300 visitas diarias y ha fomentado una comunidad estudiantil colaborativa donde los usuarios envían activamente nuevos resúmenes y archivos de examen cada mes. Diseñé la interfaz de usuario e implementé todas las funcionalidades yo mismo, con un fuerte enfoque en la usabilidad y el rendimiento. TusPruebas.com continúa creciendo, ayudando a cientos de estudiantes a aprender y estudiar de forma más eficiente. Diseñé la interfaz de usuario e implementé todas las funcionalidades yo mismo, con un enfoque especial en la usabilidad y el rendimiento. TusPruebas.com sigue creciendo, ayudando a cientos de estudiantes a aprender y estudiar de forma más eficiente. ",
+            "Una web que revolucionó cómo los estudiantes comparten resúmenes y exámenes. Con +300 visitas diarias, es una comunidad viva hecha con React, Supabase y pasión por aprender.",
           link: "https://tuspruebas.com",
           tech: ["React", "Supabase", "Prisma", "Node"],
           bgColor: "bg-pink-50",
@@ -40,12 +40,13 @@ export function LanguageProvider({ children }) {
           title: "Tevila It",
           icon: "🕍",
           description:
-            "Una plataforma creada para una iniciativa sin fines de lucro que ayuda a las personas a kasherizar sus utensilios de cocina. Diseñé la experiencia de usuario completa y la interfaz con Figma, y ​​luego desarrollé el sitio web con React y Vite. La aplicación guía a los usuarios a través de un formulario sencillo e interactivo y genera mensajes personalizados de WhatsApp para una comunicación fácil y directa con el equipo. Se centra en la accesibilidad, la simplicidad y el apoyo de la comunidad.",
+            "Un sitio pensado para ayudar y conectar. Guiás el kasherizado paso a paso y contactás directo por WhatsApp. Accesible, simple y con alma comunitaria.",
           link: "https://tevilait.com",
           tech: ["React", "Supabase", "Tailwind"],
           bgColor: "bg-pink-100",
         },
-      ],
+      ]
+      
     },
   
     en: {
@@ -73,7 +74,7 @@ export function LanguageProvider({ children }) {
           title: "Tus Pruebas",
           icon: "📚",
           description:
-            "An academic web platform created to organize and share summaries and test materials for students from over five high schools. I started this project from scratch, initially building two versions using plain HTML, CSS, and JavaScript. Today, it's fully rebuilt with React and uses Supabase with Prisma for data management. The site currently receives over 300 daily visits and has fostered a collaborative student community where users actively submit new summaries and exam files each month. I designed the UI and implemented all functionalities myself, with a strong focus on usability and performance. TusPruebas.com continues to grow, helping hundreds of students learn and study more efficiently.An academic web platform created to organize and share summaries and test materials for students from over five high schools. I started this project from scratch, initially building two versions using plain HTML, CSS, and JavaScript. Today, it's fully rebuilt with React and uses Supabase with Prisma for data management. The site currently receives over 300 daily visits and has fostered a collaborative student community where users actively submit new summaries and exam files each month. I designed the UI and implemented all functionalities myself, with a strong focus on usability and performance. TusPruebas.com continues to grow, helping hundreds of students learn and study more efficiently.",
+            "A web platform that transformed how students share summaries and exams. With 300+ daily visits, it’s a vibrant community powered by React, Supabase, and a love for learning.",
           link: "https://tuspruebas.com",
           tech: ["React", "Supabase", "Prisma", "Node"],
           bgColor: "bg-pink-50",
@@ -82,12 +83,13 @@ export function LanguageProvider({ children }) {
           title: "Tevila It",
           icon: "🕍",
           description:
-            "A platform created for a non-profit initiative that helps people kasher their kitchenware. I designed the full user experience and interface with Figma, then developed the site using React and Vite. The app guides users through a simple, interactive form and generates personalized WhatsApp messages for easy and direct communication with the team. Focused on accessibility, simplicity, and community support.",
+            "A heartfelt project that guides users through kashering step-by-step and connects them via WhatsApp. Simple, accessible, and built around community care.",
           link: "https://tevilait.com",
           tech: ["React", "Supabase", "Tailwind"],
           bgColor: "bg-pink-100",
         },
-      ],
+      ]
+      
     }
   };
   
