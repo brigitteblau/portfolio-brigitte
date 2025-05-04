@@ -1,5 +1,6 @@
 // components/Story.jsx
 import { useState, useEffect } from 'react';
+import { useSwipeable } from 'react-swipeable';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Story() {
@@ -7,13 +8,13 @@ export default function Story() {
 
   const images = [
     { src: "/img/1.JPG", caption: "a trip that stayed in my memory" },
-    { src: "/img/2.jpg", caption: "some fiends and me :)" },
+    { src: "/img/2.jpg", caption: "some friends and me :)" },
     { src: "/img/3.jpg", caption: "a quote from my bullet journal" },
     { src: "/img/4.jpg", caption: "my prayer book from Israel and in hebrew"},
     { src:"/img/5.jpg", caption: "a picture with my mum and sister" },
     { src:"/img/10.jpg", caption: "at the driving course" }, 
     { src:"/img/8.jpg", caption: "skating" },
-    { src:"/img/9.jpg", caption: "being healthy and aesthethic" }
+    { src:"/img/9.jpg", caption: "being healthy and aesthetic" }
   ];
 
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -23,7 +24,7 @@ export default function Story() {
     if (!isTransitioning) {
       setIsTransitioning(true);
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-      setTimeout(() => setIsTransitioning(false), 500);
+      setTimeout(() => setIsTransitioning(false), 400);
     }
   };
 
@@ -31,9 +32,17 @@ export default function Story() {
     if (!isTransitioning) {
       setIsTransitioning(true);
       setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-      setTimeout(() => setIsTransitioning(false), 500);
+      setTimeout(() => setIsTransitioning(false), 400);
     }
   };
+
+  // Soporte para swipe con los dedos
+  const handlers = useSwipeable({
+    onSwipedLeft: nextSlide,
+    onSwipedRight: prevSlide,
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: false,
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -53,7 +62,7 @@ export default function Story() {
         {t.storyOutro}
       </p>
 
-      <div className="relative w-full max-w-3xl mx-auto my-6 md:my-10 overflow-hidden bg-gray-100 p-4 md:p-8 rounded-lg">
+      <div {...handlers} className="relative w-full max-w-3xl mx-auto my-6 md:my-10 overflow-hidden bg-gray-100 p-4 md:p-8 rounded-lg touch-pan-x">
         <div className="relative h-72 sm:h-80 md:h-96 flex items-center justify-center">
           <div className="flex w-full justify-center relative h-full">
             {images.map((image, index) => {
@@ -92,16 +101,6 @@ export default function Story() {
                 onClick = nextSlide;
               }
 
-              // Ajustar tamaño de imagen según el tamaño de pantalla
-              const imageContainerWidth = {
-                width: 'calc(280px * 0.8)',
-              };
-
-              // Para pantallas medianas y grandes
-              if (typeof window !== 'undefined' && window.innerWidth >= 640) {
-                imageContainerWidth.width = '280px';
-              }
-
               return (
                 <div
                   key={index}
@@ -109,7 +108,7 @@ export default function Story() {
                   style={{ zIndex }}
                   onClick={onClick}
                 >
-                  <div className="bg-white p-2 sm:p-3 shadow-lg rounded-sm transform origin-bottom" style={imageContainerWidth}>
+                  <div className="bg-white p-2 sm:p-3 shadow-lg rounded-sm transform origin-bottom w-[240px] sm:w-[280px]">
                     <div className="w-full overflow-hidden">
                       <img 
                         src={image.src} 

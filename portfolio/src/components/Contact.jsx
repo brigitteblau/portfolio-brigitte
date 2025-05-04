@@ -87,7 +87,7 @@ export default function ConnectButton() {
       </button>
 
       <div className="flex gap-6 items-center mt-16 rotate-[3deg]">
-        <a href="mailto:hello@danielsun.space" className="text-pink-500 text-lg flex items-center gap-2">
+        <a href="mailto:brigitteblau20@gmail.com" className="text-pink-500 text-lg flex items-center gap-2">
           <Mail className="w-5 h-5" /> brigitteblau20@gmail.com
         </a>
       </div>
