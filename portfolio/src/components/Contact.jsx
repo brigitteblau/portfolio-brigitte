@@ -79,12 +79,14 @@ export default function ConnectButton() {
         {t.contactPrompt}
       </p>
 
-      <button
-        onClick={() => setHighlight(!highlight)}
-        className={`button-3d ${highlight ? 'ring-4 ring-pink-300' : ''}`}
-      >
-        {t.contactButton}
-      </button>
+<a
+  href="mailto:brigitteblau20@gmail.com"
+  className={`button-3d ${highlight ? 'ring-4 ring-pink-300' : ''}`}
+  onMouseEnter={() => setHighlight(true)}
+  onMouseLeave={() => setHighlight(false)}
+>
+  {t.contactButton}
+</a>
 
       <div className="flex gap-6 items-center mt-16 rotate-[3deg]">
         <a href="mailto:brigitteblau20@gmail.com" className="text-pink-500 text-lg flex items-center gap-2">
