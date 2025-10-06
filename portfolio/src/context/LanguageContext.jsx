@@ -22,31 +22,65 @@ export function LanguageProvider({ children }) {
       workTitle: "MIS ÚLTIMOS PROYECTOS",
       workFrom: "desde 2024 hasta hoy",
       visitSite: "Ver sitio ✨",
-  
+    fastLine: "Prototipos creados con pasión y velocidad.",
+     fastRibbon: "HECHO RÁPIDO",
+
       contactPrompt: "Tocá este ‘botoncito’ para ponernos en contacto =)",
       contactButton: "Conectar",
 
-      projects: [
-        {
-          title: "Tus Pruebas",
-          icon: "📚",
-          description:
-            "Una web que revolucionó cómo los estudiantes comparten resúmenes y exámenes. Con +300 visitas diarias, es una comunidad viva hecha con React, Supabase y pasión por aprender.",
-          link: "https://tuspruebas.com",
-          tech: ["React", "Supabase", "Prisma", "Node"],
-          bgColor: "bg-pink-50",
-        },
-        {
-          title: "Tevila It",
-          icon: "🕍",
-          description:
-            "Un sitio pensado para ayudar y conectar. Guiás el kasherizado paso a paso y contactás directo por WhatsApp. Accesible, simple y con alma comunitaria.",
-          link: "https://tevilait.com",
-          tech: ["React", "Supabase", "Tailwind"],
-          bgColor: "bg-pink-100",
-        },
-      ]
-      
+    projects: [
+  {
+    title: "Tus Pruebas",
+    icon: "📚",
+    description: 
+      "Mi primer proyecto y el que más cariño me genera. Creé una comunidad real de alumnos que comparten resúmenes, parciales y materiales de estudio de distintas escuelas. Hoy tiene más de 300 visitas diarias, y todo lo aprendí sola: desde React y Supabase hasta desplegarlo online. Es una web viva, hecha por y para estudiantes, que demuestra lo que se puede lograr con iniciativa y constancia.",
+    link: "https://tuspruebas.com",
+    tech: ["React", "Supabase", "Prisma", "Node"],
+    bgColor: "bg-pink-50",
+    fast: true,
+  },
+  {
+    title: "Tevila.it",
+    icon: "🕍",
+    description:
+      "Una web de ayuda comunitaria pensada para facilitar el proceso de tevilá de vajilla. Es simple, directa y accesible: podés seguir el paso a paso, contactarte por WhatsApp y encontrar toda la información necesaria. Más allá de lo técnico, me gusta porque ayuda a la comunidad y demuestra que el diseño puede ser funcional, cálido y útil al mismo tiempo.",
+    link: "https://tevilait.com",
+    tech: ["React", "Supabase", "Tailwind"],
+    bgColor: "bg-pink-100",
+    fast: true,
+  },
+  {
+    title: "vSLAM-py",
+    icon: "🤖",
+    description:
+      "Un proyecto muy distinto a todo lo que había hecho: me metí en el mundo del SLAM (Simultaneous Localization and Mapping) con Python y C++. Es un pipeline propio para estimar trayectorias, generar mapas y detectar features visuales en tiempo real. Todavía está en desarrollo, pero me apasiona porque combina matemática, visión por computadora y creatividad técnica, y me saca totalmente de la zona de confort de las webs.",
+    link: "#",
+    tech: ["Python", "OpenCV", "NumPy", "g2o", "Pangolin"],
+    bgColor: "bg-pink-50",
+    fast: true,
+  },
+  {
+    title: "Invitaciones digitales",
+    icon: "💍",
+    description:
+      "Diseño y desarrollo invitaciones interactivas de casamiento personalizadas, con música, cuenta regresiva, confirmación de asistencia y acceso directo a calendarios o mapas. Una de las que más se destacó fue la de Flor & Nico, con un diseño elegante y moderno que refleja perfectamente su estilo. Es un proyecto que mezcla lo emocional con lo técnico, y me encanta ver cómo la gente lo disfruta.",
+    link: "https://florynico.vercel.app", // tu link real
+    tech: ["React", "Tailwind", "ICS", "Figma"],
+    bgColor: "bg-pink-100",
+    fast: true,
+  },
+  {
+    title: "MixIt.AI",
+    icon: "🎧",
+    description:
+      "Un proyecto personal en el que estoy trabajando actualmente. MixIt.AI mezcla canciones automáticamente usando inteligencia artificial y datos en tiempo real de Spotify. Para hacerlo tuve que aprender sobre APIs de audio, BPM, key detection y procesamiento de señales. Es un desafío técnico enorme, pero me encanta porque combina dos cosas que disfruto mucho: la música y la tecnología.",
+    link: "#",
+    tech: ["React", "Expo", "Spotify API", "AI", "Tailwind"],
+    bgColor: "bg-pink-50",
+    fast: true,
+  },
+],
+
     },
   
     en: {
@@ -65,30 +99,66 @@ export function LanguageProvider({ children }) {
       workTitle: "MY LATEST WORK",
       workFrom: "from 2024 'til today",
       visitSite: "Visit site ✨",
-  
+fastLine: "Prototypes built with speed and passion.",
+fastRibbon: "BUILT FAST",
+
       contactPrompt: "Tap this 'tiny' button to highlight your product =)",
       contactButton: "Connect",
 
-      projects: [
-        {
-          title: "Tus Pruebas",
-          icon: "📚",
-          description:
-            "A web platform that transformed how students share summaries and exams. With 300+ daily visits, it’s a vibrant community powered by React, Supabase, and a love for learning.",
-          link: "https://tuspruebas.com",
-          tech: ["React", "Supabase", "Prisma", "Node"],
-          bgColor: "bg-pink-50",
-        },
-        {
-          title: "Tevila It",
-          icon: "🕍",
-          description:
-            "A heartfelt project that guides users through kashering step-by-step and connects them via WhatsApp. Simple, accessible, and built around community care.",
-          link: "https://tevilait.com",
-          tech: ["React", "Supabase", "Tailwind"],
-          bgColor: "bg-pink-100",
-        },
-      ]
+projects: [
+  {
+    title: "Tus Pruebas",
+    icon: "📚",
+    description:
+      "My very first project — and still my favorite. I built a real community of students sharing notes, tests, and study materials from different schools. It now gets over 300 daily visits. I learned everything by myself: React, Supabase, deployment, and design. It’s a living website made by and for students — proof of what passion and perseverance can build.",
+    link: "https://tuspruebas.com",
+    tech: ["React", "Supabase", "Prisma", "Node"],
+    bgColor: "bg-pink-50",
+    fast: true,
+  },
+  {
+    title: "Tevila.it",
+    icon: "🕍",
+    description:
+      "A community-oriented site designed to make the tevilá process (kashering dishware) simple and accessible. It guides users step-by-step and connects directly via WhatsApp. Beyond the code, I love it because it genuinely helps people and shows how thoughtful design can also feel warm and meaningful.",
+    link: "https://tevilait.com",
+    tech: ["React", "Supabase", "Tailwind"],
+    bgColor: "bg-pink-100",
+    fast: true,
+  },
+  {
+    title: "vSLAM-py",
+    icon: "🤖",
+    description:
+      "A completely new field for me — my own Visual SLAM pipeline in Python and C++. It tracks camera motion, detects keypoints, and builds maps in real time. Still a work in progress, but I’m loving it because it blends math, computer vision, and creative engineering — far beyond my usual web/app comfort zone.",
+    link: "#",
+    tech: ["Python", "OpenCV", "NumPy", "g2o", "Pangolin"],
+    bgColor: "bg-pink-50",
+    fast: true,
+  },
+  {
+    title: "Digital invitations",
+    icon: "💍",
+    description:
+      "I design and code interactive wedding invitations with music, countdowns, RSVP, and calendar/map integration. One of the most special ones was *Flor & Nico*, with a soft yet elegant look that perfectly matched their vibe. These projects merge design, storytelling, and code — and I love seeing people’s reactions when they open them.",
+    link: "https://florynico.vercel.app", // your link
+    tech: ["React", "Tailwind", "ICS", "Figma"],
+    bgColor: "bg-pink-100",
+    fast: true,
+  },
+  {
+    title: "MixIt.AI",
+    icon: "🎧",
+    description:
+      "A personal project currently in development: MixIt.AI blends songs automatically using AI and real-time data from Spotify. I had to dive deep into audio APIs, BPM analysis, key detection, and signal processing. It’s a big technical challenge, but I love it — it combines two passions: music and technology.",
+    link: "#",
+    tech: ["React", "Expo", "Spotify API", "AI", "Tailwind"],
+    bgColor: "bg-pink-50",
+    fast: true,
+  },
+],
+
+
       
     }
   };
