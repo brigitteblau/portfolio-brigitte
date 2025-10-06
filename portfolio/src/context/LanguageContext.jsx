@@ -54,7 +54,8 @@ export function LanguageProvider({ children }) {
     icon: "🤖",
     description:
       "Un proyecto muy distinto a todo lo que había hecho: me metí en el mundo del SLAM (Simultaneous Localization and Mapping) con Python y C++. Es un pipeline propio para estimar trayectorias, generar mapas y detectar features visuales en tiempo real. Todavía está en desarrollo, pero me apasiona porque combina matemática, visión por computadora y creatividad técnica, y me saca totalmente de la zona de confort de las webs.",
-    link: "#",
+    link: "null",
+    github: "https://github.com/brigitteblau/vo-brigitte",
     tech: ["Python", "OpenCV", "NumPy", "g2o", "Pangolin"],
     bgColor: "bg-pink-50",
     fast: true,
@@ -64,7 +65,7 @@ export function LanguageProvider({ children }) {
     icon: "💍",
     description:
       "Diseño y desarrollo invitaciones interactivas de casamiento personalizadas, con música, cuenta regresiva, confirmación de asistencia y acceso directo a calendarios o mapas. Una de las que más se destacó fue la de Flor & Nico, con un diseño elegante y moderno que refleja perfectamente su estilo. Es un proyecto que mezcla lo emocional con lo técnico, y me encanta ver cómo la gente lo disfruta.",
-    link: "https://florynico.vercel.app", // tu link real
+    link: "https://nos-casamos-six.vercel.app", // tu link real
     tech: ["React", "Tailwind", "ICS", "Figma"],
     bgColor: "bg-pink-100",
     fast: true,
@@ -74,10 +75,10 @@ export function LanguageProvider({ children }) {
     icon: "🎧",
     description:
       "Un proyecto personal en el que estoy trabajando actualmente. MixIt.AI mezcla canciones automáticamente usando inteligencia artificial y datos en tiempo real de Spotify. Para hacerlo tuve que aprender sobre APIs de audio, BPM, key detection y procesamiento de señales. Es un desafío técnico enorme, pero me encanta porque combina dos cosas que disfruto mucho: la música y la tecnología.",
-    link: "#",
+    link: "null",
     tech: ["React", "Expo", "Spotify API", "AI", "Tailwind"],
     bgColor: "bg-pink-50",
-    fast: true,
+status: "Proximamente..."
   },
 ],
 
@@ -114,7 +115,7 @@ projects: [
     link: "https://tuspruebas.com",
     tech: ["React", "Supabase", "Prisma", "Node"],
     bgColor: "bg-pink-50",
-    fast: true,
+
   },
   {
     title: "Tevila.it",
@@ -124,24 +125,24 @@ projects: [
     link: "https://tevilait.com",
     tech: ["React", "Supabase", "Tailwind"],
     bgColor: "bg-pink-100",
-    fast: true,
+ 
   },
   {
     title: "vSLAM-py",
     icon: "🤖",
     description:
       "A completely new field for me — my own Visual SLAM pipeline in Python and C++. It tracks camera motion, detects keypoints, and builds maps in real time. Still a work in progress, but I’m loving it because it blends math, computer vision, and creative engineering — far beyond my usual web/app comfort zone.",
-    link: "#",
+    link: "null",
+    github: "https://github.com/brigitteblau/vo-brigitte",
     tech: ["Python", "OpenCV", "NumPy", "g2o", "Pangolin"],
     bgColor: "bg-pink-50",
-    fast: true,
   },
   {
     title: "Digital invitations",
     icon: "💍",
     description:
       "I design and code interactive wedding invitations with music, countdowns, RSVP, and calendar/map integration. One of the most special ones was *Flor & Nico*, with a soft yet elegant look that perfectly matched their vibe. These projects merge design, storytelling, and code — and I love seeing people’s reactions when they open them.",
-    link: "https://florynico.vercel.app", // your link
+    link: "https://nos-casamos-six.vercel.app", // your link
     tech: ["React", "Tailwind", "ICS", "Figma"],
     bgColor: "bg-pink-100",
     fast: true,
@@ -151,10 +152,10 @@ projects: [
     icon: "🎧",
     description:
       "A personal project currently in development: MixIt.AI blends songs automatically using AI and real-time data from Spotify. I had to dive deep into audio APIs, BPM analysis, key detection, and signal processing. It’s a big technical challenge, but I love it — it combines two passions: music and technology.",
-    link: "#",
+    link: "null",
     tech: ["React", "Expo", "Spotify API", "AI", "Tailwind"],
     bgColor: "bg-pink-50",
-    fast: true,
+    status: "coming soon",
   },
 ],
 
