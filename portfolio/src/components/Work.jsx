@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Work() {
   const { t } = useLanguage();
   const projects = t.projects || [];
+  const [filter, setFilter] = useState("all");
+
+  const filteredProjects = useMemo(() => {
+    if (filter === "github") {
+      return projects.filter(
+        (project) => project.github && project.github !== "null"
+      );
+    }
+    if (filter === "live") {
+      return projects.filter(
+        (project) => project.link && project.link !== "null"
+      );
+    }
+    if (filter === "wip") {
+      return projects.filter((project) => project.status);
+    }
+    return projects;
+  }, [filter, projects]);
 
   return (
     <section
@@ -140,8 +158,30 @@ export default function Work() {
         {t.fastLine}
       </p>
 
+      <div className="flex flex-wrap justify-center gap-3 mb-10">
+        {[ 
+          { id: "all", label: t.filterAll },
+          { id: "github", label: t.filterGithub },
+          { id: "live", label: t.filterLive },
+          { id: "wip", label: t.filterWip },
+        ].map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setFilter(item.id)}
+            className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all border ${
+              filter === item.id
+                ? "bg-pink-500 text-white border-pink-500 shadow-md"
+                : "bg-white text-pink-500 border-pink-200 hover:bg-pink-50"
+            }`}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-        {projects.map((project, idx) => {
+        {filteredProjects.map((project, idx) => {
           const hasLink = project.link && project.link !== "null";
           const hasGithub = project.github && project.github !== "null";
           const url = hasLink ? project.link : (hasGithub ? project.github : "");
