@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { Menu, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('');
@@ -9,7 +9,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['work', 'story', 'chat'];
+      const sections = ['about', 'work', 'story', 'chat'];
       const scrollPos = window.scrollY + window.innerHeight / 2;
 
       let found = false;
@@ -37,6 +37,7 @@ export default function Navbar() {
 
   const navLinks = [
     { id: '', label: t.hey, href: '#' },
+    { id: 'about', label: t.about || 'About', href: '#about' },
     { id: 'work', label: t.work, href: '#work' },
     { id: 'story', label: t.story, href: '#story' },
     { id: 'chat', label: t.chat, href: '#chat' },
@@ -45,16 +46,17 @@ export default function Navbar() {
   return (
     <>
       {/* NAV DESKTOP */}
-      <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 justify-center items-center h-20 pointer-events-none">
-        <ul className="pointer-events-auto flex gap-6 px-8 py-2 bg-black/90 rounded-full text-white text-sm font-medium">
+      <nav className="hidden md:flex fixed top-5 left-0 right-0 z-50 justify-center items-center pointer-events-none">
+        <div className="pointer-events-auto flex items-center gap-3 panel px-3 py-2">
+        <ul className="flex gap-1 text-sm font-semibold">
           {navLinks.map(({ id, label, href }) => (
             <li key={id}>
               <a
                 href={href}
-                className={`px-4 py-1 rounded-full transition-colors ${
+                className={`px-4 py-2 rounded-full transition-colors ${
                   activeSection === id
-                    ? 'bg-pink-400 text-black'
-                    : 'hover:text-pink-300'
+                    ? 'bg-[color:var(--ink)] text-[color:var(--paper)]'
+                    : 'text-[color:var(--ink)] hover:bg-white/60'
                 }`}
               >
                 {label}
@@ -62,37 +64,47 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        
-        {/* DESKTOP LANGUAGE FLAGS */}
-        <div className="pointer-events-auto absolute right-4 flex gap-2 text-xl">
+
+        {/* DESKTOP LANGUAGE */}
+        <div className="ml-2 flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-white/50 p-1">
           <button
+            type="button"
             onClick={() => setLang('es')}
-            className={`hover:scale-110 transition-transform ${
-              lang === 'es' ? 'opacity-100' : 'opacity-60'
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
+              lang === 'es'
+                ? 'bg-[color:var(--accent)] text-white'
+                : 'text-[color:var(--muted)] hover:bg-white/70'
             }`}
           >
-            🇪🇸
+            ES
           </button>
           <button
+            type="button"
             onClick={() => setLang('en')}
-            className={`hover:scale-110 transition-transform ${
-              lang === 'en' ? 'opacity-100' : 'opacity-60'
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
+              lang === 'en'
+                ? 'bg-[color:var(--accent)] text-white'
+                : 'text-[color:var(--muted)] hover:bg-white/70'
             }`}
           >
-            🇬🇧
+            EN
           </button>
+        </div>
         </div>
       </nav>
 
       {/* NAV MOBILE */}
-      <nav className="md:hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-2xl h-14 bg-black/90 rounded-full flex items-center justify-end px-5 text-white shadow-lg transition-all duration-300">
+      <nav className="md:hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-2xl h-14 panel flex items-center justify-between px-4 transition-all duration-300">
+        <div className="font-display font-semibold tracking-tight">
+          Brigitte
+        </div>
   <button
     onClick={() => setMobileOpen(!mobileOpen)}
-    className="flex items-center gap-2 text-white transition-all hover:text-pink-400"
+    className="flex items-center gap-2 transition-all text-[color:var(--ink)]"
   >
-    <span className="text-base">Menu</span>
+    <span className="text-sm font-semibold">Menu</span>
     {mobileOpen ? (
-      <X className="w-6 h-6 transition-all duration-300 text-pink-400" />
+      <X className="w-6 h-6 transition-all duration-300 text-[color:var(--accent)]" />
     ) : (
       <div className="w-6 h-6 relative">
         <svg
@@ -101,7 +113,7 @@ export default function Navbar() {
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="text-white"
+          className="text-[color:var(--ink)]"
         >
           <path
             d="M3 6C3 6 5 5.5 8 6C11 6.5 13 7 16 6.5C19 6 21 5 21 5"
@@ -130,16 +142,16 @@ export default function Navbar() {
 
       {/* MOBILE DROPDOWN MENU */}
       {mobileOpen && (
-        <div className="md:hidden fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-black/90 text-white py-4 flex flex-col items-center gap-3 z-40 rounded-xl shadow-xl transition-all duration-300">
+        <div className="md:hidden fixed top-20 left-1/2 -translate-x-1/2 w-[92%] max-w-2xl panel py-3 flex flex-col items-stretch gap-1 z-40 transition-all duration-300">
           {navLinks.map(({ id, label, href }) => (
             <a
               key={id}
               href={href}
               onClick={() => setMobileOpen(false)}
-              className={`text-base px-4 py-2 rounded-full transition-all duration-200 ${
+              className={`text-sm px-4 py-3 rounded-2xl transition-all duration-200 font-semibold ${
                 activeSection === id
-                  ? 'bg-pink-400 text-black'
-                  : 'hover:text-pink-300'
+                  ? 'bg-[color:var(--ink)] text-[color:var(--paper)]'
+                  : 'text-[color:var(--ink)] hover:bg-white/70'
               }`}
             >
               {label}
@@ -147,22 +159,26 @@ export default function Navbar() {
           ))}
           
           {/* MOBILE LANGUAGE FLAGS */}
-          <div className="flex gap-4 mt-2 pt-3 border-t border-gray-700 w-4/5">
+          <div className="flex gap-2 mt-2 pt-3 border-t border-[color:var(--line)]">
             <button
               onClick={() => setLang('es')}
-              className={`hover:scale-110 transition-transform text-xl ${
-                lang === 'es' ? 'opacity-100' : 'opacity-60'
+              className={`btn flex-1 px-3 py-2 text-xs border border-[color:var(--line)] ${
+                lang === 'es'
+                  ? 'bg-[color:var(--accent)] text-white'
+                  : 'bg-white/50 text-[color:var(--muted)]'
               }`}
             >
-              🇪🇸
+              ES
             </button>
             <button
               onClick={() => setLang('en')}
-              className={`hover:scale-110 transition-transform text-xl ${
-                lang === 'en' ? 'opacity-100' : 'opacity-60'
+              className={`btn flex-1 px-3 py-2 text-xs border border-[color:var(--line)] ${
+                lang === 'en'
+                  ? 'bg-[color:var(--accent)] text-white'
+                  : 'bg-white/50 text-[color:var(--muted)]'
               }`}
             >
-              🇬🇧
+              EN
             </button>
           </div>
         </div>

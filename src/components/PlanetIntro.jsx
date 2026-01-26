@@ -21,12 +21,15 @@ export default function PlanetIntro() {
   
   return (
     <div 
-      className="fixed inset-0 bg-pink-50 flex items-center justify-center z-50 transition-opacity duration-1000"
+      className="fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-1000"
       style={{ opacity }}
     >
-      <div className="text-center">
-        <div className="w-32 h-32 mx-auto animate-spin-slow rounded-full border-4 border-pink-400 border-t-transparent"></div>
-        <p className="mt-4 text-pink-500 font-medium">Entering space...</p>
+      <div className="absolute inset-0 bg-[color:var(--paper)]" />
+      <div className="relative text-center panel px-8 py-7">
+        <div className="mx-auto h-12 w-12 rounded-full border-4 border-[color:var(--line)] border-t-[color:var(--accent)] animate-spin" />
+        <p className="mt-4 text-sm font-semibold tracking-wide text-[color:var(--muted)]">
+          Loading the good stuff...
+        </p>
       </div>
     </div>
   );
