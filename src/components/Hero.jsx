@@ -1,99 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useLanguage } from '../context/LanguageContext';
+import RandomFactRoulette from './RandomFactRoulette';
 
-const HERO_ORBIT_IMAGES = [
-  { id: 'hero-1', src: '/header/me.png', alt: 'Hero image 1' },
-  { id: 'hero-2', src: '/header/me1.jpg', alt: 'Hero image 2' },
-  { id: 'hero-3', src: '/header/me2.jpg', alt: 'Hero image 3' },
+const HERO_IMAGES = [
+  { id: 'hero-1', src: '/header/me.png' },
+  { id: 'hero-2', src: '/header/me1.jpg' },
+  { id: 'hero-3', src: '/header/me2.jpg' },
 ];
 
-function OrbitGallery({ items, activeIndex, onSelect }) {
-  const safeActiveIndex = ((activeIndex % items.length) + items.length) % items.length;
-  const active = items[safeActiveIndex];
-  const step = 360 / items.length;
-
-  return (
-    <div className="mt-6">
-      <div className="relative mx-auto w-full max-w-[320px] aspect-square">
-        <div className="absolute inset-0 rounded-full border border-white/15 bg-white/5" />
-
-        <div className="absolute inset-[18%] rounded-full border border-white/15 bg-white/5 overflow-hidden">
-          {active?.src ? (
-            <img
-              src={active.src}
-              alt={active.alt}
-              className="w-full h-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-          ) : (
-            <div className="w-full h-full grid place-items-center text-center px-5">
-              <div>
-                <p className="text-xs text-white/60 font-semibold tracking-[0.18em] uppercase">
-                  Tus imágenes
-                </p>
-                <p className="mt-2 text-sm text-white/80">
-                  Reemplazá `src` en `HERO_ORBIT_IMAGES`
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <ul className="absolute inset-0">
-          {items.map((item, i) => {
-            const angle = i * step - 90;
-            const isActive = i === safeActiveIndex;
-            const transform = `rotate(${angle}deg) translate(130px) rotate(${-angle}deg)`;
-
-            return (
-              <li
-                key={item.id}
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                style={{ transform }}
-              >
-                <button
-                  type="button"
-                  onClick={() => onSelect(i)}
-                  className={[
-                    'rounded-full border bg-white/10 overflow-hidden transition',
-                    'w-12 h-12 sm:w-14 sm:h-14',
-                    isActive
-                      ? 'border-[color:var(--accent)] shadow-[0_0_0_3px_rgba(236,72,153,0.22)] scale-[1.03]'
-                      : 'border-white/20 hover:border-white/35 hover:bg-white/15',
-                  ].join(' ')}
-                  aria-label={`Select hero image ${i + 1}`}
-                >
-                  {item.src ? (
-                    <img
-                      src={item.src}
-                      alt=""
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <div className="w-full h-full grid place-items-center">
-                      <span className="text-xs text-white/70 font-semibold">{i + 1}</span>
-                    </div>
-                  )}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
-  );
-}
+const HERO_RANDOM_FACTS = [
+  'Me obsesionan los detalles de UI.',
+  'Soy fan de los proyectos que se shippean.',
+  'Puedo estar horas ajustando microinteracciones.',
+  'Me gusta mezclar diseño + código.',
+  'Tengo debilidad por el color rosa.',
+];
 
 export default function Hero() {
   const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
-  const [orbitIndex, setOrbitIndex] = useState(0);
   const rootRef = useRef(null);
   const hasAnimatedRef = useRef(false);
+  const heroImages = useMemo(() => HERO_IMAGES.filter((img) => Boolean(img.src)), []);
 
   useEffect(() => {
     const section = document.getElementById('hero');
@@ -140,14 +69,6 @@ export default function Hero() {
     setTimeout(() => setVisible(true), 120);
 
     return () => io.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (HERO_ORBIT_IMAGES.length < 2) return undefined;
-    const id = window.setInterval(() => {
-      setOrbitIndex((prev) => (prev + 1) % HERO_ORBIT_IMAGES.length);
-    }, 2400);
-    return () => window.clearInterval(id);
   }, []);
 
   const titleParts = (t.heroTitle || '').split(' ').filter(Boolean);
@@ -238,25 +159,15 @@ export default function Hero() {
             </div>
           </div>
 
-          <aside className="lg:col-span-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--ink)] text-[color:var(--paper)] px-6 py-7 sm:px-8 sm:py-9 relative overflow-hidden">
-            <div className="absolute -top-20 -right-16 h-64 w-64 rounded-full bg-[color:var(--accent)]/25 blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-[color:var(--accent-3)]/18 blur-3xl pointer-events-none" />
+          <aside className="lg:col-span-5 rounded-[var(--radius)] border border-pink-100/70 bg-white/70 backdrop-blur-md px-4 py-8 sm:px-6 sm:py-10 relative overflow-hidden flex items-center justify-center shadow-[0_18px_60px_rgba(0,0,0,0.10)]">
+            <div className="absolute -top-20 -right-16 h-64 w-64 rounded-full bg-pink-300/25 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-rose-300/20 blur-3xl pointer-events-none" />
 
-            <p data-hero className="text-xs uppercase tracking-[0.24em] text-white/70 font-semibold">
-              {t.heroSideKicker || 'Currently'}
-            </p>
-            <h2 data-hero className="mt-2 font-display font-black tracking-tight text-3xl">
-              {t.heroSideTitle || 'Building things with taste.'}
-            </h2>
-            <p data-hero className="mt-3 text-sm leading-relaxed text-white/75">
-              {t.heroSideText || 'I like clean UI, bold concepts, and projects that actually ship.'}
-            </p>
-
-            <div data-hero>
-              <OrbitGallery
-                items={HERO_ORBIT_IMAGES}
-                activeIndex={orbitIndex}
-                onSelect={setOrbitIndex}
+            <div data-hero className="w-full">
+              <RandomFactRoulette
+                facts={HERO_RANDOM_FACTS}
+                images={heroImages}
+                prefix="Clickeá para conocer un dato random"
               />
             </div>
           </aside>
