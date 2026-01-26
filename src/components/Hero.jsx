@@ -2,9 +2,96 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useLanguage } from '../context/LanguageContext';
 
+const HERO_ORBIT_IMAGES = [
+  { id: 'hero-1', src: '/header/me.png', alt: 'Hero image 1' },
+  { id: 'hero-2', src: '/header/me1.jpg', alt: 'Hero image 2' },
+  { id: 'hero-3', src: '/header/me2.jpg', alt: 'Hero image 3' },
+];
+
+function OrbitGallery({ items, activeIndex, onSelect }) {
+  const safeActiveIndex = ((activeIndex % items.length) + items.length) % items.length;
+  const active = items[safeActiveIndex];
+  const step = 360 / items.length;
+
+  return (
+    <div className="mt-6">
+      <div className="relative mx-auto w-full max-w-[320px] aspect-square">
+        <div className="absolute inset-0 rounded-full border border-white/15 bg-white/5" />
+
+        <div className="absolute inset-[18%] rounded-full border border-white/15 bg-white/5 overflow-hidden">
+          {active?.src ? (
+            <img
+              src={active.src}
+              alt={active.alt}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div className="w-full h-full grid place-items-center text-center px-5">
+              <div>
+                <p className="text-xs text-white/60 font-semibold tracking-[0.18em] uppercase">
+                  Tus imágenes
+                </p>
+                <p className="mt-2 text-sm text-white/80">
+                  Reemplazá `src` en `HERO_ORBIT_IMAGES`
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <ul className="absolute inset-0">
+          {items.map((item, i) => {
+            const angle = i * step - 90;
+            const isActive = i === safeActiveIndex;
+            const transform = `rotate(${angle}deg) translate(130px) rotate(${-angle}deg)`;
+
+            return (
+              <li
+                key={item.id}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                style={{ transform }}
+              >
+                <button
+                  type="button"
+                  onClick={() => onSelect(i)}
+                  className={[
+                    'rounded-full border bg-white/10 overflow-hidden transition',
+                    'w-12 h-12 sm:w-14 sm:h-14',
+                    isActive
+                      ? 'border-[color:var(--accent)] shadow-[0_0_0_3px_rgba(236,72,153,0.22)] scale-[1.03]'
+                      : 'border-white/20 hover:border-white/35 hover:bg-white/15',
+                  ].join(' ')}
+                  aria-label={`Select hero image ${i + 1}`}
+                >
+                  {item.src ? (
+                    <img
+                      src={item.src}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="w-full h-full grid place-items-center">
+                      <span className="text-xs text-white/70 font-semibold">{i + 1}</span>
+                    </div>
+                  )}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 export default function Hero() {
   const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
+  const [orbitIndex, setOrbitIndex] = useState(0);
   const rootRef = useRef(null);
   const hasAnimatedRef = useRef(false);
 
@@ -53,6 +140,14 @@ export default function Hero() {
     setTimeout(() => setVisible(true), 120);
 
     return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (HERO_ORBIT_IMAGES.length < 2) return undefined;
+    const id = window.setInterval(() => {
+      setOrbitIndex((prev) => (prev + 1) % HERO_ORBIT_IMAGES.length);
+    }, 2400);
+    return () => window.clearInterval(id);
   }, []);
 
   const titleParts = (t.heroTitle || '').split(' ').filter(Boolean);
@@ -137,7 +232,7 @@ export default function Hero() {
             <div data-hero className="mt-10 flex items-center justify-between gap-4">
               <div className="h-px w-full bg-[color:var(--line)]" />
               <div className="font-handwriting text-[color:var(--muted)] text-lg whitespace-nowrap">
-                scroll
+                this is me
               </div>
               <div className="h-px w-full bg-[color:var(--line)]" />
             </div>
@@ -157,19 +252,12 @@ export default function Hero() {
               {t.heroSideText || 'I like clean UI, bold concepts, and projects that actually ship.'}
             </p>
 
-            <div data-hero className="mt-6 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4">
-                <p className="text-xs text-white/60 font-semibold">Focus</p>
-                <p className="mt-1 font-semibold">Frontend + Product</p>
-              </div>
-              <div className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4">
-                <p className="text-xs text-white/60 font-semibold">Vibe</p>
-                <p className="mt-1 font-semibold">Pink, playful, precise</p>
-              </div>
-              <div className="rounded-2xl border border-white/15 bg-white/5 px-4 py-4 col-span-2">
-                <p className="text-xs text-white/60 font-semibold">Stack</p>
-                <p className="mt-1 font-semibold">React, Tailwind, Supabase, Node</p>
-              </div>
+            <div data-hero>
+              <OrbitGallery
+                items={HERO_ORBIT_IMAGES}
+                activeIndex={orbitIndex}
+                onSelect={setOrbitIndex}
+              />
             </div>
           </aside>
         </div>
