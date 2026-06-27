@@ -1,26 +1,41 @@
-// App.jsx
-import React from 'react';
+// App.jsx — layout + routing
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Work from './components/Work';
-import PlanetIntro from './components/PlanetIntro';
-import Story from './components/Story';
-import Contact from './components/Contact';
+import Footer from './components/Footer';
+import BrandLoader from './components/BrandLoader';
+import Home from './pages/Home';
+import JournalList from './pages/JournalList';
+import JournalEntry from './pages/JournalEntry';
+import Admin from './pages/Admin';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 function App() {
   return (
     <div className="min-h-screen relative text-[color:var(--ink)] overflow-hidden">
-      <PlanetIntro />
-      <div className="relative z-10">
+      <BrandLoader />
+      <ScrollToTop />
+      <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar />
-        <Hero />
-        <About />
-        <Work />
-        <Story/>
-        <Contact /> 
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/journal" element={<JournalList />} />
+            <Route path="/journal/:slug" element={<JournalEntry />} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </main>
+        <Footer />
       </div>
     </div>
   );
 }
+
 export default App;

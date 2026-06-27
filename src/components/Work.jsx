@@ -77,12 +77,12 @@ export default function Work() {
         {t.workTitle}
       </h2>
       <p className="text-center text-sm sm:text-base text-[color:var(--muted)] mb-8 sm:mb-10 max-w-2xl mx-auto">
-        Proyectos destacados (curados) + repos actualizados desde GitHub.
+        {t.workSubtitle}
       </p>
 
       <div className="flex flex-wrap justify-center gap-2 mb-10">
         {[
-          { id: "featured", label: "Destacados" },
+          { id: "featured", label: t.filterFeatured },
           { id: "github", label: "GitHub" },
           { id: "live", label: t.filterLive },
           { id: "wip", label: t.filterWip },

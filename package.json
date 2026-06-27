@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
     "@tailwindcss/vite": "^4.1.4",
     "gsap": "^3.12.5",
     "lucide-react": "^0.503.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.18.0",
     "react-swipeable": "^7.0.2",
     "tailwindcss": "^4.1.4",
     "three": "^0.166.1"
