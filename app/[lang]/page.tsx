@@ -8,6 +8,7 @@ import Studies from '@/components/Studies';
 import Journal from '@/components/Journal';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import BrandLoader from '@/components/BrandLoader';
 
 export default async function Home({
   params,
@@ -21,6 +22,7 @@ export default async function Home({
 
   return (
     <>
+    <BrandLoader />
       <SideNav dict={dict} lang={lang} />
       <main>
         <Hero dict={dict} />
