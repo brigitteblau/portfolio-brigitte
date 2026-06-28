@@ -1,64 +1,109 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const photos = [
-  { src: '/1.jpeg', className: 'hero-pic hero-pic-1' },
-  { src: '/4.jpeg', className: 'hero-pic hero-pic-2' },
-  { src: '/8.jpeg', className: 'hero-pic hero-pic-3' },
-  { src: '6.jpeg', className: 'hero-pic hero-pic-4' },
+const photos = ['/1.jpeg', '/2.jpeg', '/5.jpeg', '/8.jpeg', '/9.jpeg', '/10.jpeg'];
+
+const layout = [
+  { x: -35, y: -16, r: -12, s: 0.78 },
+  { x: 34,  y: -14, r: 8,   s: 0.68 },
+  { x: -14, y: 20,  r: 7,   s: 0.72 },
+  { x: 38,  y: 25,  r: -7,  s: 0.62 },
+  { x: -48, y: 24,  r: 10,  s: 0.58 },
+  { x: 5,   y: -28, r: -4,  s: 0.55 },
 ];
 
-export default function Hero({ dict }: any) {
-  const [scroll, setScroll] = useState(0);
+// Velocidades distintas → sensación de profundidad (parallax real)
+const speeds = [0.9, 1.2, 0.7, 1.4, 0.85, 1.1];
+
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    let raf = 0;
+    let ticking = false;
 
-    const update = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        setScroll(Math.min(window.scrollY, 900));
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const max = Math.max(1, window.innerHeight * 1.55);
+        setProgress(easeInOutCubic(Math.min(1, window.scrollY / max)));
+        ticking = false;
       });
     };
 
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', update);
-    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  return progress;
+}
+
+function FloatingPhoto({
+  src,
+  index,
+  progress,
+}: {
+  src: string;
+  index: number;
+  progress: number;
+}) {
+  const item = layout[index];
+
+  const fallY   = item.y + speeds[index] * progress * 130;
+  const rotate  = item.r + progress * 20;
+  const scale   = item.s + progress * 0.12;
+  const opacity = Math.max(0, 1 - progress * 1.4);
+
   return (
-    <section id="top" className="hero-section">
+    <img
+      className="floating-photo"
+      src={src}
+      alt=""
+      style={
+        {
+          '--x': `${item.x}vw`,
+          '--y': `${fallY}vh`,
+          '--r': `${rotate}deg`,
+          '--s': scale,
+          opacity,
+        } as React.CSSProperties
+      }
+    />
+  );
+}
+
+export default function Hero({ dict }: { dict: any }) {
+  const progress = useScrollProgress();
+
+  return (
+    <section id="top" className="hero-wrap">
       <div className="hero-sticky">
-        <div className="hero-photo-layer">
-          {photos.map((photo, index) => (
-            <img
-              key={photo.src}
-              src={photo.src}
-              alt=""
-              className={photo.className}
-              style={{
-                transform: `translate3d(0, ${scroll * (0.12 + index * 0.035)}px, 0) rotate(${[-8, 6, 5, -6][index]}deg)`,
-              }}
-            />
+        <div className="grain" />
+
+        <div className="photo-field">
+          {photos.map((src, i) => (
+            <FloatingPhoto key={src} src={src} index={i} progress={progress} />
           ))}
         </div>
 
-        <div className="hero-content">
+        <div
+          className="hero-copy"
+          style={{ transform: `translateY(${-progress * 24}px)` }}
+        >
           <p className="kicker">{dict.hero.eyebrow}</p>
 
-          <h1 className="hero-title">
-            {dict.hero.title}
-          </h1>
+          <h1 className="hero-title">{dict.hero.title}</h1>
 
-          <p className="hero-text">
-            {dict.hero.text}
-          </p>
+          <p className="hero-line">{dict.hero.text}</p>
         </div>
+
+        <div className="scroll-note">↓ scrolleá</div>
       </div>
     </section>
   );
