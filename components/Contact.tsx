@@ -4,7 +4,7 @@ export default function Contact({ dict }: any) {
       <div className="mx-auto max-w-6xl border-t border-neutral-200 pt-16">
         <p className="kicker">contact</p>
 
-        <h2 className="max-w-3xl text-5xl font-black leading-[0.92] tracking-[-0.07em] md:text-7xl">
+        <h2 className="font-display max-w-3xl text-5xl font-black leading-[0.92] tracking-[-0.07em] md:text-7xl">
           ¿Tenés una idea, proyecto o simplemente querés charlar?
         </h2>
 

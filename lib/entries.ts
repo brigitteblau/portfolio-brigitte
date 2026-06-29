@@ -31,3 +31,19 @@ export async function getPosts() {
 
   return data ?? [];
 }
+
+export async function getPostBySlug(slug: string) {
+  const { data, error } = await supabase
+    .from('entries')
+    .select('*')
+    .eq('slug', slug)
+    .eq('kind', 'post')
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    return null;
+  }
+
+  return data;
+}

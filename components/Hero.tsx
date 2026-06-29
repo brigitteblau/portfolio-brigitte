@@ -55,10 +55,11 @@ function FloatingPhoto({
 }) {
   const item = layout[index];
 
-  const fallY   = item.y + speeds[index] * progress * 130;
-  const rotate  = item.r + progress * 20;
-  const scale   = item.s + progress * 0.12;
-  const opacity = Math.max(0, 1 - progress * 1.4);
+  const fallY   = item.y + speeds[index] * progress * 165;
+  const rotate  = item.r + progress * 16;
+  const scale   = item.s + progress * 0.1;
+  // Fade más gradual: las fotos siguen visibles mientras caen, sin corte brusco.
+  const opacity = Math.max(0, 1 - Math.pow(progress, 1.5) * 1.05);
 
   return (
     <img
@@ -103,7 +104,9 @@ export default function Hero({ dict }: { dict: any }) {
           <p className="hero-line">{dict.hero.text}</p>
         </div>
 
-        <div className="scroll-note">↓ scrolleá</div>
+        <div className="hero-scroll" aria-hidden>
+          <span className="hero-scroll-dot" />
+        </div>
       </div>
     </section>
   );
