@@ -84,7 +84,7 @@ function Camara({ lang, photos, video }: { lang: Locale; photos: string[]; video
           {lines[line].text[lang]}
         </p>
         {video && (
-          <button onClick={toggleSound} className="absolute right-4 bottom-5 rounded bg-black/60 px-3 py-1.5 font-vhs text-[1.3rem] text-white hover:bg-black/80 sm:right-6 sm:bottom-8">
+          <button onClick={toggleSound} className="absolute left-4 top-12 rounded bg-black/60 sm:left-auto sm:right-6 sm:top-auto sm:bottom-8 px-3 py-1.5 font-vhs text-[1.3rem] text-white hover:bg-black/80">
             {muted ? (lang === "es" ? "🔈 con sonido" : "🔈 sound on") : lang === "es" ? "🔇 silenciar" : "🔇 mute"}
           </button>
         )}

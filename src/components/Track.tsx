@@ -45,8 +45,12 @@ export default function Track({ lang, children }: { lang: Locale; children: Reac
       lastEra = p.dataset.era || lastEra;
       if (p.dataset.name) lastName = Number(p.dataset.name);
       out.push({ x: L, era: lastEra, name: lastName });
-      // paneles largos: una parada extra al final
-      if (W > V * 1.05) out.push({ x: L + W - V, era: lastEra, name: lastName });
+      // paneles largos: paradas cada ~80% de pantalla hasta el final
+      if (W > V * 1.05) {
+        const end = L + W - V;
+        for (let s = L + V * 0.8; s < end - V * 0.3; s += V * 0.8) out.push({ x: s, era: lastEra, name: lastName });
+        out.push({ x: end, era: lastEra, name: lastName });
+      }
     });
     stops.current = out;
     setTotal(out.length || 1);
