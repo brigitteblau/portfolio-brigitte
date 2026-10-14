@@ -118,7 +118,8 @@ body {
 
 .prose-journal p { margin: 0 0 1.1em; }
 .prose-journal h2 { font-family: "Bodoni Moda Variable", serif; font-style: italic; font-size: 2rem; line-height: 1.1; margin: 1.6em 0 0.5em; }
-.prose-journal img, .prose-journal video { border-radius: 4px; margin: 1.5em 0; width: 100%; height: auto; }
+.prose-journal img { border-radius: 4px; margin: 1.5em 0; width: 100%; height: auto; }
+.prose-journal video { margin: 1.5em auto; }
 .prose-journal a { text-decoration: underline; text-underline-offset: 3px; }
 .prose-journal blockquote { font-family: "Caveat Variable", cursive; font-size: 1.7rem; line-height: 1.2; margin: 1.2em 0; padding-left: 1rem; border-left: 4px solid var(--pink); }
 

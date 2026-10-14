@@ -21,11 +21,11 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/journal/[s
 
 /** Componentes que podés usar dentro de un .mdx */
 const components = {
-  Video: ({ src }: { src: string }) => <video src={src} controls playsInline className="w-full rounded" />,
+  Video: ({ src }: { src: string }) => <video src={src} poster={src.replace(/\.\w+$/, ".jpg")} controls playsInline muted loop autoPlay className="mx-auto max-h-[80vh] w-auto max-w-full rounded" />,
   Nota: ({ children }: { children: React.ReactNode }) => (
     <aside className="my-6 -rotate-1 bg-yellow px-5 py-4 font-hand text-[1.6rem] leading-[1.15] shadow-[3px_4px_0_rgba(22,32,74,.15)]">{children}</aside>
   ),
-  Fotos: ({ children }: { children: React.ReactNode }) => <div className="my-6 grid grid-cols-2 gap-3 [&_img]:!m-0 [&_img]:aspect-square [&_img]:object-cover">{children}</div>,
+  Fotos: ({ children }: { children: React.ReactNode }) => <div className="my-6 grid grid-cols-2 gap-3 [&_p]:contents [&_img]:!m-0 [&_img]:aspect-square [&_img]:object-cover">{children}</div>,
 };
 
 export default async function JournalEntry({ params }: PageProps<"/[lang]/journal/[slug]">) {
@@ -53,7 +53,7 @@ export default async function JournalEntry({ params }: PageProps<"/[lang]/journa
         </header>
         {meta.cover && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={meta.cover} alt="" className="mt-8 w-full rounded bg-white p-2 shadow-[4px_6px_0_rgba(22,32,74,.15)]" />
+          <img src={meta.cover} alt="" className="mt-8 max-h-[60vh] w-full rounded bg-white object-cover p-2 shadow-[4px_6px_0_rgba(22,32,74,.15)]" />
         )}
         <div className="prose-journal mt-10 font-serif text-[1.2rem] leading-[1.7]">
           <MDXRemote source={content} components={components} />
