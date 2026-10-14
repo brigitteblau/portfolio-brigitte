@@ -1,0 +1,64 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { locales, type Locale } from "@/lib/i18n";
+import { getEntry, slugs } from "@/lib/journal";
+import { journal as J } from "@/content/site";
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  const all = slugs();
+  return locales.flatMap((lang) => all.map((slug) => ({ lang, slug })));
+}
+
+export async function generateMetadata({ params }: PageProps<"/[lang]/journal/[slug]">): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const entry = getEntry(slug, lang as Locale);
+  return { title: entry?.meta.title ?? "Journal", description: entry?.meta.excerpt };
+}
+
+/** Componentes que podés usar dentro de un .mdx */
+const components = {
+  Video: ({ src }: { src: string }) => <video src={src} controls playsInline className="w-full rounded" />,
+  Nota: ({ children }: { children: React.ReactNode }) => (
+    <aside className="my-6 -rotate-1 bg-yellow px-5 py-4 font-hand text-[1.6rem] leading-[1.15] shadow-[3px_4px_0_rgba(22,32,74,.15)]">{children}</aside>
+  ),
+  Fotos: ({ children }: { children: React.ReactNode }) => <div className="my-6 grid grid-cols-2 gap-3 [&_img]:!m-0 [&_img]:aspect-square [&_img]:object-cover">{children}</div>,
+};
+
+export default async function JournalEntry({ params }: PageProps<"/[lang]/journal/[slug]">) {
+  const { lang: l, slug } = await params;
+  const lang = l as Locale;
+  const entry = getEntry(slug, lang);
+  if (!entry) notFound();
+  const { meta, content } = entry;
+  const fmt = new Intl.DateTimeFormat(lang === "es" ? "es-AR" : "en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+  return (
+    <main className="dot-paper min-h-[100svh] px-4 pb-24 pt-24 text-navy">
+      <article className="mx-auto max-w-[68ch]">
+        <Link href={`/${lang}/journal`} className="font-hand text-[1.5rem] underline underline-offset-4 hover:text-cobalt">
+          ← {J.back[lang]}
+        </Link>
+        <header className="mt-8">
+          {meta.date && (
+            <time dateTime={meta.date} className="text-[0.95rem] text-navy/60">
+              {fmt.format(new Date(meta.date))}
+            </time>
+          )}
+          <h1 className="mt-2 font-serif text-[clamp(2.6rem,7vw,4.6rem)] italic leading-[1] tracking-[-0.01em]">{meta.title}</h1>
+          {meta.fallback && <p className="mt-4 rounded bg-white/70 px-3 py-2 text-[0.95rem]">{J.onlyIn[lang]}</p>}
+        </header>
+        {meta.cover && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={meta.cover} alt="" className="mt-8 w-full rounded bg-white p-2 shadow-[4px_6px_0_rgba(22,32,74,.15)]" />
+        )}
+        <div className="prose-journal mt-10 font-serif text-[1.2rem] leading-[1.7]">
+          <MDXRemote source={content} components={components} />
+        </div>
+      </article>
+    </main>
+  );
+}
