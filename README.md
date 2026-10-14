@@ -1,8 +1,39 @@
 # Portfolio de Brigitte
 
+![Moodboard](docs/moodboard.jpg)
+
 Una presentación que se scrollea para el costado. Va contando mi historia en eras y mi nombre se revela de a una letra.
 
 **Stack:** Next.js 16 (App Router) + TypeScript + Tailwind 4 + GSAP (ScrollTrigger) + Lenis. Es bilingüe: `/es` y `/en`.
+
+## Moodboard
+
+**Idea:** mi historia contada por eras, como una presentación que se mueve de costado. Es editorial y tiene actitud. Los objetos que la arman son un escritorio de computadora, una planilla y una cámara vieja. Nada de stickers ni "nena".
+
+| Color | Hex | Dónde se usa |
+|---|---|---|
+| Hueso | `#E9EAEE` | fondo base |
+| Tinta | `#0D1124` | texto y el nombre tachado |
+| Cobalto | `#2B44FF` | acento principal, el asterisco, el contacto |
+| Lima | `#D4FF3A` | resaltados (la fila de "ahora" en la planilla, la selección de texto) |
+| Rojo tachón | `#FF3D2E` | las tachaduras de las etiquetas |
+| Verde cancha | `#0E4D33` | la era Deportes |
+| Sepia | `#EAD6BF` → `#D9B08F` | la era Nacer, nostálgica |
+
+**Tipografías:**
+- **Bodoni Moda** (itálica) para los títulos grandes ("Holaaa.", "Brigitte").
+- **Bricolage Grotesque** para el texto.
+- **JetBrains Mono** para las notas de presentador.
+- **Anton** para Deportes.
+- **VT323** para la cámara de Nacer.
+
+**Motivos:**
+- El nombre tachado (B██████), que se destapa letra por letra a medida que pasás de era.
+- El asterisco cobalto.
+- La planilla que termina en `=AHORA()`.
+- La cámara casera de Nacer.
+
+**Referencias:** el escritorio de Mac con sus carpetas, Excel, la tipografía editorial de revista, el collage y la cámara casera.
 
 ## Correrlo
 
