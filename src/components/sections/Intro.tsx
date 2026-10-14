@@ -43,7 +43,7 @@ function Hola({ lang }: { lang: Locale }) {
       <div data-sticker className="sticker absolute bottom-[20%] right-[10%] w-20 sm:w-36"><Star look /></div>
       <h1
         data-hello
-        className="flex overflow-hidden pb-[0.08em] pr-[0.12em] font-sans text-[clamp(5rem,22vw,20rem)] font-extrabold italic leading-[0.85] tracking-[-0.05em] text-cobalt [font-variation-settings:'wdth'_75]"
+        className="flex overflow-hidden pb-[0.08em] pr-[0.12em] pt-[0.12em] font-sans text-[clamp(6.5rem,24vw,20rem)] font-extrabold italic leading-[0.9] tracking-[-0.05em] text-cobalt [font-variation-settings:'wdth'_75]"
         aria-label={intro.hello[lang]}
       >
         {intro.hello[lang].split("").map((c, i) => (

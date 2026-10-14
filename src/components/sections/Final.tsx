@@ -57,7 +57,7 @@ function Conocerme({ lang }: { lang: Locale }) {
       <p
         ref={nameRef}
         aria-label={NAME}
-        className="flex overflow-hidden pb-[0.1em] pr-[0.12em] font-sans text-[clamp(4rem,15vw,14rem)] font-extrabold italic leading-[0.85] tracking-[-0.05em] text-cobalt [font-variation-settings:'wdth'_75]"
+        className="flex overflow-hidden pb-[0.1em] pr-[0.12em] pt-[0.1em] font-sans text-[clamp(4rem,15vw,14rem)] font-extrabold italic leading-[0.85] tracking-[-0.05em] text-cobalt [font-variation-settings:'wdth'_75]"
       >
         {NAME.split("").map((c, i) => (
           <span key={i} aria-hidden className="inline-block">

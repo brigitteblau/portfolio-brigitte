@@ -12,7 +12,7 @@ import Note from "../Note";
 
 const beadColors = ["#ff6a2b", "#f592bd", "#ffcc33", "#8ec5f0", "#fbfcff", "#f2363a"];
 
-function Cancha({ lang, photos }: { lang: Locale; photos: string[] }) {
+function Cancha({ lang, photos, video }: { lang: Locale; photos: string[]; video?: string }) {
   const root = useRef<HTMLDivElement>(null);
   usePanel(({ enter, exit }) => {
     const r = root.current;
@@ -66,8 +66,12 @@ function Cancha({ lang, photos }: { lang: Locale; photos: string[] }) {
         </div>
         <div className="hidden grid-cols-2 gap-5 sm:grid">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} data-pic className="overflow-hidden rounded-2xl border-[6px] border-white shadow-[4px_6px_0_rgba(0,0,0,.2)]" style={{ aspectRatio: i % 3 === 0 ? "4/5" : "1" }}>
-              <Photo src={photos[i]} alt={`${deportes.era[lang]} ${i + 1}`} folder="deportes" hint={`${ui.photoMissing[lang]} ${i + 1}`} tint="#2e9461" />
+            <div key={i} data-pic className="h-[30vh] overflow-hidden rounded-2xl border-[6px] border-white shadow-[4px_6px_0_rgba(0,0,0,.2)]">
+              {i === 0 && video ? (
+                <video src={video} poster={video.replace(/\.\w+$/, ".jpg")} className="h-full w-full object-cover" autoPlay muted loop playsInline aria-label={lang === "es" ? "Mi swing" : "My swing"} />
+              ) : (
+                <Photo src={photos[video ? i - 1 : i]} alt={`${deportes.era[lang]} ${i + 1}`} folder="deportes" hint={`${ui.photoMissing[lang]} ${i + 1}`} tint="#2e9461" />
+              )}
             </div>
           ))}
         </div>
@@ -123,12 +127,12 @@ function Pulseras({ lang, photos }: { lang: Locale; photos: string[] }) {
   );
 }
 
-export default function Deportes({ lang, photos }: { lang: Locale; photos: string[] }) {
+export default function Deportes({ lang, photos, video }: { lang: Locale; photos: string[]; video?: string }) {
   const grass = { backgroundImage: "repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 80px, transparent 80px 160px)" };
   return (
     <>
       <Panel id="deportes" era="deportes" className="bg-green" style={grass} label={deportes.era[lang]}>
-        <Cancha lang={lang} photos={photos} />
+        <Cancha lang={lang} photos={photos} video={video} />
       </Panel>
       <Panel era="deportes" nameStep={NAME_STEPS.deportes} className="bg-green" style={grass} label={deportes.business.title[lang]}>
         <Pulseras lang={lang} photos={photos} />

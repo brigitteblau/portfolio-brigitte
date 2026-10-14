@@ -57,7 +57,7 @@ export default function NameTag({ lang }: { lang: Locale }) {
       aria-live="polite"
       aria-label={`${ui.nameTag[lang]} ${letters.slice(0, n).join("")}`}
     >
-      <p className="px-2 pt-1.5 pb-1 text-[0.8rem] font-semibold leading-none text-white sm:text-[0.9rem]">
+      <p className="px-2 pt-1.5 pb-1 whitespace-nowrap text-[0.68rem] font-semibold leading-none text-white sm:text-[0.9rem]">
         {ui.nameTag[lang]}
       </p>
       <p className="flex h-8 items-center justify-center gap-[2px] bg-white px-2 font-hand text-[1.45rem] leading-none text-navy sm:h-11 sm:text-[2.1rem]">

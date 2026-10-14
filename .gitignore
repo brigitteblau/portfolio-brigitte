@@ -42,3 +42,5 @@ next-env.d.ts
 
 # fotos HEIC originales (npm run fotos)
 fotos-originales/
+.material/
+.portfolio-site.tgz

@@ -14,6 +14,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const lang = (await params).lang as Locale;
   const photos = allPhotos();
   const projectPhotos = Object.fromEntries(projects.map((p) => [p.id, findPhoto("proyectos", p.id)]));
+  const golf = ["golf.mp4", "golf.mov", "golf.webm"].map((f) => `/video/${f}`).find(fileExists);
   const video = ["cumple.mp4", "cumple.mov", "cumple.webm"].map((f) => `/video/${f}`).find(fileExists);
 
   return (
@@ -21,7 +22,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <Track lang={lang}>
         <Intro lang={lang} avatars={photos.avatar} />
         <Nacer lang={lang} photos={photos.nacer} video={video} />
-        <Deportes lang={lang} photos={photos.deportes} />
+        <Deportes lang={lang} photos={photos.deportes} video={golf} />
         <Programacion lang={lang} photos={photos.programacion} />
         <Proyectos lang={lang} photos={projectPhotos} />
         <Ahora lang={lang} photos={photos.ahora} />

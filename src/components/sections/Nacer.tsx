@@ -62,7 +62,7 @@ function Camara({ lang, photos, video }: { lang: Locale; photos: string[]; video
       <EraTab n={1} label={nacer.era[lang]} color="#fbe4c9" ink={INK} font="font-serif italic" />
       <div className="relative flex-1 overflow-hidden rounded-b-xl rounded-tr-xl bg-[#1d1410] shadow-[6px_10px_0_rgba(74,42,30,.25)]">
         {video ? (
-          <video ref={vid} src={video} className="absolute inset-0 h-full w-full object-cover [filter:sepia(.35)_saturate(1.2)_contrast(1.05)]" autoPlay muted loop playsInline />
+          <video ref={vid} src={video} poster={video.replace(/\.\w+$/, ".jpg")} className="absolute inset-0 h-full w-full object-cover [filter:sepia(.35)_saturate(1.2)_contrast(1.05)]" autoPlay muted loop playsInline />
         ) : (
           <div className="absolute inset-0 [filter:sepia(.35)_saturate(1.1)]">
             <Photo src={photos[3] ?? photos[0]} alt={nacer.era[lang]} folder="nacer" hint={nacer.videoHint[lang]} tint="#c98a6a" />

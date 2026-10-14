@@ -63,6 +63,17 @@ export const projects: Project[] = [
     color: "#F2363A",
   },
   {
+    id: "forma",
+    name: "FORMA",
+    what: {
+      es: "Web B2B de uniformes corporativos, con el respaldo de Grupo Mirrow. SEO pensado desde el día uno.",
+      en: "B2B site for corporate uniforms, backed by Grupo Mirrow. SEO built in from day one.",
+    },
+    tags: ["Next.js", "SEO", "B2B"],
+    h: 1,
+    color: "#e9ecef",
+  },
+  {
     id: "mema",
     name: "Mema",
     what: {
