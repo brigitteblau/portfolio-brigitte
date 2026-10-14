@@ -6,16 +6,16 @@
   con su propio branding (ver clases .era-*).
 */
 :root {
-  --desk: #c9d4f7; /* periwinkle del escritorio */
-  --navy: #16204a; /* tinta */
-  --cobalt: #3352e0;
+  --desk: #e9eaee; /* base: gris hueso frío */
+  --navy: #0d1124; /* tinta */
+  --cobalt: #2b44ff; /* azul eléctrico */
   --folder: #8ec5f0;
-  --white: #fbfcff;
+  --white: #f7f7f4;
   --orange: #ff6a2b;
-  --red: #f2363a;
-  --yellow: #ffcc33;
-  --pink: #f592bd;
-  --green: #1f7a4d;
+  --red: #ff3d2e;
+  --yellow: #d4ff3a; /* lima, el acento de resaltado */
+  --pink: #f2a7c3;
+  --green: #0e4d33;
 
   --bg: var(--desk);
   --ink: var(--navy);
@@ -38,9 +38,8 @@
 
   --font-sans: "Bricolage Grotesque Variable", system-ui, sans-serif;
   --font-serif: "Bodoni Moda Variable", "Didot", serif;
-  --font-hand: "Caveat Variable", "Bradley Hand", cursive;
   --font-vhs: "VT323", ui-monospace, monospace;
-  --font-sport: "Bowlby One", Impact, sans-serif;
+  --font-sport: "Anton", Impact, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 }
 
@@ -97,8 +96,8 @@ body {
 
 /* Papel punteado del cuaderno (journal) */
 .dot-paper {
-  background-color: #f6f1cf;
-  background-image: radial-gradient(rgba(22, 32, 74, 0.22) 1px, transparent 1.2px);
+  background-color: var(--white);
+  background-image: radial-gradient(rgba(13, 17, 36, 0.16) 1px, transparent 1.2px);
   background-size: 22px 22px;
 }
 
@@ -110,18 +109,14 @@ body {
   background-size: 100% 36px, 120px 100%;
 }
 
-/* Borde de sticker (contorno blanco grueso + sombra dura) */
-.sticker {
-  filter: drop-shadow(0 0 0 #fff) drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff)
-    drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(2px 4px 0 rgba(22, 32, 74, 0.25));
-}
+
 
 .prose-journal p { margin: 0 0 1.1em; }
 .prose-journal h2 { font-family: "Bodoni Moda Variable", serif; font-style: italic; font-size: 2rem; line-height: 1.1; margin: 1.6em 0 0.5em; }
 .prose-journal img { border-radius: 4px; margin: 1.5em 0; width: 100%; height: auto; }
 .prose-journal video { margin: 1.5em auto; }
 .prose-journal a { text-decoration: underline; text-underline-offset: 3px; }
-.prose-journal blockquote { font-family: "Caveat Variable", cursive; font-size: 1.7rem; line-height: 1.2; margin: 1.2em 0; padding-left: 1rem; border-left: 4px solid var(--pink); }
+.prose-journal blockquote { font-family: "Bodoni Moda Variable", serif; font-style: italic; font-size: 1.9rem; line-height: 1.15; margin: 1.2em 0; padding-left: 1rem; border-left: 3px solid var(--cobalt); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -135,10 +130,11 @@ body {
 
 /* Nota al margen de cada diapositiva ("explicación") */
 .slide-note {
-  font-family: "Caveat Variable", cursive;
-  font-size: 1.35rem;
-  line-height: 1;
-  opacity: 0.75;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  opacity: 0.7;
 }
 
 @keyframes sub {

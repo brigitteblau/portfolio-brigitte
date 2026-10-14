@@ -6,19 +6,16 @@ import { proyectos as PR, notes, NAME_STEPS } from "@/content/site";
 import { projects, type Project } from "@/content/projects";
 import EraTab from "../EraTab";
 import Soundtrack from "../Soundtrack";
-import { Clip } from "../Stickers";
 import Panel, { usePanel } from "../Panel";
 import Note from "../Note";
 
-const clipColors = ["var(--pink)", "var(--yellow)", "#7fd1a8", "var(--folder)", "var(--red)"];
-const DARK = ["#16204A", "#3D5BD9", "#1F7A4D", "#F2363A", "#FF6A2B"];
+const DARK = ["#0D1124", "#2B44FF", "#0E4D33", "#FF3D2E", "#5B6178"];
 
-function Card({ p, lang, photo, i }: { p: Project; lang: Locale; photo?: string; i: number }) {
+function Card({ p, lang, photo }: { p: Project; lang: Locale; photo?: string }) {
   const dark = DARK.includes(p.color);
   const inner = (
     <article className="group relative flex h-full flex-col">
-      {i % 3 === 0 && <Clip className="absolute -top-4 left-1/2 z-10 w-12 -translate-x-1/2" color={clipColors[i % clipColors.length]} />}
-      <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl" style={{ background: p.color }}>
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-md" style={{ background: p.color }}>
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
@@ -43,11 +40,11 @@ function Card({ p, lang, photo, i }: { p: Project; lang: Locale; photo?: string;
     </article>
   );
   return p.href ? (
-    <a href={p.href} target="_blank" rel="noreferrer" className="block h-full rounded-2xl" style={{ flex: p.h ?? 2 }}>
+    <a href={p.href} target="_blank" rel="noreferrer" className="block h-full rounded-md" style={{ flex: p.h ?? 2 }}>
       {inner}
     </a>
   ) : (
-    <div tabIndex={0} className="h-full rounded-2xl" style={{ flex: p.h ?? 2 }}>
+    <div tabIndex={0} className="h-full rounded-md" style={{ flex: p.h ?? 2 }}>
       {inner}
     </div>
   );
@@ -73,13 +70,13 @@ function Board({ lang, photos }: { lang: Locale; photos: Record<string, string |
     <div ref={root} data-row className="relative flex h-full items-center gap-5 pb-16 pl-4 pr-[12vw] pt-14 sm:pl-8">
       <div className="flex w-[min(78vw,26rem)] shrink-0 flex-col justify-center gap-6 pr-6">
         <EraTab n={4} label={PR.era[lang]} color="var(--red)" ink="#fff" font="font-sans font-extrabold" />
-        <p className="font-hand text-[clamp(3rem,6vw,5rem)] leading-[0.9]">{PR.title[lang]}</p>
+        <p className="font-serif text-[clamp(2.6rem,5vw,4.4rem)] italic leading-[0.95]">{PR.title[lang]}</p>
         <Soundtrack data={PR.soundtrack} lang={lang} />
       </div>
       {cols.map((col, c) => (
         <div key={c} data-col className="flex h-[72vh] w-[min(64vw,17rem)] shrink-0 flex-col gap-5">
           {col.map((p) => (
-            <Card key={p.id} p={p} lang={lang} photo={photos[p.id]} i={projects.indexOf(p)} />
+            <Card key={p.id} p={p} lang={lang} photo={photos[p.id]} />
           ))}
         </div>
       ))}

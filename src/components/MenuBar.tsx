@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { ui } from "@/content/site";
-import { Star } from "./Stickers";
+import { Asterisk } from "./Stickers";
 
 function useBuenosAiresTime(lang: Locale) {
   const [now, setNow] = useState<string>("");
@@ -34,7 +34,7 @@ export default function MenuBar({ lang }: { lang: Locale }) {
     <header className="fixed inset-x-0 top-0 z-50 flex h-9 items-center justify-between border-b border-navy/10 bg-paper/70 px-3 text-[0.875rem] backdrop-blur-xl sm:px-4">
       <nav className="flex items-center gap-1 sm:gap-3" aria-label="Principal">
         <Link href={`/${lang}`} className="flex items-center rounded px-1.5 py-0.5 hover:bg-navy/10" aria-label={ui.menu.home[lang]}>
-          <Star className="h-5 w-5" color="var(--pink)" />
+          <Asterisk className="h-4 w-4" color="var(--cobalt)" />
         </Link>
         <Link href={`/${lang}`} className="rounded px-1.5 py-0.5 font-semibold hover:bg-navy/10">
           {ui.menu.home[lang]}

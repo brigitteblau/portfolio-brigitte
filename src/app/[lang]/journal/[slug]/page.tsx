@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/journal/[s
 const components = {
   Video: ({ src }: { src: string }) => <video src={src} poster={src.replace(/\.\w+$/, ".jpg")} controls playsInline muted loop autoPlay className="mx-auto max-h-[80vh] w-auto max-w-full rounded" />,
   Nota: ({ children }: { children: React.ReactNode }) => (
-    <aside className="my-6 -rotate-1 bg-yellow px-5 py-4 font-hand text-[1.6rem] leading-[1.15] shadow-[3px_4px_0_rgba(22,32,74,.15)]">{children}</aside>
+    <aside className="my-8 border-l-2 border-cobalt pl-5 font-mono text-[0.95rem] leading-relaxed">{children}</aside>
   ),
   Fotos: ({ children }: { children: React.ReactNode }) => <div className="my-6 grid grid-cols-2 gap-3 [&_p]:contents [&_img]:!m-0 [&_img]:aspect-square [&_img]:object-cover">{children}</div>,
 };
@@ -39,7 +39,7 @@ export default async function JournalEntry({ params }: PageProps<"/[lang]/journa
   return (
     <main className="dot-paper min-h-[100svh] px-4 pb-24 pt-24 text-navy">
       <article className="mx-auto max-w-[68ch]">
-        <Link href={`/${lang}/journal`} className="font-hand text-[1.5rem] underline underline-offset-4 hover:text-cobalt">
+        <Link href={`/${lang}/journal`} className="font-mono text-[0.85rem] underline underline-offset-4 hover:text-cobalt">
           ← {J.back[lang]}
         </Link>
         <header className="mt-8">
@@ -53,7 +53,7 @@ export default async function JournalEntry({ params }: PageProps<"/[lang]/journa
         </header>
         {meta.cover && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={meta.cover} alt="" className="mt-8 max-h-[60vh] w-full rounded bg-white object-cover p-2 shadow-[4px_6px_0_rgba(22,32,74,.15)]" />
+          <img src={meta.cover} alt="" className="mt-8 max-h-[60vh] w-full object-cover" />
         )}
         <div className="prose-journal mt-10 font-serif text-[1.2rem] leading-[1.7]">
           <MDXRemote source={content} components={components} />

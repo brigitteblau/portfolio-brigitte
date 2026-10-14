@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n";
 import { listEntries } from "@/lib/journal";
 import { journal as J } from "@/content/site";
-import { Clip, Flower } from "@/components/Stickers";
+import { Asterisk } from "@/components/Stickers";
 
 export const metadata: Metadata = { title: "Journal" };
 
@@ -19,39 +19,36 @@ export default async function JournalIndex({ params }: PageProps<"/[lang]/journa
   const fmt = new Intl.DateTimeFormat(lang === "es" ? "es-AR" : "en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
   return (
-    <main className="dot-paper min-h-[100svh] px-4 pb-24 pt-24 text-navy">
-      <div className="mx-auto max-w-5xl">
-        <header className="relative flex flex-wrap items-end justify-between gap-6">
+    <main className="dot-paper min-h-[100svh] px-5 pb-24 pt-28 text-navy sm:px-10">
+      <div className="mx-auto max-w-6xl">
+        <header className="relative flex flex-wrap items-end justify-between gap-6 border-b border-navy/15 pb-8">
           <div>
-            <h1 className="font-hand text-[clamp(4.5rem,13vw,9rem)] leading-[0.8]">{J.title[lang]}</h1>
-            <p className="mt-4 max-w-[40ch] text-[1.15rem] leading-snug">{J.intro[lang]}</p>
+            <h1 className="font-serif text-[clamp(4.5rem,14vw,11rem)] italic leading-[0.85] tracking-[-0.04em]">{J.title[lang]}</h1>
+            <p className="mt-5 max-w-[42ch] text-[1.15rem] leading-snug">{J.intro[lang]}</p>
           </div>
-          <Flower className="sticker w-24 rotate-12 sm:w-32" look />
+          <Asterisk className="w-16 animate-[spin_24s_linear_infinite] text-cobalt sm:w-24" />
         </header>
 
         {entries.length === 0 ? (
-          <p className="mt-16 font-hand text-[1.8rem]">{J.empty[lang]}</p>
+          <p className="mt-16 font-mono text-[0.95rem]">{J.empty[lang]}</p>
         ) : (
-          <ol className="mt-16 grid gap-x-8 gap-y-14 sm:grid-cols-2">
+          <ol className="mt-12 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
             {entries.map((e, i) => (
-              <li key={e.slug} style={{ rotate: `${[-1.5, 1.2, 0.6, -0.8][i % 4]}deg` }}>
-                <Link href={`/${lang}/journal/${e.slug}`} className="group block rounded-lg">
-                  <article className="relative bg-white p-3 shadow-[4px_6px_0_rgba(22,32,74,.15)] transition-transform group-hover:-translate-y-1">
-                    <Clip className="absolute -top-5 left-6 w-12" color={["var(--pink)", "var(--yellow)", "#7fd1a8", "var(--folder)"][i % 4]} />
-                    <div className="aspect-[16/10] overflow-hidden" style={{ background: ["#ffcc33", "#8ec5f0", "#f592bd", "#ff6a2b"][i % 4] }}>
+              <li key={e.slug}>
+                <Link href={`/${lang}/journal/${e.slug}`} className="group block">
+                  <article>
+                    <div className="aspect-[4/5] overflow-hidden" style={{ background: ["#2b44ff", "#0d1124", "#d9dbe2"][i % 3] }}>
                       {e.cover && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={e.cover} alt="" className="h-full w-full object-cover" loading="lazy" />
+                        <img src={e.cover} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" />
                       )}
                     </div>
-                    <div className="px-1 pb-1 pt-3">
-                      <p className="flex justify-between text-[0.85rem] text-navy/60">
-                        <time dateTime={e.date}>{e.date ? fmt.format(new Date(e.date)) : ""}</time>
-                        <span>{kindLabel[e.kind][lang]}</span>
-                      </p>
-                      <h2 className="mt-1 font-serif text-[1.9rem] italic leading-[1.05]">{e.title}</h2>
-                      {e.excerpt && <p className="mt-2 text-[1rem] leading-snug text-navy/80">{e.excerpt}</p>}
-                    </div>
+                    <p className="mt-3 flex justify-between font-mono text-[0.78rem] text-navy/60">
+                      <time dateTime={e.date}>{e.date ? fmt.format(new Date(e.date)) : ""}</time>
+                      <span>{kindLabel[e.kind][lang]}</span>
+                    </p>
+                    <h2 className="mt-1 font-serif text-[1.9rem] italic leading-[1.05] group-hover:text-cobalt">{e.title}</h2>
+                    {e.excerpt && <p className="mt-2 text-[1rem] leading-snug text-navy/75">{e.excerpt}</p>}
                   </article>
                 </Link>
               </li>

@@ -53,29 +53,26 @@ export default function NameTag({ lang }: { lang: Locale }) {
 
   return (
     <div
-      className="pointer-events-none fixed right-3 top-11 z-40 w-[7.6rem] -rotate-3 select-none overflow-hidden rounded-xl bg-red text-center shadow-[2px_4px_0_rgba(22,32,74,.25)] ring-4 ring-white sm:right-6 sm:top-14 sm:w-[11rem]"
+      className="pointer-events-none fixed right-3 top-12 z-40 flex select-none items-center gap-2.5 rounded-full bg-paper/80 py-1.5 pl-3.5 pr-2 backdrop-blur-md sm:right-6 sm:top-14"
       aria-live="polite"
       aria-label={`${ui.nameTag[lang]} ${letters.slice(0, n).join("")}`}
     >
-      <p className="px-2 pt-1.5 pb-1 whitespace-nowrap text-[0.68rem] font-semibold leading-none text-white sm:text-[0.9rem]">
-        {ui.nameTag[lang]}
-      </p>
-      <p className="flex h-8 items-center justify-center gap-[2px] bg-white px-2 font-hand text-[1.45rem] leading-none text-navy sm:h-11 sm:text-[2.1rem]">
-        {letters.map((ch, i) => (
-          <span
-            key={i}
-            className="inline-block w-[0.62em] text-center transition-all duration-500"
-            style={{
-              opacity: i < n ? 1 : 0.25,
-              transform: i === justRevealed ? "translateY(-4px) scale(1.25)" : "none",
-              color: i === justRevealed ? "var(--red)" : undefined,
-            }}
-          >
-            {i < n ? ch : "_"}
-          </span>
-        ))}
-      </p>
-      <div className="h-2 bg-red" />
+      <span className="font-mono text-[0.7rem] opacity-60">{ui.nameTag[lang]}</span>
+      <span className="flex items-center gap-[2px] font-serif text-[1.25rem] italic leading-none sm:text-[1.45rem]">
+        {letters.map((ch, i) =>
+          i < n ? (
+            <span
+              key={i}
+              className="inline-block transition-[color,transform] duration-500"
+              style={{ color: i === justRevealed ? "var(--cobalt)" : undefined, transform: i === justRevealed ? "translateY(-2px)" : "none" }}
+            >
+              {ch}
+            </span>
+          ) : (
+            <span key={i} className="inline-block h-[0.85em] w-[0.5em] rounded-[2px] bg-navy" />
+          ),
+        )}
+      </span>
     </div>
   );
 }

@@ -26,7 +26,7 @@ export const projects: Project[] = [
     },
     tags: ["FastAPI", "CadQuery", "Blender"],
     h: 3,
-    color: "#FF6A2B",
+    color: "#FF3D2E",
   },
   {
     id: "dragonfish-tiendanube",
@@ -37,7 +37,7 @@ export const projects: Project[] = [
     },
     tags: ["Node.js", "TypeScript", "Vercel"],
     h: 2,
-    color: "#3D5BD9",
+    color: "#2B44FF",
   },
   {
     id: "trak",
@@ -48,7 +48,7 @@ export const projects: Project[] = [
     },
     tags: ["Computer vision", "Python"],
     h: 2,
-    color: "#1F7A4D",
+    color: "#0E4D33",
   },
   {
     id: "mirrow-web",
@@ -60,7 +60,7 @@ export const projects: Project[] = [
     tags: ["Next.js", "SEO"],
     href: "https://tiendamirrow.com",
     h: 3,
-    color: "#F2363A",
+    color: "#0D1124",
   },
   {
     id: "forma",
@@ -71,7 +71,7 @@ export const projects: Project[] = [
     },
     tags: ["Next.js", "SEO", "B2B"],
     h: 1,
-    color: "#e9ecef",
+    color: "#D9DBE2",
   },
   {
     id: "mema",
@@ -82,7 +82,7 @@ export const projects: Project[] = [
     },
     tags: ["React", "AI"],
     h: 2,
-    color: "#F592BD",
+    color: "#D9DBE2",
   },
   {
     id: "photobooth",
@@ -93,7 +93,7 @@ export const projects: Project[] = [
     },
     tags: ["React", "Creative tech"],
     h: 1,
-    color: "#FFCC33",
+    color: "#D4FF3A",
   },
   {
     id: "rega",
@@ -104,7 +104,7 @@ export const projects: Project[] = [
     },
     tags: ["Supabase", "Prisma", "Mobile"],
     h: 2,
-    color: "#8EC5F0",
+    color: "#9AA0B4",
   },
   {
     id: "hand-tracking",
@@ -115,7 +115,7 @@ export const projects: Project[] = [
     },
     tags: ["MediaPipe", "Generative art"],
     h: 3,
-    color: "#16204A",
+    color: "#5B6178",
   },
   {
     id: "fitform",
@@ -126,7 +126,7 @@ export const projects: Project[] = [
     },
     tags: ["CadQuery"],
     h: 1,
-    color: "#FF6A2B",
+    color: "#FF3D2E",
   },
   {
     id: "cupertino",
@@ -137,7 +137,7 @@ export const projects: Project[] = [
     },
     tags: ["Next.js", "Radix"],
     h: 2,
-    color: "#3D5BD9",
+    color: "#2B44FF",
   },
   {
     id: "vulkan",
@@ -148,7 +148,7 @@ export const projects: Project[] = [
     },
     tags: ["Branding"],
     h: 1,
-    color: "#F2363A",
+    color: "#0D1124",
   },
   {
     id: "mas",
@@ -156,7 +156,7 @@ export const projects: Project[] = [
     what: { es: "✎ Agregá los que falten en src/content/projects.ts", en: "✎ Add the missing ones in src/content/projects.ts" },
     tags: [],
     h: 1,
-    color: "#FFCC33",
+    color: "#D4FF3A",
   },
 ];
 
@@ -164,12 +164,6 @@ export const projects: Project[] = [
 export type Experience = { what: L; where: string; role: L; kept: L; href?: string };
 
 export const experience: Experience[] = [
-  {
-    what: { es: "✎ Pulseras", en: "✎ Bracelets" },
-    where: "@tupulsera_ok",
-    role: { es: "fundadora", en: "founder" },
-    kept: { es: "✎ vender es hablar con gente", en: "✎ selling is talking to people" },
-  },
   {
     what: { es: "✎ Primera web", en: "✎ First website" },
     where: "tispruebas.com",

@@ -113,7 +113,7 @@ function Album({ lang, photos }: { lang: Locale; photos: string[] }) {
 
   return (
     <div ref={root} className="relative grid h-full items-center gap-6 px-6 pb-24 pt-20 md:grid-cols-[1fr_1.15fr] md:px-16" style={{ color: INK }}>
-      <ul className="space-y-3 font-hand text-[clamp(2.2rem,5vw,4.4rem)] leading-[0.95]">
+      <ul className="space-y-2 font-serif text-[clamp(2rem,4.4vw,4rem)] italic leading-[1] tracking-[-0.01em]">
         {nacer.margin.map((m, i) => (
           <li key={i} data-note style={{ marginLeft: `${(i % 3) * 1.2}em`, fontSize: i === 3 ? "0.8em" : undefined }}>
             {m[lang]}
@@ -143,13 +143,13 @@ function Album({ lang, photos }: { lang: Locale; photos: string[] }) {
 }
 
 export default function Nacer({ lang, photos, video }: { lang: Locale; photos: string[]; video?: string }) {
-  const bg = { background: "linear-gradient(90deg, #f4c7b0 0%, #eeb4a6 60%, #e7a7b9 100%)" };
+  const bg = { background: "linear-gradient(90deg, #ead6bf 0%, #e2c1a2 60%, #d9b08f 100%)" };
   return (
     <>
       <Panel id="nacer" era="nacer" hold={1.2} className="grain" style={bg} label={nacer.era[lang]}>
         <Camara lang={lang} photos={photos} video={video} />
       </Panel>
-      <Panel era="nacer" nameStep={NAME_STEPS.nacer} className="grain" style={{ background: "linear-gradient(90deg, #e7a7b9 0%, #f0b9a9 100%)" }}>
+      <Panel era="nacer" nameStep={NAME_STEPS.nacer} className="grain" style={{ background: "linear-gradient(90deg, #d9b08f 0%, #e6cdb2 100%)" }}>
         <Album lang={lang} photos={photos} />
       </Panel>
     </>

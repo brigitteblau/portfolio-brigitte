@@ -53,17 +53,17 @@ function Editor({ lang }: { lang: Locale }) {
         <div>
           <p className="font-mono text-[clamp(2rem,5.5vw,4.6rem)] font-medium leading-[1] tracking-[-0.03em]">{P.from[lang]}</p>
           <p
-            className="mt-2 font-hand text-[clamp(3.6rem,10vw,8.5rem)] leading-[0.85] text-pink transition-[transform,opacity] duration-700"
-            style={{ opacity: passion ? 1 : 0.12, transform: passion ? "rotate(-4deg)" : "translateY(10px)" }}
+            className="mt-3 font-serif text-[clamp(3.2rem,9vw,7.5rem)] italic leading-[0.9] tracking-[-0.03em] text-cobalt transition-[transform,opacity] duration-700"
+            style={{ opacity: passion ? 1 : 0.1, transform: passion ? "none" : "translateY(14px)" }}
           >
             {P.to[lang]}
           </p>
         </div>
         <div className="overflow-hidden rounded-xl bg-[#1b2040] text-[#e6e9f5] shadow-[6px_10px_0_rgba(22,32,74,.25)]">
           <div className="flex h-9 items-center gap-2 border-b border-white/10 px-3" aria-hidden>
-            <span className="h-3 w-3 rounded-full bg-red" />
-            <span className="h-3 w-3 rounded-full bg-yellow" />
-            <span className="h-3 w-3 rounded-full bg-green" />
+            <span className="h-3 w-3 rounded-full bg-current opacity-25" />
+              <span className="h-3 w-3 rounded-full bg-current opacity-25" />
+              <span className="h-3 w-3 rounded-full bg-current opacity-25" />
             <span className="ml-3 font-mono text-[0.8rem] opacity-60">yo.ts</span>
           </div>
           <pre className="overflow-x-auto whitespace-pre-wrap p-5 font-mono text-[clamp(0.95rem,1.6vw,1.15rem)] leading-[1.8]">
@@ -125,9 +125,9 @@ function Libros({ lang, photos }: { lang: Locale; photos: string[] }) {
         <div className="overflow-hidden rounded-xl border border-navy/15 bg-paper shadow-[6px_10px_0_rgba(22,32,74,.18)]">
           <div className="flex items-center gap-3 border-b border-navy/10 bg-[#e3e7f2] px-3 py-2">
             <span className="flex gap-1.5" aria-hidden>
-              <span className="h-3 w-3 rounded-full bg-red" />
-              <span className="h-3 w-3 rounded-full bg-yellow" />
-              <span className="h-3 w-3 rounded-full bg-green" />
+              <span className="h-3 w-3 rounded-full bg-current opacity-25" />
+              <span className="h-3 w-3 rounded-full bg-current opacity-25" />
+              <span className="h-3 w-3 rounded-full bg-current opacity-25" />
             </span>
             <span className="flex-1 rounded-md bg-white px-3 py-1 font-mono text-[0.85rem]">{P.firstSite.url}</span>
           </div>
@@ -149,7 +149,7 @@ function Historia({ lang }: { lang: Locale }) {
   });
   return (
     <div className="relative flex h-full items-center justify-center px-6">
-      <p ref={root} className="max-w-[14ch] text-center font-hand text-[clamp(3.4rem,10vw,9rem)] leading-[0.9] text-white">
+      <p ref={root} className="max-w-[16ch] text-center font-serif text-[clamp(3rem,8.5vw,8rem)] italic leading-[0.95] tracking-[-0.02em] text-paper">
         {P.firstSite.caption[lang]}
       </p>
       <Note className="text-white">{notes.historia[lang]}</Note>

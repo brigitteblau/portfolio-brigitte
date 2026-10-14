@@ -24,7 +24,7 @@ export const ui = {
     journal: { es: "Journal", en: "Journal" },
     contact: { es: "Contacto", en: "Contact" },
   },
-  nameTag: { es: "hola, me llamo", en: "hello, my name is" },
+  nameTag: { es: "me llamo", en: "my name is" },
   photoMissing: { es: "foto acá", en: "photo here" },
   skip: { es: "Saltar al contenido", en: "Skip to content" },
 } satisfies Record<string, unknown>;
@@ -92,12 +92,12 @@ export const deportes = {
     { name: { es: "Patín", en: "Skating" }, note: { es: "✎ algo que te acuerdes", en: "✎ something you remember" } },
     { name: { es: "✎ otro", en: "✎ another" }, note: { es: "bla bla", en: "blah blah" } },
   ],
-  business: {
-    title: { es: "Pulseras", en: "Bracelets" },
-    handle: "tupulsera_ok", // ✎ confirmá el nombre exacto
-    body: {
-      es: "Mi primer emprendimiento. ✎ Contá cómo arrancó, cuántas vendiste, qué aprendiste.",
-      en: "My first business. ✎ Tell how it started, how many you sold, what you learned.",
+  /** La segunda diapositiva de deportes: el golf, en grande. */
+  golf: {
+    title: { es: "Golf", en: "Golf" },
+    line: {
+      es: "✎ Lo que me enseñó: paciencia, precisión y volver a intentar.",
+      en: "✎ What it taught me: patience, precision, and trying again.",
     },
   },
 };
@@ -117,8 +117,8 @@ export const programacion = {
   typedRight: { es: "quiero dejar algo en el mundo", en: "i want to leave something in the world" },
   booksTitle: { es: "Libros que me marcaron acá", en: "Books that shaped me here" },
   books: [
-    { title: "Living Inspired", author: "Akiva Tatz", color: "#3D5BD9" },
-    { title: "✎ otro libro", author: "✎ autor", color: "#FF6A2B" },
+    { title: "Living Inspired", author: "Akiva Tatz", color: "#2B44FF" },
+    { title: "✎ otro libro", author: "✎ autor", color: "#0D1124" },
   ],
   firstSite: {
     label: { es: "Mi primera página web", en: "My first website" },
@@ -164,10 +164,10 @@ export const conocerme = {
   yes: { es: "Sí", en: "Yes" },
   no: { es: "No", en: "No" },
   noTaunts: [
-    { es: "uy, casi", en: "oops, almost" },
-    { es: "no, no", en: "nope" },
-    { es: "probá con el otro", en: "try the other one" },
-    { es: "jaja no", en: "haha no" },
+    { es: "no.", en: "no." },
+    { es: "intentá de nuevo.", en: "try again." },
+    { es: "esa opción no existe.", en: "that's not an option." },
+    { es: "el otro botón.", en: "the other button." },
   ] as L[],
 };
 
@@ -207,17 +207,17 @@ export const journal = {
  * ✎ cambialas a tu gusto (o dejá el texto vacío "" para ocultarlas).
  */
 export const notes = {
-  hola: { es: "usá el scroll o las flechas →", en: "scroll or use the arrow keys →" },
+  hola: { es: "scroll o flechas del teclado", en: "scroll or use the arrow keys" },
   labels: { es: "etiquetas que no me definen (tanto)", en: "labels that don't define me (that much)" },
   nacer: { es: "un video casero, el original", en: "a home video, the original" },
   nacer2: { es: "notas al margen de un álbum", en: "notes in the margin of an album" },
   deportes: { es: "mi primera cancha fue el club", en: "my first field was the club" },
-  pulseras: { es: "cada cuenta, una letra", en: "every bead, a letter" },
+  golf: { es: "mi swing, sin cortes", en: "my swing, uncut" },
   programacion: { es: "lo que cambió en mí", en: "what changed in me" },
   libros: { es: "los que me acompañaron", en: "the ones that came along" },
   historia: { es: "y entonces…", en: "and then…" },
   proyectos: { es: "pasá el mouse para leer cada uno", en: "hover to read each one" },
-  ahora: { es: "mi experiencia, en una planilla (claro)", en: "my experience, in a spreadsheet (obviously)" },
+  ahora: { es: "mi experiencia, en una planilla. obvio.", en: "my experience, in a spreadsheet. obviously." },
   conocerme: { es: "hay una sola respuesta correcta", en: "there's only one right answer" },
 } satisfies Record<string, L>;
 
