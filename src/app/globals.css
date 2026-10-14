@@ -1,0 +1,144 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/*
+  Sistema base: "el escritorio". Cada era sobreescribe --bg / --ink / --accent
+  con su propio branding (ver clases .era-*).
+*/
+:root {
+  --desk: #e9eaee; /* base: gris hueso frío */
+  --navy: #0d1124; /* tinta */
+  --cobalt: #2b44ff; /* azul eléctrico */
+  --folder: #8ec5f0;
+  --white: #f7f7f4;
+  --orange: #ff6a2b;
+  --red: #ff3d2e;
+  --yellow: #d4ff3a; /* lima, el acento de resaltado */
+  --pink: #f2a7c3;
+  --green: #0e4d33;
+
+  --bg: var(--desk);
+  --ink: var(--navy);
+  --accent: var(--cobalt);
+}
+
+@theme inline {
+  --color-desk: var(--desk);
+  --color-navy: var(--navy);
+  --color-cobalt: var(--cobalt);
+  --color-folder: var(--folder);
+  --color-paper: var(--white);
+  --color-orange: var(--orange);
+  --color-red: var(--red);
+  --color-yellow: var(--yellow);
+  --color-pink: var(--pink);
+  --color-green: var(--green);
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+
+  --font-sans: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-serif: "Bodoni Moda Variable", "Didot", serif;
+  --font-vhs: "VT323", ui-monospace, monospace;
+  --font-sport: "Anton", Impact, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+
+html {
+  background: var(--desk);
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--desk);
+  color: var(--navy);
+  font-family: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--yellow);
+  color: var(--navy);
+}
+
+:focus-visible {
+  outline: 3px solid var(--cobalt);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Carrete horizontal */
+.reel:not([data-flat]) > .panel { width: var(--w); }
+.reel[data-flat] > .panel { width: 100%; height: auto; min-height: 100svh; }
+
+/* Grano de película, para la parte nostálgica */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.55'/></svg>");
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  animation: grain 0.9s steps(4) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-1%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Papel punteado del cuaderno (journal) */
+.dot-paper {
+  background-color: var(--white);
+  background-image: radial-gradient(rgba(13, 17, 36, 0.16) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* Cuadrícula de planilla */
+.sheet-grid {
+  background-image:
+    linear-gradient(#d4d8e0 1px, transparent 1px),
+    linear-gradient(90deg, #d4d8e0 1px, transparent 1px);
+  background-size: 100% 36px, 120px 100%;
+}
+
+
+
+.prose-journal p { margin: 0 0 1.1em; }
+.prose-journal h2 { font-family: "Bodoni Moda Variable", serif; font-style: italic; font-size: 2rem; line-height: 1.1; margin: 1.6em 0 0.5em; }
+.prose-journal img { border-radius: 4px; margin: 1.5em 0; width: 100%; height: auto; }
+.prose-journal video { margin: 1.5em auto; }
+.prose-journal a { text-decoration: underline; text-underline-offset: 3px; }
+.prose-journal blockquote { font-family: "Bodoni Moda Variable", serif; font-style: italic; font-size: 1.9rem; line-height: 1.15; margin: 1.2em 0; padding-left: 1rem; border-left: 3px solid var(--cobalt); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.reel[data-flat] > .panel > div { width: 100%; transform: none !important; }
+
+/* Nota al margen de cada diapositiva ("explicación") */
+.slide-note {
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  opacity: 0.7;
+}
+
+@keyframes sub {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.reel[data-flat] [data-row] { flex-wrap: wrap; height: auto; }
