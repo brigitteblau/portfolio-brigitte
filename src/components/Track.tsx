@@ -153,9 +153,21 @@ export default function Track({ lang, children }: { lang: Locale; children: Reac
       if (flat) node.scrollIntoView({ behavior: "smooth" });
       else goTo(node.offsetLeft);
     };
+    // Si navegás con Tab, el carrete acompaña al foco
+    const onFocus = (e: FocusEvent) => {
+      if (flat) return;
+      const panel = (e.target as HTMLElement)?.closest<HTMLElement>("[data-panel]");
+      if (!panel) return;
+      const x = track.x;
+      const V = window.innerWidth;
+      const L = panel.offsetLeft;
+      if (L + panel.offsetWidth <= x || L >= x + V) goTo(L);
+    };
     window.addEventListener("keydown", onKey);
     window.addEventListener("goto", onGoto);
+    window.addEventListener("focusin", onFocus);
     return () => {
+      window.removeEventListener("focusin", onFocus);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("goto", onGoto);
     };

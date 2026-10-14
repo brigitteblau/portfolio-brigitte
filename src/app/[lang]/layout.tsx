@@ -22,12 +22,18 @@ export const dynamicParams = false;
 export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Promise<Metadata> {
   const { lang } = await params;
   const es = lang === "es";
+  const site =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
   return {
+    metadataBase: new URL(site),
     title: { default: "Brigitte", template: "%s · Brigitte" },
     description: es
       ? "Mi historia, por eras: de nacer a programar y a lo que hago hoy."
       : "My story, era by era: from being born to coding to what I do today.",
     alternates: { languages: { es: "/es", en: "/en" } },
+    openGraph: { images: [{ url: "/og.jpg", width: 1200, height: 630 }], locale: es ? "es_AR" : "en_US", type: "website" },
+    twitter: { card: "summary_large_image", images: ["/og.jpg"] },
   };
 }
 
