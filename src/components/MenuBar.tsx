@@ -31,29 +31,40 @@ export default function MenuBar({ lang }: { lang: Locale }) {
   const switchHref = pathname.replace(/^\/(es|en)(?=\/|$)/, `/${other}`);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-9 items-center justify-between border-b border-navy/10 bg-paper/70 px-3 text-[0.875rem] backdrop-blur-xl sm:px-4">
-      <nav className="flex items-center gap-1 sm:gap-3" aria-label="Principal">
-        <Link href={`/${lang}`} className="flex items-center rounded px-1.5 py-0.5 hover:bg-navy/10" aria-label={ui.menu.home[lang]}>
-          <Asterisk className="h-4 w-4" color="var(--cobalt)" />
+    <header className="fixed inset-x-0 top-0 z-50 flex h-9 items-center justify-between border-b border-navy/10 bg-white px-3 text-[0.875rem] sm:px-4">
+      <nav className="flex min-w-0 items-center gap-0.5 sm:gap-2" aria-label="Principal">
+        <Link href={`/${lang}`} className="flex items-center gap-2 rounded px-1.5 py-0.5 hover:bg-navy/10">
+          <Asterisk className="h-4 w-4 shrink-0" color="var(--cobalt)" />
+          <span className="sr-only">{ui.fullName}</span>
         </Link>
-        <Link href={`/${lang}`} className="rounded px-1.5 py-0.5 font-semibold hover:bg-navy/10">
-          {ui.menu.home[lang]}
-        </Link>
-        <Link href={`/${lang}/journal`} className="rounded px-1.5 py-0.5 hover:bg-navy/10">
-          {ui.menu.journal[lang]}
-        </Link>
-        <Link
-          href={`/${lang}#contacto`}
-          onClick={(e) => {
-            if (pathname === `/${lang}`) {
-              e.preventDefault();
-              window.dispatchEvent(new CustomEvent("goto", { detail: "contacto" }));
-            }
-          }}
-          className="hidden rounded px-1.5 py-0.5 hover:bg-navy/10 sm:inline"
-        >
-          {ui.menu.contact[lang]}
-        </Link>
+        {(
+          [
+            ["proyectos", ui.menu.projects],
+            ["journal", ui.menu.journal],
+            ["dejame", ui.menu.note],
+            ["contacto", ui.menu.contact],
+          ] as const
+        ).map(([id, label]) =>
+          id === "journal" ? (
+            <Link key={id} href={`/${lang}/journal`} className="whitespace-nowrap rounded px-1.5 py-0.5 hover:bg-navy/10">
+              {label[lang]}
+            </Link>
+          ) : (
+            <Link
+              key={id}
+              href={`/${lang}#${id}`}
+              onClick={(e) => {
+                if (pathname === `/${lang}`) {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent("goto", { detail: id }));
+                }
+              }}
+              className={`whitespace-nowrap rounded px-1.5 py-0.5 hover:bg-navy/10 ${id === "contacto" ? "hidden md:inline" : ""}`}
+            >
+              {label[lang]}
+            </Link>
+          ),
+        )}
       </nav>
       <div className="flex items-center gap-2 sm:gap-4">
         <Link
@@ -66,7 +77,7 @@ export default function MenuBar({ lang }: { lang: Locale }) {
           <span className="opacity-40"> / </span>
           <span className={lang === "en" ? "font-semibold" : "opacity-50"}>EN</span>
         </Link>
-        <span className="tabular-nums opacity-80" suppressHydrationWarning>
+        <span className="hidden tabular-nums opacity-80 sm:inline" suppressHydrationWarning>
           {time}
         </span>
       </div>

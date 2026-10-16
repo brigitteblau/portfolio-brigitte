@@ -1,16 +1,17 @@
 "use client";
 
 import { useRef } from "react";
-import type { Locale } from "@/lib/i18n";
+import { filled, filledL, type Locale } from "@/lib/i18n";
 import { deportes, notes, NAME_STEPS, ui } from "@/content/site";
 import { clamp01 } from "@/lib/track";
 import EraTab from "../EraTab";
 import Photo from "../Photo";
 import Soundtrack from "../Soundtrack";
-import Panel, { usePanel } from "../Panel";
+import Panel, { usePanel, usePanelVideo } from "../Panel";
 import Note from "../Note";
 
 function Cancha({ lang, photos }: { lang: Locale; photos: string[] }) {
+  const hasNotes = deportes.sports.some((s) => filled(s.name[lang]) && filledL(s.note, lang));
   const root = useRef<HTMLDivElement>(null);
   usePanel(({ enter }) => {
     const r = root.current;
@@ -41,15 +42,15 @@ function Cancha({ lang, photos }: { lang: Locale; photos: string[] }) {
               <tr className="font-mono text-[0.75rem] text-green/70">
                 <th scope="col" className="w-14 py-2 font-normal">{lang === "es" ? "Hoyo" : "Hole"}</th>
                 <th scope="col" className="py-2 font-normal">{lang === "es" ? "Deporte" : "Sport"}</th>
-                <th scope="col" className="py-2 font-normal">{lang === "es" ? "Nota" : "Note"}</th>
+                {hasNotes && <th scope="col" className="py-2 font-normal">{lang === "es" ? "Nota" : "Note"}</th>}
               </tr>
             </thead>
             <tbody>
-              {deportes.sports.map((s, i) => (
+              {deportes.sports.filter((s) => filled(s.name[lang])).map((s, i) => (
                 <tr key={i} data-row className="border-t border-green/20 align-top">
                   <td className="py-3 font-sport text-[1.8rem] leading-none">{i + 1}</td>
                   <td className="py-3 font-sport text-[1.5rem] uppercase leading-tight sm:text-[1.8rem]">{s.name[lang]}</td>
-                  <td className="py-3.5 text-[1rem] leading-snug text-navy">{s.note[lang]}</td>
+                  {hasNotes && <td className="py-3.5 text-[1rem] leading-snug text-navy">{filledL(s.note, lang)}</td>}
                 </tr>
               ))}
             </tbody>
@@ -70,6 +71,8 @@ function Cancha({ lang, photos }: { lang: Locale; photos: string[] }) {
 
 function Golf({ lang, photos, video }: { lang: Locale; photos: string[]; video?: string }) {
   const word = useRef<HTMLParagraphElement>(null);
+  const vid = useRef<HTMLVideoElement>(null);
+  usePanelVideo(vid);
   usePanel(({ enter, exit }) => {
     if (word.current) word.current.style.transform = `translateX(${(1 - enter) * 30 - exit * 20}vw)`;
   });
@@ -84,12 +87,12 @@ function Golf({ lang, photos, video }: { lang: Locale; photos: string[]; video?:
           {deportes.golf.title[lang]}
         </p>
         <h2 className="sr-only">{deportes.golf.title[lang]}</h2>
-        <p className="mt-6 max-w-[30ch] text-[clamp(1.15rem,2vw,1.5rem)] leading-snug">{deportes.golf.line[lang]}</p>
+        {filledL(deportes.golf.line, lang) && <p className="mt-6 max-w-[30ch] text-[clamp(1.15rem,2vw,1.5rem)] leading-snug">{deportes.golf.line[lang]}</p>}
         <Soundtrack data={deportes.soundtrack} lang={lang} tone="dark" className="mt-8" />
       </div>
       <div className="absolute inset-y-0 right-0 w-[46vw] opacity-40 md:relative md:w-[min(42vw,56vh)] md:opacity-100">
         {video ? (
-          <video src={video} poster={video.replace(/\.\w+$/, ".jpg")} className="h-full w-full object-cover" autoPlay muted loop playsInline aria-label={lang === "es" ? "Mi swing" : "My swing"} />
+          <video ref={vid} src={video} poster={video.replace(/\.\w+$/, ".jpg")} className="h-full w-full object-cover" muted loop playsInline preload="metadata" aria-label={lang === "es" ? "Mi swing" : "My swing"} />
         ) : (
           <Photo src={photos[0]} alt={deportes.golf.title[lang]} folder="deportes" hint={ui.photoMissing[lang]} tint="#1b6b48" />
         )}

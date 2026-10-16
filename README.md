@@ -42,7 +42,35 @@ npm install
 npm run dev        # http://localhost:3000  → redirige a /es o /en según el navegador
 ```
 
-Para subirlo: hacé push a GitHub e importalo en Vercel. No necesita configuración.
+Cada `git push` a `main` se publica solo en Vercel.
+
+Lo que falta completar con información real está en **[CONTENT_TODO.md](CONTENT_TODO.md)**. Cualquier texto que empiece con `✎` no se publica.
+
+## "Dejame algo" (mensajes de visitantes)
+
+Los mensajes se guardan en una tabla privada de Supabase. Nadie los puede leer desde el sitio: los ves vos en Supabase → Table Editor → `visitor_notes`.
+
+Para activarlo hay que hacer tres cosas:
+
+1. En Supabase, abrí **SQL Editor** y corré el archivo [`supabase/visitor_notes.sql`](supabase/visitor_notes.sql).
+2. En Vercel, entrá a **Settings → Environment Variables** y agregá estas dos variables:
+
+   | Variable | Valor |
+   |---|---|
+   | `SUPABASE_URL` | la Project URL (`https://xxxx.supabase.co`) |
+   | `SUPABASE_SERVICE_ROLE_KEY` | la service role key (Settings → API). Es secreta: nunca va con el prefijo `NEXT_PUBLIC_`. |
+
+3. Volvé a desplegar (Deployments → Redeploy).
+
+Mientras no esté activado, el formulario lo dice y sugiere escribir por mail. No simula que el mensaje se envió.
+
+**Protecciones que ya tiene:**
+- Validación del lado del servidor: de 3 a 2000 caracteres, y que el mail tenga un formato válido.
+- Un campo trampa invisible para frenar bots.
+- Un tiempo mínimo de escritura.
+- Un límite de 3 mensajes cada 10 minutos por visitante. Funciona con un hash efímero en memoria, sin guardar IPs.
+
+**Opcional:** `NEXT_PUBLIC_SITE_URL` (por ejemplo, `https://brigitteblau.vercel.app`) sirve para fijar la URL que se usa en el sitemap y en Open Graph. Si no la ponés, se usa la URL de producción de Vercel.
 
 ## Dónde va cada cosa
 

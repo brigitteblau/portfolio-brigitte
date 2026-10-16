@@ -18,13 +18,21 @@ export type EntryMeta = {
   kind: "post" | "fotos" | "video";
   cover?: string;
   excerpt?: string;
+  tags: string[];
+  minutes: number;
   fallback: boolean;
+  draft: boolean;
 };
 
 function read(slug: string, lang: Locale) {
   const file = path.join(DIR, `${slug}.${lang}.mdx`);
   if (!fs.existsSync(file)) return null;
   return matter(fs.readFileSync(file, "utf8"));
+}
+
+/** Slugs publicados (sin borradores). */
+export function publishedSlugs(): string[] {
+  return slugs().filter((s) => !getEntry(s, "es")?.meta.draft);
 }
 
 export function slugs(): string[] {
@@ -57,8 +65,12 @@ export function getEntry(slug: string, lang: Locale) {
     date: d.date instanceof Date ? d.date.toISOString().slice(0, 10) : String(d.date ?? ""),
     kind: (d.kind as EntryMeta["kind"]) ?? "post",
     cover: d.cover ? String(d.cover) : undefined,
-    excerpt: d.excerpt ? String(d.excerpt) : undefined,
+    excerpt: d.excerpt && !String(d.excerpt).trim().startsWith("✎") ? String(d.excerpt) : undefined,
+    tags: Array.isArray(d.tags) ? d.tags.map(String) : [],
+    minutes: Math.max(1, Math.round(parsed.content.split(/\s+/).filter(Boolean).length / 200)),
     fallback,
+    // Borradores: `draft: true` en el frontmatter → no se publican.
+    draft: d.draft === true,
   };
   return { meta, content: parsed.content };
 }
@@ -66,6 +78,6 @@ export function getEntry(slug: string, lang: Locale) {
 export function listEntries(lang: Locale): EntryMeta[] {
   return slugs()
     .map((s) => getEntry(s, lang)?.meta)
-    .filter((m): m is EntryMeta => !!m)
+    .filter((m): m is EntryMeta => !!m && !m.draft)
     .sort((a, b) => b.date.localeCompare(a.date));
 }

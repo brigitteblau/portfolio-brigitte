@@ -1,9 +1,10 @@
 import clsx from "clsx";
-import type { Locale } from "@/lib/i18n";
+import { filled, type Locale } from "@/lib/i18n";
 import type { Soundtrack as S } from "@/content/site";
 
 /** La canción o reflexión que acompaña cada era. */
 export default function Soundtrack({ data, lang, className, tone = "light" }: { data: S; lang: Locale; className?: string; tone?: "light" | "dark" }) {
+  if (!filled(data.title[lang])) return null;
   if (data.kind === "thought") {
     return (
       <figure className={clsx("max-w-md border-l-2 border-current pl-4 font-serif text-[1.35rem] italic leading-[1.25]", className)}>
@@ -20,7 +21,7 @@ export default function Soundtrack({ data, lang, className, tone = "light" }: { 
       </span>
       <figcaption>
         <span className="font-semibold">{data.title[lang]}</span>
-        {data.by && <span className="opacity-60"> · {data.by}</span>}
+        {filled(data.by) && <span className="opacity-60"> · {data.by}</span>}
       </figcaption>
     </figure>
   );

@@ -21,18 +21,22 @@ export default function Photo({ src, alt, folder, hint, className, tint = "var(-
       <img src={src} alt={alt} loading="lazy" decoding="async" className={clsx("block h-full w-full object-cover", className)} style={style} />
     );
   }
+  // Sin foto: en el sitio publicado, un bloque de color liso. Solo en desarrollo se ve la pista de carpeta.
+  const dev = process.env.NODE_ENV === "development";
   return (
     <div
-      className={clsx("flex h-full w-full flex-col items-center justify-center gap-1 p-3 text-center", className)}
-      style={{ background: `repeating-linear-gradient(-45deg, ${tint}, ${tint} 10px, color-mix(in srgb, ${tint} 82%, white) 10px, color-mix(in srgb, ${tint} 82%, white) 20px)`, ...style }}
+      className={clsx("flex h-full w-full items-center justify-center p-3 text-center", className)}
+      style={{ background: `color-mix(in srgb, ${tint} 35%, white)`, ...style }}
       role="img"
       aria-label={alt}
     >
-      <span className="rounded bg-white/85 px-2 py-0.5 font-mono text-[0.7rem] leading-tight text-navy">
-        {hint}
-        <br />
-        public/fotos/{folder}/
-      </span>
+      {dev && (
+        <span className="rounded bg-white/85 px-2 py-0.5 font-mono text-[0.7rem] leading-tight text-navy">
+          {hint}
+          <br />
+          public/fotos/{folder}/
+        </span>
+      )}
     </div>
   );
 }

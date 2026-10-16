@@ -75,10 +75,16 @@ export default function Panel({
   const subs = useRef(new Set<(p: PanelProgress) => void>());
   const last = useRef<PanelProgress>({ enter: 0, hold: 0, through: 0, exit: 0 });
 
+  // Geometría cacheada: leer offsetLeft en cada frame obliga al navegador a recalcular el layout.
+  const geo = useRef({ L: 0, W: 0 });
+  const measure = useCallback(() => {
+    const node = el.current;
+    if (node) geo.current = { L: node.offsetLeft, W: node.offsetWidth };
+  }, []);
+
   const compute = useCallback(
     (x: number, V: number) => {
-      const node = el.current;
-      if (!node) return;
+      if (!el.current) return;
       if (track.flat) {
         const done = { enter: 1, hold: 1, through: 1, exit: 0 };
         last.current = done;
@@ -86,8 +92,7 @@ export default function Panel({
         if (stage.current) stage.current.style.transform = "";
         return;
       }
-      const L = node.offsetLeft;
-      const W = node.offsetWidth;
+      const { L, W } = geo.current;
       const holdPx = hold * V;
       const p: PanelProgress = {
         enter: clamp01((x - (L - V)) / V),
@@ -95,6 +100,9 @@ export default function Panel({
         through: W > V ? clamp01((x - L) / (W - V)) : x >= L ? 1 : 0,
         exit: clamp01((x - (L + W - V)) / V),
       };
+      const prev = last.current;
+      // Si nada cambió (panel lejos de la pantalla), no hacemos trabajo
+      if (prev.enter === p.enter && prev.hold === p.hold && prev.through === p.through && prev.exit === p.exit) return;
       if (stage.current && hold > 0) {
         const t = Math.min(Math.max(x - L, 0), holdPx);
         stage.current.style.transform = `translate3d(${t}px,0,0)`;
@@ -105,7 +113,22 @@ export default function Panel({
     [hold],
   );
 
-  useEffect(() => track.subscribe(compute), [compute]);
+  useEffect(() => {
+    measure();
+    const onResize = () => {
+      measure();
+      compute(track.x, track.vw);
+    };
+    const ro = new ResizeObserver(onResize);
+    if (el.current) ro.observe(el.current);
+    window.addEventListener("reel:measure", onResize);
+    const unsub = track.subscribe(compute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("reel:measure", onResize);
+      unsub();
+    };
+  }, [compute, measure]);
 
   const [ctx] = useState<Ctx>(() => ({
     subscribe: (cb) => {
@@ -133,11 +156,22 @@ export default function Panel({
       >
         <div
           ref={stage}
-          className={clsx("relative h-full will-change-transform", hold > 0 ? "w-screen" : "w-full", stageClassName)}
+          className={clsx("relative h-full", hold > 0 ? "w-screen will-change-transform" : "w-full", stageClassName)}
         >
           {children}
         </div>
       </section>
     </PanelCtx.Provider>
   );
+}
+
+/** Reproduce un video solo mientras su diapositiva está en pantalla (ahorra CPU y batería). */
+export function usePanelVideo(ref: React.RefObject<HTMLVideoElement | null>) {
+  usePanel(({ enter, exit }) => {
+    const v = ref.current;
+    if (!v) return;
+    const visible = enter > 0.02 && exit < 0.98;
+    if (visible && v.paused) void v.play().catch(() => {});
+    else if (!visible && !v.paused) v.pause();
+  });
 }

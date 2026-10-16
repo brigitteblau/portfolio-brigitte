@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Locale } from "@/lib/i18n";
+import { filled, type Locale } from "@/lib/i18n";
 import { nacer, notes, NAME_STEPS, ui } from "@/content/site";
 import { clamp01 } from "@/lib/track";
 import EraTab from "../EraTab";
 import Photo from "../Photo";
 import Soundtrack from "../Soundtrack";
-import Panel, { usePanel, usePanelValue } from "../Panel";
+import Panel, { usePanel, usePanelValue, usePanelVideo } from "../Panel";
 import Note from "../Note";
 
 const INK = "#4a2a1e";
@@ -21,11 +21,12 @@ function timecode(s: number) {
 
 function Camara({ lang, photos, video }: { lang: Locale; photos: string[]; video?: string }) {
   const vid = useRef<HTMLVideoElement>(null);
-  const lines = nacer.transcript;
+  const lines = nacer.transcript.filter((l) => filled(l.text[lang]));
   const [vLine, setVLine] = useState(0);
   const [vTime, setVTime] = useState(0);
   const [muted, setMuted] = useState(true);
   const hold = usePanelValue((p) => Math.round(p.hold * 200) / 200, 0);
+  usePanelVideo(vid);
 
   useEffect(() => {
     const v = vid.current;
@@ -62,7 +63,7 @@ function Camara({ lang, photos, video }: { lang: Locale; photos: string[]; video
       <EraTab n={1} label={nacer.era[lang]} color="#fbe4c9" ink={INK} font="font-serif italic" />
       <div className="relative flex-1 overflow-hidden rounded-b-xl rounded-tr-xl bg-[#1d1410] shadow-[6px_10px_0_rgba(74,42,30,.25)]">
         {video ? (
-          <video ref={vid} src={video} poster={video.replace(/\.\w+$/, ".jpg")} className="absolute inset-0 h-full w-full object-cover object-[50%_25%] [filter:sepia(.35)_saturate(1.2)_contrast(1.05)]" autoPlay muted loop playsInline />
+          <video ref={vid} src={video} poster={video.replace(/\.\w+$/, ".jpg")} className="absolute inset-0 h-full w-full object-cover object-[50%_25%] [filter:sepia(.35)_saturate(1.2)_contrast(1.05)]" muted loop playsInline preload="metadata" />
         ) : (
           <div className="absolute inset-0 [filter:sepia(.35)_saturate(1.1)]">
             <Photo src={photos[3] ?? photos[0]} alt={nacer.era[lang]} folder="nacer" hint={nacer.videoHint[lang]} tint="#c98a6a" />

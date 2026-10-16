@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -52,10 +53,38 @@ function Hola({ lang }: { lang: Locale }) {
           </span>
         ))}
       </h1>
-      <p data-nameline className="mt-6 max-w-[34ch] self-end text-[clamp(1.1rem,1.8vw,1.4rem)] leading-snug sm:mr-[4vw]">
-        {intro.nameLine[lang]}
-      </p>
-      <Note>{notes.hola[lang]}</Note>
+      <div data-nameline className="mt-6 flex max-w-[38ch] flex-col gap-4 self-end sm:mr-[4vw]">
+        <p className="text-[clamp(1.1rem,1.8vw,1.4rem)] leading-snug">{intro.nameLine[lang]}</p>
+        <p className="font-mono text-[0.85rem] leading-relaxed text-navy/75">{intro.does[lang]}</p>
+        <p className="flex flex-wrap gap-x-5 gap-y-2 text-[1rem] font-semibold">
+          {(
+            [
+              ["proyectos", intro.shortcuts.projects],
+              ["journal", intro.shortcuts.journal],
+              ["dejame", intro.shortcuts.note],
+            ] as const
+          ).map(([id, label]) =>
+            id === "journal" ? (
+              <Link key={id} href={`/${lang}/journal`} className="underline decoration-1 underline-offset-4 hover:text-cobalt">
+                {label[lang]}
+              </Link>
+            ) : (
+              <a
+                key={id}
+                href={`#${id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent("goto", { detail: id }));
+                }}
+                className="underline decoration-1 underline-offset-4 hover:text-cobalt"
+              >
+                {label[lang]}
+              </a>
+            ),
+          )}
+        </p>
+      </div>
+      <Note keep>{notes.hola[lang]}</Note>
     </div>
   );
 }

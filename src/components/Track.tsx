@@ -28,9 +28,8 @@ export default function Track({ lang, children }: { lang: Locale; children: Reac
   const [flat, setFlat] = useState(false);
   const [idx, setIdx] = useState(0);
   const [era, setEra] = useState("hola");
-  const [progress, setProgress] = useState(0);
+  const bar = useRef<HTMLDivElement>(null);
   const [total, setTotal] = useState(1);
-  const [eraMarks, setEraMarks] = useState<{ era: string; at: number }[]>([]);
 
   const measure = () => {
     const r = reel.current;
@@ -54,12 +53,7 @@ export default function Track({ lang, children }: { lang: Locale; children: Reac
     });
     stops.current = out;
     setTotal(out.length || 1);
-    const total = Math.max(1, r.scrollWidth - V);
-    const marks: { era: string; at: number }[] = [];
-    out.forEach((s) => {
-      if (!marks.length || marks[marks.length - 1].era !== s.era) marks.push({ era: s.era, at: s.x / total });
-    });
-    setEraMarks(marks);
+    window.dispatchEvent(new Event("reel:measure"));
   };
 
   useGSAP(
@@ -100,12 +94,21 @@ export default function Track({ lang, children }: { lang: Locale; children: Reac
             setEra(list[i].era);
             setNameStep(list[i].name);
           }
-          setProgress(x / Math.max(1, dist()));
+          if (bar.current) bar.current.style.transform = `scaleX(${x / Math.max(1, dist())})`;
         },
       });
       st.current = tween.scrollTrigger ?? null;
       measure();
       track.set(0, window.innerWidth);
+      // Llegar con #proyectos, #journal, #dejame, etc. desde otra página
+      const hash = decodeURIComponent(window.location.hash.slice(1));
+      if (hash) {
+        setTimeout(() => {
+          const node = document.getElementById(hash);
+          const s = st.current;
+          if (node && s) window.scrollTo({ top: s.start + node.offsetLeft * scrollFactor() });
+        }, 120);
+      }
 
       const ro = new ResizeObserver(() => ScrollTrigger.refresh());
       ro.observe(r);
@@ -188,46 +191,24 @@ export default function Track({ lang, children }: { lang: Locale; children: Reac
         </div>
       </div>
 
-      {/* HUD de presentación */}
+      {/* HUD mínimo: una línea de progreso y un contador */}
       {!flat && (
-        <nav
-          aria-label={lang === "es" ? "Diapositivas" : "Slides"}
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex items-end justify-between gap-3 px-3 pb-3 sm:px-5 sm:pb-4"
-        >
-          <div className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-paper/85 p-1 shadow-[2px_3px_0_rgba(22,32,74,.18)] backdrop-blur">
-            <button onClick={() => step(-1)} className="grid h-9 w-9 place-items-center rounded-full hover:bg-navy/10" aria-label={hud.prev[lang]}>
-              <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <nav aria-label={lang === "es" ? "Diapositivas" : "Slides"} className="pointer-events-none fixed inset-x-0 bottom-0 z-40">
+          <div className="pointer-events-auto absolute bottom-3 right-3 flex items-center gap-1 font-mono text-[0.75rem] text-white mix-blend-difference sm:bottom-4 sm:right-5">
+            <button onClick={() => step(-1)} className="grid h-9 w-9 place-items-center rounded-full opacity-60 hover:opacity-100" aria-label={hud.prev[lang]}>
+              ←
             </button>
-            <span className="min-w-[4.5rem] px-1 text-center text-[0.85rem] font-semibold tabular-nums">
-              {String(idx + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            <span className="tabular-nums opacity-60" aria-live="polite">
+              <span className="sr-only">{eraLabel} · </span>
+              {String(idx + 1).padStart(2, "0")}/{String(total).padStart(2, "0")}
             </span>
-            <button onClick={() => step(1)} className="grid h-9 w-9 place-items-center rounded-full bg-navy text-white hover:bg-cobalt" aria-label={hud.next[lang]}>
-              <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden><path d="m7.5 4 6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <button onClick={() => step(1)} className="grid h-9 w-9 place-items-center rounded-full opacity-60 hover:opacity-100" aria-label={hud.next[lang]}>
+              →
             </button>
           </div>
-
-          <div className="pointer-events-auto hidden max-w-xl flex-1 flex-col gap-1.5 rounded-2xl bg-paper/85 px-4 py-2 shadow-[2px_3px_0_rgba(22,32,74,.18)] backdrop-blur md:flex">
-            <div className="relative h-1.5 rounded-full bg-navy/15">
-              <div className="absolute inset-y-0 left-0 rounded-full bg-navy" style={{ width: `${progress * 100}%` }} />
-            </div>
-            <ol className="flex justify-between text-[0.75rem]">
-              {eraMarks.map((m) => (
-                <li key={m.era}>
-                  <button
-                    onClick={() => goTo(stops.current.find((s) => s.era === m.era)?.x ?? 0)}
-                    className={clsx("whitespace-nowrap rounded px-1 hover:bg-navy/10", m.era === era ? "font-semibold" : "opacity-60")}
-                    aria-current={m.era === era ? "step" : undefined}
-                  >
-                    {hud.eras[m.era as keyof typeof hud.eras]?.[lang]}
-                  </button>
-                </li>
-              ))}
-            </ol>
+          <div className="h-[2px] w-full bg-navy/10">
+            <div ref={bar} className="h-full w-full origin-left bg-cobalt" style={{ transform: "scaleX(0)" }} />
           </div>
-
-          <p className="pointer-events-auto rounded-full bg-paper/85 px-4 py-2 text-[0.85rem] font-semibold shadow-[2px_3px_0_rgba(22,32,74,.18)] backdrop-blur md:hidden" aria-live="polite">
-            {eraLabel}
-          </p>
         </nav>
       )}
     </>

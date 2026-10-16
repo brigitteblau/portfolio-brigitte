@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import type { Locale } from "@/lib/i18n";
+import { filledL, type Locale } from "@/lib/i18n";
 import { ahora as A, notes, NAME_STEPS, ui } from "@/content/site";
 import { experience } from "@/content/projects";
 import { clamp01 } from "@/lib/track";
@@ -41,7 +41,7 @@ function Planilla({ lang, photos }: { lang: Locale; photos: string[] }) {
   const row = active >= 0 ? experience[active] : undefined;
   const isNow = active === last;
   const formula = isNow ? (lang === "es" ? "=AHORA()" : "=NOW()") : row ? row.what[lang] : "";
-  const cols = [A.cols.what, A.cols.where, A.cols.role, A.cols.kept];
+  const cols = [A.cols.what, A.cols.where, A.cols.role, A.cols.did];
 
   return (
     <div className="relative flex h-full items-center px-4 pb-20 pt-14 sm:px-10">
@@ -62,8 +62,8 @@ function Planilla({ lang, photos }: { lang: Locale; photos: string[] }) {
               {formula}
             </span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[680px] border-collapse text-left text-[0.98rem]">
+          <div className="hidden md:block">
+            <table className="w-full border-collapse text-left text-[0.98rem]">
               <thead>
                 <tr className="bg-[#f0f2f6] text-[0.78rem] text-navy/60" aria-hidden>
                   <th className="w-10 border border-[#d4d8e0]" />
@@ -90,10 +90,10 @@ function Planilla({ lang, photos }: { lang: Locale; photos: string[] }) {
                   return (
                     <tr key={i} className="transition-colors duration-300" style={{ background: now && shown ? "#f1ffc4" : undefined }}>
                       <td className={`border border-[#d4d8e0] text-center text-[0.78rem] ${sel ? "bg-[#cfe9da] text-[#1e6b43]" : "bg-[#f0f2f6] text-navy/60"}`}>{i + 2}</td>
-                      {[e.what[lang], e.where, e.role[lang], e.kept[lang]].map((cell, c) => (
+                      {[e.what[lang], e.where, e.role[lang], filledL(e.did, lang) ?? ""].map((cell, c) => (
                         <td
                           key={c}
-                          className={`border border-[#d4d8e0] px-3 py-2.5 align-top transition-opacity duration-300 ${c === 0 && sel ? "outline outline-[2.5px] -outline-offset-2 outline-[#1e6b43]" : ""} ${now && c === 0 ? "font-semibold" : ""} ${c === 3 ? "font-serif italic" : ""}`}
+                          className={`border border-[#d4d8e0] px-3 py-2.5 align-top transition-opacity duration-300 ${c === 0 && sel ? "outline outline-[2.5px] -outline-offset-2 outline-[#1e6b43]" : ""} ${now && c === 0 ? "font-semibold" : ""} ${c === 3 ? "text-navy/80" : ""}`}
                           style={{ opacity: shown ? 1 : 0 }}
                         >
                           {c === 1 && e.href ? (
@@ -119,6 +119,37 @@ function Planilla({ lang, photos }: { lang: Locale; photos: string[] }) {
               </tbody>
             </table>
           </div>
+          {/* Celular: cada fila como una celda grande, misma planilla */}
+          <ol className="divide-y divide-[#d4d8e0] md:hidden">
+            {experience.map((e, i) => {
+              const shown = i <= active;
+              const now = i === last;
+              const did = filledL(e.did, lang);
+              return (
+                <li
+                  key={i}
+                  className="grid grid-cols-[2rem_1fr] transition-opacity duration-300"
+                  style={{ opacity: shown ? 1 : 0.15, background: now && shown ? "#f1ffc4" : undefined }}
+                >
+                  <span className={`border-r border-[#d4d8e0] pt-3 text-center text-[0.75rem] ${i === active ? "bg-[#cfe9da] text-[#1e6b43]" : "bg-[#f0f2f6] text-navy/60"}`}>{i + 2}</span>
+                  <div className="px-3 py-2.5">
+                    <p className="font-semibold leading-tight">{e.what[lang]}</p>
+                    <p className="mt-0.5 font-mono text-[0.78rem] text-navy/70">
+                      {e.href ? (
+                        <a href={e.href} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                          {e.where}
+                        </a>
+                      ) : (
+                        e.where
+                      )}{" "}
+                      · {e.role[lang]}
+                    </p>
+                    {did && <p className="mt-1 text-[0.92rem] leading-snug">{did}</p>}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
           <div className="flex gap-1 border-t border-[#d4d8e0] bg-[#f0f2f6] px-3 pt-1 text-[0.8rem]">
             <span className="rounded-b bg-white px-3 py-1 font-semibold text-[#1e6b43] shadow-sm">{A.sheetName[lang]}</span>
             <span className="px-3 py-1 text-navy/50">+</span>
@@ -126,7 +157,7 @@ function Planilla({ lang, photos }: { lang: Locale; photos: string[] }) {
         </div>
 
         <div
-          className="absolute -bottom-8 right-2 w-36 transition-all duration-500 sm:-right-4 sm:w-52"
+          className="absolute -bottom-8 -right-4 hidden w-52 transition-all duration-500 md:block"
           style={{ opacity: isNow ? 1 : 0, transform: isNow ? "translateY(0)" : "translateY(30px)" }}
           aria-hidden={!isNow}
         >

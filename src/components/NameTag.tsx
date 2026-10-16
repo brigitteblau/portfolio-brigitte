@@ -53,7 +53,7 @@ export default function NameTag({ lang }: { lang: Locale }) {
 
   return (
     <div
-      className="pointer-events-none fixed right-3 top-12 z-40 flex select-none items-center gap-2.5 rounded-full bg-paper/80 py-1.5 pl-3.5 pr-2 backdrop-blur-md sm:right-6 sm:top-14"
+      className="pointer-events-none fixed right-3 top-12 z-40 flex select-none items-center gap-2.5 rounded-full bg-white py-1.5 pl-3.5 pr-2 shadow-[0_0_0_1px_rgba(13,17,36,.08)] sm:right-6 sm:top-14"
       aria-live="polite"
       aria-label={`${ui.nameTag[lang]} ${letters.slice(0, n).join("")}`}
     >

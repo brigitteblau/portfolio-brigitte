@@ -21,9 +21,12 @@ export const NAME_STEPS = {
 export const ui = {
   menu: {
     home: { es: "Inicio", en: "Home" },
+    projects: { es: "Proyectos", en: "Projects" },
     journal: { es: "Journal", en: "Journal" },
+    note: { es: "Dejame algo", en: "Leave a note" },
     contact: { es: "Contacto", en: "Contact" },
   },
+  fullName: "Brigitte Blau",
   nameTag: { es: "me llamo", en: "my name is" },
   photoMissing: { es: "foto acá", en: "photo here" },
   skip: { es: "Saltar al contenido", en: "Skip to content" },
@@ -49,14 +52,23 @@ export const intro = {
     es: "Eso lo podés ir conociendo con el tiempo.",
     en: "You can find that out over time.",
   },
-  scroll: { es: "bajá despacito", en: "scroll slowly" },
+  /** La pista profesional del inicio: qué hago, sin título corporativo. */
+  does: {
+    es: "Construyo proyectos de tecnología —backend, 3D, visión por computadora— y escribo lo que voy pensando.",
+    en: "I build tech projects —backend, 3D, computer vision— and write about what I'm thinking.",
+  },
+  shortcuts: {
+    projects: { es: "Ver proyectos", en: "See projects" },
+    journal: { es: "Leer el journal", en: "Read the journal" },
+    note: { es: "Dejame algo", en: "Leave me a note" },
+  },
 };
 
 /** Canción o reflexión que acompaña cada era. ✎ cambialas por las tuyas. */
 export type Soundtrack = { kind: "song" | "thought"; title: L; by?: string };
 
 export const nacer = {
-  era: { es: "Nacer", en: "Being born" },
+  era: { es: "Nacer", en: "Day one" },
   soundtrack: {
     kind: "song",
     title: { es: "✎ canción de esta era", en: "✎ song for this era" },
@@ -69,7 +81,7 @@ export const nacer = {
     { at: 4, text: { es: "✎ (y después)", en: "✎ (and then)" } },
   ],
   margin: [
-    { es: "así nací,", en: "this is how I was born," },
+    { es: "así nací,", en: "this is how I arrived," },
     { es: "con esta alegría", en: "with this joy" },
     { es: "crecí", en: "I grew up" },
     { es: "y con la creatividad que siempre tuve", en: "with the creativity I always had" },
@@ -115,17 +127,17 @@ export const programacion = {
   to: { es: "a la pasión", en: "to passion" },
   typedWrong: { es: "quiero ser perfecta", en: "i want to be perfect" },
   typedRight: { es: "quiero dejar algo en el mundo", en: "i want to leave something in the world" },
-  booksTitle: { es: "Libros que me marcaron acá", en: "Books that shaped me here" },
+  booksTitle: { es: "Libros que me marcaron acá", en: "Books that shaped this part" },
   books: [
     { title: "Living Inspired", author: "Akiva Tatz", color: "#2B44FF" },
-    { title: "✎ otro libro", author: "✎ autor", color: "#0D1124" },
+    { title: "✎ otro libro", author: "✎ autor", color: "#0D1124" }, // los que empiezan con ✎ no se muestran
   ],
   firstSite: {
     label: { es: "Mi primera página web", en: "My first website" },
     url: "tispruebas.com", // ✎ confirmá cómo se escribe
     caption: {
       es: "De ahí, todo lo demás es historia…",
-      en: "From there, everything else is history…",
+      en: "The rest is history…",
     },
   },
 };
@@ -133,6 +145,16 @@ export const programacion = {
 export const proyectos = {
   era: { es: "Proyectos", en: "Projects" },
   title: { es: "(muchos, muchos)", en: "(many, many)" },
+  featuredTitle: { es: "Tres, contados de cerca", en: "Three, up close" },
+  othersTitle: { es: "Y otros", en: "And others" },
+  labels: {
+    what: { es: "Qué es", en: "What it is" },
+    did: { es: "Qué hice", en: "What I did" },
+    challenge: { es: "El desafío", en: "The challenge" },
+    now: { es: "Hoy", en: "Today" },
+    code: { es: "Ver el código", en: "See the code" },
+    visit: { es: "Visitar", en: "Visit" },
+  },
   soundtrack: {
     kind: "song",
     title: { es: "✎ canción de esta era", en: "✎ song for this era" },
@@ -143,14 +165,14 @@ export const proyectos = {
 export const ahora = {
   question: {
     es: "Ya te mostré quién fui. ¿Y ahora qué hago?",
-    en: "I've shown you who I was. So what do I do now?",
+    en: "You've seen who I was. So what am I doing now?",
   },
   sheetName: { es: "experiencia", en: "experience" },
   cols: {
     what: { es: "qué", en: "what" },
     where: { es: "dónde", en: "where" },
     role: { es: "mi rol", en: "my role" },
-    kept: { es: "lo que me llevé", en: "what I took from it" },
+    did: { es: "qué hice", en: "what I did" },
   },
   soundtrack: {
     kind: "thought",
@@ -159,7 +181,7 @@ export const ahora = {
 };
 
 export const conocerme = {
-  end: { es: "Y ahí termina.", en: "And that's where it ends." },
+  end: { es: "Hasta acá, la historia.", en: "That's the story so far." },
   question: { es: "¿Querés conocerme?", en: "Want to get to know me?" },
   yes: { es: "Sí", en: "Yes" },
   no: { es: "No", en: "No" },
@@ -178,11 +200,8 @@ export const contacto = {
     en: "Write to me about anything: a project, an idea, or just a chat.",
   },
   email: "brigitteyaelblau@gmail.com",
-  links: [
-    { label: "Instagram", href: "https://instagram.com/" }, // ✎
-    { label: "LinkedIn", href: "https://linkedin.com/" }, // ✎
-    { label: "GitHub", href: "https://github.com/" }, // ✎
-  ],
+  /** Solo links reales. ✎ Sumá LinkedIn e Instagram cuando tengas las URLs. */
+  links: [{ label: "GitHub", href: "https://github.com/brigitteblau" }],
   copy: { es: "Copiar mail", en: "Copy email" },
   copied: { es: "Mail copiado", en: "Email copied" },
   journalCta: { es: "Leer mi journal", en: "Read my journal" },
@@ -196,9 +215,14 @@ export const journal = {
   },
   back: { es: "Volver al journal", en: "Back to the journal" },
   empty: {
-    es: "Todavía no hay entradas. Agregá un archivo en src/content/journal.",
-    en: "No entries yet. Add a file to src/content/journal.",
+    es: "Todavía no hay entradas publicadas. Pronto.",
+    en: "No entries published yet. Soon.",
   },
+  topics: { es: "Temas", en: "Topics" },
+  latest: { es: "Lo último", en: "Latest" },
+  next: { es: "Siguiente entrada", en: "Next entry" },
+  prev: { es: "Entrada anterior", en: "Previous entry" },
+  readTime: { es: "min de lectura", en: "min read" },
   onlyIn: { es: "Esta entrada solo está en español.", en: "This entry is only available in Spanish." },
 };
 
@@ -226,11 +250,47 @@ export const hud = {
   next: { es: "Siguiente", en: "Next" },
   eras: {
     hola: { es: "Hola", en: "Hi" },
-    nacer: { es: "Nacer", en: "Being born" },
+    nacer: { es: "Nacer", en: "Day one" },
     deportes: { es: "Deportes", en: "Sports" },
     programacion: { es: "Programación", en: "Programming" },
     proyectos: { es: "Proyectos", en: "Projects" },
     ahora: { es: "Ahora", en: "Now" },
     fin: { es: "¿Y?", en: "So?" },
+    sigue: { es: "Lo que sigue", en: "What's next" },
   } satisfies Record<string, L>,
+};
+
+/** La segunda parte: lo que todavía se está escribiendo. */
+export const sigue = {
+  title: { es: "Lo que sigue se está escribiendo.", en: "What comes next is still being written." },
+  journalLead: { es: "En el journal", en: "In the journal" },
+  allEntries: { es: "Todas las entradas", en: "All entries" },
+};
+
+/** "Dejame algo": un lugar para que cualquiera me deje una idea, pregunta o mensaje. */
+export const dejame = {
+  title: { es: "Dejame algo.", en: "Leave me something." },
+  body: {
+    es: "Una idea, una pregunta, algo que pensaste leyendo esto. No hace falta que pongas tu nombre.",
+    en: "An idea, a question, something you thought while reading this. You don't need to leave your name.",
+  },
+  placeholder: { es: "Escribí acá…", en: "Write here…" },
+  name: { es: "Nombre (opcional)", en: "Name (optional)" },
+  email: { es: "Mail, si querés que te conteste (opcional)", en: "Email, if you'd like a reply (optional)" },
+  send: { es: "Enviar", en: "Send" },
+  sending: { es: "Enviando…", en: "Sending…" },
+  sent: { es: "Llegó. Gracias por escribir.", en: "Got it. Thanks for writing." },
+  another: { es: "Escribir otra cosa", en: "Write something else" },
+  errors: {
+    short: { es: "Escribí un poco más (mínimo 3 caracteres).", en: "Write a bit more (at least 3 characters)." },
+    long: { es: "Es demasiado largo (máximo 2000 caracteres).", en: "That's too long (2000 characters max)." },
+    email: { es: "Ese mail no parece válido.", en: "That email doesn't look right." },
+    rate: { es: "Mandaste varios seguidos. Probá de nuevo en unos minutos.", en: "You've sent a few in a row. Try again in a few minutes." },
+    off: { es: "Este espacio todavía no está activado. Mientras tanto, escribime por mail.", en: "This space isn't switched on yet. In the meantime, email me." },
+    generic: { es: "No se pudo enviar. Probá de nuevo en un rato.", en: "It didn't go through. Try again in a bit." },
+  },
+  privacy: {
+    es: "Lo leo solo yo. No se publica nada.",
+    en: "Only I read it. Nothing gets published.",
+  },
 };

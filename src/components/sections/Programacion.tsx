@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import type { Locale } from "@/lib/i18n";
+import { filled, type Locale } from "@/lib/i18n";
 import { programacion as P, notes, NAME_STEPS, ui } from "@/content/site";
 import { clamp01 } from "@/lib/track";
 import EraTab from "../EraTab";
@@ -17,24 +17,14 @@ function typed(p: number, wrong: string, right: string) {
   return { text: right.slice(0, Math.round(Math.min(1, (p - 0.58) / 0.32) * right.length)), struck: false };
 }
 
+/** Pared de carpetas: un solo patrón CSS (antes eran 140 SVG animados). */
 function Folders() {
-  const root = useRef<HTMLDivElement>(null);
-  usePanel(({ enter }) => {
-    root.current?.querySelectorAll<HTMLElement>("svg").forEach((el, i) => {
-      const p = clamp01(enter * 1.4 - ((i * 37) % 11) / 22);
-      el.style.opacity = String(p * 0.7);
-      el.style.transform = `translateY(${(1 - p) * -30}px)`;
-    });
-  });
   return (
-    <div ref={root} className="pointer-events-none absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(72px,1fr))] content-start gap-x-4 gap-y-6 overflow-hidden px-4 pt-16 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,#000_75%)]" aria-hidden>
-      {Array.from({ length: 140 }, (_, i) => (
-        <svg key={i} viewBox="0 0 64 48" className="w-14">
-          <path d="M2 8 Q2 4 6 4 H22 L28 10 H58 Q62 10 62 14 V42 Q62 46 58 46 H6 Q2 46 2 42Z" fill="#8ec5f0" />
-          <path d="M2 16 H62 V42 Q62 46 58 46 H6 Q2 46 2 42Z" fill="#a9d4f5" />
-        </svg>
-      ))}
-    </div>
+    <div
+      className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,transparent_35%,#000_80%)]"
+      style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='88' height='70' viewBox='0 0 88 70'><path d='M8 14 Q8 10 12 10 H28 L34 16 H64 Q68 16 68 20 V48 Q68 52 64 52 H12 Q8 52 8 48Z' fill='%23d6e4f5'/><path d='M8 22 H68 V48 Q68 52 64 52 H12 Q8 52 8 48Z' fill='%23e6eef9'/></svg>\")", backgroundSize: "88px 70px" }}
+      aria-hidden
+    />
   );
 }
 
@@ -102,7 +92,7 @@ function Libros({ lang, photos }: { lang: Locale; photos: string[] }) {
         <Soundtrack data={P.soundtrack} lang={lang} className="mb-8" />
         <h2 className="font-mono text-[0.95rem] text-navy/70">{P.booksTitle[lang]}</h2>
         <div className="mt-4 flex h-[30vh] items-end gap-3 overflow-hidden" role="list">
-          {P.books.map((b, i) => (
+          {P.books.filter((b) => filled(b.title)).map((b, i) => (
             <div
               key={i}
               data-book
@@ -132,7 +122,11 @@ function Libros({ lang, photos }: { lang: Locale; photos: string[] }) {
             <span className="flex-1 rounded-md bg-white px-3 py-1 font-mono text-[0.85rem]">{P.firstSite.url}</span>
           </div>
           <div className="aspect-[16/10] max-h-[48vh] w-full">
-            <Photo src={photos[0]} alt={P.firstSite.label[lang]} folder="programacion" hint={`${ui.photoMissing[lang]}: screenshot`} tint="#c9d4f7" />
+            {photos[0] ? (
+              <Photo src={photos[0]} alt={P.firstSite.label[lang]} folder="programacion" hint={`${ui.photoMissing[lang]}: screenshot`} tint="#c9d4f7" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-white font-serif text-[clamp(2rem,4vw,3.4rem)] italic tracking-[-0.02em]">{P.firstSite.url}</div>
+            )}
           </div>
         </div>
         <figcaption className="mt-3 font-mono text-[0.95rem]">{P.firstSite.label[lang]}</figcaption>
@@ -160,10 +154,10 @@ function Historia({ lang }: { lang: Locale }) {
 export default function Programacion({ lang, photos }: { lang: Locale; photos: string[] }) {
   return (
     <>
-      <Panel id="programacion" era="programacion" hold={1.6} className="bg-[#eef1f8]" label={P.era[lang]}>
+      <Panel id="programacion" era="programacion" hold={1.6} className="bg-white" label={P.era[lang]}>
         <Editor lang={lang} />
       </Panel>
-      <Panel era="programacion" nameStep={NAME_STEPS.programacion} className="bg-[#eef1f8]" label={P.booksTitle[lang]}>
+      <Panel era="programacion" nameStep={NAME_STEPS.programacion} className="bg-white" label={P.booksTitle[lang]}>
         <Libros lang={lang} photos={photos} />
       </Panel>
       <Panel era="programacion" className="bg-cobalt" label={P.firstSite.caption[lang]}>
