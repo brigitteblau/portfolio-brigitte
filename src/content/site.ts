@@ -23,7 +23,7 @@ export const ui = {
     home: { es: "Inicio", en: "Home" },
     projects: { es: "Proyectos", en: "Projects" },
     journal: { es: "Journal", en: "Journal" },
-    note: { es: "Dejame algo", en: "Leave a note" },
+    note: { es: "Dejame una foto", en: "Leave a photo" },
     contact: { es: "Contacto", en: "Contact" },
   },
   fullName: "Brigitte Blau",
@@ -127,11 +127,18 @@ export const programacion = {
   to: { es: "a la pasión", en: "to passion" },
   typedWrong: { es: "quiero ser perfecta", en: "i want to be perfect" },
   typedRight: { es: "quiero dejar algo en el mundo", en: "i want to leave something in the world" },
-  booksTitle: { es: "Libros que me marcaron acá", en: "Books that shaped this part" },
+  booksTitle: { es: "Libros que me marcaron", en: "Books that shaped me" },
+  /**
+   * Los libros. Si querés la tapa real, dejá una foto en public/fotos/libros/<id>.webp (o .jpg)
+   * y aparece sola; si no, se dibuja una tapa con el color.
+   * `why`: por qué te marcó (✎ = no se muestra hasta que lo escribas).
+   */
   books: [
-    { title: "Living Inspired", author: "Akiva Tatz", color: "#2B44FF" },
-    { title: "✎ otro libro", author: "✎ autor", color: "#0D1124" }, // los que empiezan con ✎ no se muestran
-  ],
+    { id: "living-inspired", title: "Living Inspired", author: "Akiva Tatz", color: "#4e75e5", why: { es: "✎ por qué te marcó", en: "✎ why it stayed with you" } },
+    { id: "frankl", title: { es: "El hombre en busca de sentido", en: "Man's Search for Meaning" }, author: "Viktor Frankl", color: "#e5483d", why: { es: "✎ por qué te marcó", en: "✎ why it stayed with you" } },
+    { id: "demian", title: { es: "Demian", en: "Demian" }, author: "Hermann Hesse", color: "#3b9a5e", why: { es: "✎ por qué te encantó", en: "✎ why you loved it" } },
+    { id: "fragmentos", title: { es: "Fragmentos sagrados", en: "Sacred Fragments" }, author: "Neil Gillman", color: "#f6c744", why: { es: "✎ lo judío es gran parte de mi vida", en: "✎ being Jewish is a big part of my life" } },
+  ] as { id: string; title: string | L; author: string; color: string; why: L }[],
   firstSite: {
     label: { es: "Mi primera página web", en: "My first website" },
     url: "tispruebas.com", // ✎ confirmá cómo se escribe
@@ -308,7 +315,7 @@ export const hero = {
   stickies: {
     projects: { es: "mis proyectos", en: "my projects" },
     journal: { es: "mi journal", en: "my journal" },
-    note: { es: "dejame algo!", en: "leave me a note!" },
+    note: { es: "dejame una foto! 📸", en: "leave me a photo! 📸" },
   },
   scroll: { es: "bajá", en: "scroll" },
 };
@@ -376,4 +383,21 @@ export const bereal = {
   tooBig: { es: "La foto es muy pesada (máximo 5 MB).", en: "That photo is too big (5 MB max)." },
   sentWithPhoto: { es: "Llegó tu foto. ¡Gracias!", en: "Your photo arrived. Thanks!" },
   privacy: { es: "La foto y el mensaje los veo solo yo. No se publica nada.", en: "Only I see the photo and the message. Nothing gets published." },
+};
+
+/** Cosas nuevas de la versión compacta */
+export const extra = {
+  playWithSound: { es: "Tocá play · con sonido 🔊", en: "Tap play · sound on 🔊" },
+  more: { es: "ver más", en: "see more" },
+  less: { es: "ver menos", en: "see less" },
+  today: { es: "hoy", en: "today" },
+  experience: { es: "lo que fui haciendo", en: "what I've been doing" },
+  projectsHint: { es: "tocá uno para ver más", en: "tap one to see more" },
+  close: { es: "Cerrar", en: "Close" },
+  photoTitle: { es: "Dejame una foto", en: "Leave me a photo" },
+  photoSub: {
+    es: "Sacate una foto y dejámela. Quiero ver quién pasó por acá.",
+    en: "Snap a photo and leave it for me. I want to see who stopped by.",
+  },
+  fab: { es: "dejame una foto", en: "leave me a photo" },
 };

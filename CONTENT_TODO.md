@@ -9,7 +9,9 @@ Todo lo que está acá **no se ve en el sitio** hasta que lo completes. En el c�
 - [ ] **Deportes:** una nota real para Golf y para Patín (desde cuándo, un logro, algo que te acuerdes). Si hay un tercer deporte, sumalo.
 - [ ] **La frase del golf** (`deportes.golf.line`): está escrita por mí como ejemplo y por eso está oculta. Escribí la tuya.
 - [ ] **Fotos de patín** → `public/fotos/deportes/`.
-- [ ] **Libros:** ¿hay otro libro además de *Living Inspired*, de Akiva Tatz?
+- [ ] **Libros** (ya están los 4: *Living Inspired* de Akiva Tatz, *El hombre en busca de sentido* de Viktor Frankl, *Demian* de Hermann Hesse y *Fragmentos sagrados* de Neil Gillman):
+  - Por ahora tienen una tapa dibujada con color. Si querés la tapa real, sacales una foto y dejala en `public/fotos/libros/` con estos nombres: `living-inspired.jpg`, `frankl.jpg`, `demian.jpg` y `fragmentos.jpg`. Aparecen solas.
+  - Una línea tuya de por qué te marcó cada uno (`site.ts` → `programacion.books` → `why`).
 - [ ] **Primera web:** confirmá cómo se escribe (`tispruebas.com`) y, si podés, dejá un screenshot en `public/fotos/programacion/`.
 - [ ] **De la perfección a la pasión:** según la devolución, es el corazón del sitio. Si querés desarrollarlo, escribí con tus palabras:
   - qué te hizo cambiar,

@@ -18,8 +18,15 @@ const Video = forwardRef<HTMLVideoElement | null, {
   loop?: boolean;
   /** arrancar solo al aparecer en pantalla */
   auto?: boolean;
+  /**
+   * Para los videos donde el sonido importa: no arranca solo; muestra un botón grande
+   * con este texto y al tocarlo se reproduce CON sonido (los navegadores solo dejan
+   * sonar un video después de que la persona toca algo).
+   */
+  soundFirst?: string;
   children?: React.ReactNode;
-}>(function Video({ src, poster, lang, className, videoClassName, label, loop = true, auto = true, children }, outer) {
+}>(function Video({ src, poster, lang, className, videoClassName, label, loop = true, auto = true, soundFirst, children }, outer) {
+  if (soundFirst) auto = false;
   const v = useRef<HTMLVideoElement>(null);
   useImperativeHandle(outer, () => v.current as HTMLVideoElement);
   const [playing, setPlaying] = useState(false);
@@ -42,7 +49,13 @@ const Video = forwardRef<HTMLVideoElement | null, {
     el.addEventListener("pause", onPause);
     el.addEventListener("timeupdate", onTime);
     let io: IntersectionObserver | undefined;
-    if (auto) {
+    if (!auto) {
+      // igual se pausa cuando sale de la pantalla
+      io = new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting && !el.paused) el.pause();
+      });
+      io.observe(el);
+    } else {
       io = new IntersectionObserver(
         ([e]) => {
           if (e.isIntersecting && e.intersectionRatio > 0.35) {
@@ -59,13 +72,18 @@ const Video = forwardRef<HTMLVideoElement | null, {
       el.removeEventListener("pause", onPause);
       el.removeEventListener("timeupdate", onTime);
     };
-  }, [auto]);
+  }, [auto, soundFirst]);
 
   const toggle = () => {
     const el = v.current;
     if (!el) return;
     if (el.paused) {
       userPaused.current = false;
+      if (soundFirst && !el.dataset.user) {
+        el.dataset.user = "1";
+        el.muted = false;
+        setMuted(false);
+      }
       void el.play().catch(() => {});
     } else {
       userPaused.current = true;
@@ -100,7 +118,21 @@ const Video = forwardRef<HTMLVideoElement | null, {
       />
       {children}
       {/* Play grande cuando está en pausa */}
-      {!playing && (
+      {!playing && soundFirst && (
+        <button
+          onClick={toggle}
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-black/25 text-cream"
+          aria-label={soundFirst}
+        >
+          <span className="grid h-24 w-24 place-items-center rounded-full bg-cream text-ink shadow-[0_12px_40px_-8px_rgba(0,0,0,.6)] transition-transform hover:scale-110 sm:h-28 sm:w-28">
+            <svg viewBox="0 0 24 24" className="ml-1.5 h-11 w-11" aria-hidden>
+              <path d="M7 4.5v15l12.5-7.5z" fill="currentColor" />
+            </svg>
+          </span>
+          <span className="rounded-full bg-black/45 px-4 py-1.5 text-[1rem] font-bold [text-shadow:0_1px_6px_rgba(0,0,0,.5)]">{soundFirst}</span>
+        </button>
+      )}
+      {!playing && !soundFirst && (
         <button
           onClick={toggle}
           className="absolute left-1/2 top-1/2 z-10 grid h-20 w-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-cream/90 text-ink shadow-[0_10px_30px_-10px_rgba(0,0,0,.6)] transition-transform hover:scale-110"

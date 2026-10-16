@@ -111,7 +111,7 @@ Adentro podés usar `<Nota>…</Nota>` (un post-it), `<Fotos>…</Fotos>` (una g
 
 ## Cómo funciona (para cuando quieras tocarlo)
 
-- La página (`src/app/[lang]/page.tsx`) va en este orden: Hero → Perfil → Eras (de costado) → Proyectos → Ahora → Carpetas → Journal + Dejame algo → ¿Querés conocerme? + Contacto. Cada parte está en `src/components/sections/`.
+- La página (`src/app/[lang]/page.tsx`) va en este orden: Hero → la historia (de costado: el video del cumple a pantalla completa, deportes, programación, libros) → Hoy (con "ver más") → Proyectos (tarjetitas; cada una abre su ficha en un pop-up) → Dejame una foto → Carpetas → Journal → Contacto. Cada parte está en `src/components/sections/`. El botón flotante 📸 (`PhotoFab.tsx`) lleva a la cámara y la prende.
 - `src/components/Track.tsx` es el tramo horizontal: fija la pantalla solo mientras estás en las eras y convierte el scroll en movimiento de costado. En celular (y con "reducir movimiento") las tarjetas van una abajo de la otra.
 - `src/components/Panel.tsx` es una diapositiva de ese tramo. `hold={1.2}` la deja quieta un rato mientras pasa algo adentro (el tipeo). `usePanel(({ enter, hold, through, exit }) => …)` da el progreso para animar.
 - `src/components/Video.tsx`: los videos arrancan solos (sin sonido) cuando aparecen, con play/pausa y botón de sonido.

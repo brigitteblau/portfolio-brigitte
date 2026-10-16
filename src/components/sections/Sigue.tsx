@@ -3,9 +3,8 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import type { EntryMeta } from "@/lib/journal";
-import { bereal as B, dejame as D, sigue as S, journal as J } from "@/content/site";
-import FilmCamera from "../FilmCamera";
-import { Doodle, Polaroid, Sticky, Tag } from "../Stickers";
+import { sigue as S, journal as J } from "@/content/site";
+import { Polaroid, Tag } from "../Stickers";
 
 /* ───────────────────────── Journal ───────────────────────── */
 function Journal({ lang, entries }: { lang: Locale; entries: EntryMeta[] }) {
@@ -54,19 +53,8 @@ function Journal({ lang, entries }: { lang: Locale; entries: EntryMeta[] }) {
 export default function Sigue({ lang, entries }: { lang: Locale; entries: EntryMeta[] }) {
   return (
     <section id="sigue" className="relative px-3 py-6 sm:px-6" aria-labelledby="sigue-title">
-      <div className="mx-auto max-w-[1500px] space-y-6">
+      <div className="mx-auto max-w-[1500px]">
         <Journal lang={lang} entries={entries} />
-        <div id="dejame" className="slide relative scroll-mt-16 overflow-hidden px-5 py-10 sm:px-10">
-          <div className="mb-8 flex flex-wrap items-end gap-x-6 gap-y-3">
-            <h2 className="hello-grad pb-[0.06em] pr-[0.08em] text-[clamp(3.4rem,9vw,8rem)] font-black italic leading-[0.85] tracking-[-0.06em]">{D.title[lang]}</h2>
-            <Sticky color="#f4a3d0" rotate={4} className="mb-3 max-w-[16rem] !text-[1.35rem]">
-              {B.title[lang]} ✨
-            </Sticky>
-          </div>
-          <p className="mb-8 max-w-[52ch] text-[1.1rem] leading-snug">{B.intro[lang]}</p>
-          <FilmCamera lang={lang} />
-          <Doodle kind="curl" className="absolute right-8 top-10 hidden w-24 lg:block" />
-        </div>
       </div>
     </section>
   );

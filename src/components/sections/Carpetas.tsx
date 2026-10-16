@@ -121,12 +121,12 @@ export default function Carpetas({ lang, folders }: { lang: Locale; folders: Fol
         </div>
         <p className="mt-3 font-hand text-[1.6rem] text-ink/60">{C.hint[lang]} ↓</p>
 
-        <ul className="relative mt-10 flex flex-wrap items-start justify-center gap-x-10 gap-y-8 pb-10 sm:gap-x-20 md:justify-start md:pl-[6%]">
+        <ul className="relative mt-8 grid grid-cols-3 items-start gap-2 pb-4 sm:flex sm:flex-wrap sm:gap-x-20 sm:gap-y-8 sm:pb-10 md:pl-[6%]">
           {folders.map((f, i) => (
-            <li key={f.name} data-folder style={{ marginTop: `${[0, 40, 10, 50, 20][i % 5]}px` }}>
+            <li key={f.name} data-folder className="sm:[margin-top:var(--mt)]" style={{ ["--mt" as string]: `${[0, 40, 10, 50, 20][i % 5]}px` }}>
               <button onClick={() => setOpen(i)} className="group flex flex-col items-center gap-2 rounded-[14px] p-2 focus-visible:bg-blue/10">
                 <span className="relative isolate">
-                  <FolderIcon color={TINT[i % TINT.length]} className="h-auto w-[clamp(8rem,16vw,13rem)] transition-transform duration-300 group-hover:-translate-y-2 group-hover:-rotate-3" />
+                  <FolderIcon color={TINT[i % TINT.length]} className="h-auto w-[clamp(5.5rem,16vw,13rem)] transition-transform duration-300 group-hover:-translate-y-2 group-hover:-rotate-3" />
                   {f.items[0]?.kind === "img" && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
