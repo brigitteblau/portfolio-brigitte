@@ -69,23 +69,6 @@ export default function Hero({
           "-=0.5",
         );
 
-      // Los stickers se mueven apenas con el mouse (profundidad)
-      const items = gsap.utils.toArray<HTMLElement>("[data-depth]");
-      const movers = items.map((el) => ({
-        x: gsap.quickTo(el, "x", { duration: 0.8, ease: "power3.out" }),
-        y: gsap.quickTo(el, "y", { duration: 0.8, ease: "power3.out" }),
-        d: Number(el.dataset.depth),
-      }));
-      const onMove = (e: PointerEvent) => {
-        const cx = e.clientX / window.innerWidth - 0.5;
-        const cy = e.clientY / window.innerHeight - 0.5;
-        movers.forEach((m) => {
-          m.x(cx * m.d * 40);
-          m.y(cy * m.d * 30);
-        });
-      };
-      window.addEventListener("pointermove", onMove);
-      return () => window.removeEventListener("pointermove", onMove);
     },
     { scope: root },
   );
@@ -101,10 +84,46 @@ export default function Hero({
         data-card
         className="slide relative mx-auto flex min-h-[calc(100svh-5rem)] max-w-[1500px] flex-col items-center justify-center overflow-hidden px-4 py-10"
       >
+        {/* Fila de arriba: el dato y los post-its (no tapan el título) */}
+        <div className="relative z-20 mb-4 flex w-full flex-wrap items-start justify-between gap-6 md:mb-0 md:px-4">
+          <div className="hidden sm:block">
+            <span data-pop className="flex items-center gap-1">
+              <span className="block">
+                <Sparkle className="h-9 w-9" />
+              </span>
+              <Tag>{H.funFact[lang]}</Tag>
+            </span>
+            <p data-pop className="ml-6 mt-2 max-w-[15ch] font-hand text-[1.6rem] leading-[1] text-ink/80">
+              {H.funFactText[lang]}
+            </p>
+          </div>
+          <nav className="flex flex-wrap items-start justify-center gap-3 max-sm:w-full" aria-label={lang === "es" ? "Accesos" : "Shortcuts"}>
+            {(
+              [
+                ["#proyectos", "proyectos", H.stickies.projects, "#7cc4f0", 4],
+                [`/${lang}/journal`, null, H.stickies.journal, "#f8d66a", -3],
+                ["#dejame", "dejame", H.stickies.note, "#f4a3d0", 3],
+              ] as const
+            ).map(([href, id, label, color, rot]) => (
+              <span key={href} data-pop className="block">
+                <Link
+                  href={href}
+                  onClick={id ? go(id) : undefined}
+                  className="block transition-transform duration-300 hover:-translate-y-1 hover:rotate-1"
+                >
+                  <Sticky color={color} rotate={rot} className="!px-3 !pb-3 !pt-5 !text-[1.3rem]">
+                    {label[lang]}
+                  </Sticky>
+                </Link>
+              </span>
+            ))}
+          </nav>
+        </div>
+
         {/* Holaaa! */}
         <h1
           data-hello
-          className="relative z-0 flex overflow-hidden px-[0.06em] pb-[0.08em] text-center text-[clamp(3.6rem,21vw,21rem)] font-black italic leading-[0.85] tracking-[-0.06em]"
+          className="relative z-0 flex overflow-hidden px-[0.06em] pb-[0.08em] text-center text-[clamp(3.6rem,17vw,17rem)] font-black italic leading-[0.85] tracking-[-0.06em]"
           aria-label={H.hello[lang]}
         >
           {H.hello[lang].split("").map((c, i) => (
@@ -121,7 +140,7 @@ export default function Hero({
         {/* La compu retro, encima del título */}
         <div
           data-pc
-          className="relative z-10 mt-2 w-[min(64vw,330px)] md:-mt-[min(7vw,6rem)]"
+          className="relative z-10 mt-2 w-[min(64vw,330px)] md:-mt-[min(3vw,2.5rem)]"
         >
           <RetroComputer>
             <div className="absolute inset-[7%] flex flex-col overflow-hidden rounded-[6px] bg-cream shadow-[0_4px_0_rgba(0,0,0,.15)]">
@@ -145,26 +164,7 @@ export default function Hero({
           {intro.does[lang]}
         </p>
 
-        {/* Stickers alrededor */}
-        <div
-          data-depth="1.2"
-          className="absolute left-[4%] top-[8%] z-20 hidden sm:block"
-        >
-          <div data-pop className="flex items-center gap-1">
-            <Sparkle className="h-9 w-9" />
-            <Tag>{H.funFact[lang]}</Tag>
-          </div>
-          <p
-            data-pop
-            className="ml-6 mt-2 max-w-[13ch] font-hand text-[1.6rem] leading-[1] text-ink/80"
-          >
-            {H.funFactText[lang]}
-          </p>
-        </div>
-
-        <div
-          data-depth="0.8"
-          className="absolute bottom-[10%] left-[5%] z-20 hidden w-[min(22vw,210px)] sm:block"
+        <div className="absolute bottom-[8%] left-[4%] z-20 hidden w-[min(18vw,200px)] lg:block"
         >
           <div data-pop>
             <Polaroid rotate={-8} holder="clip">
@@ -187,57 +187,13 @@ export default function Hero({
           </div>
         </div>
 
-        <Sparkle data-pop className="absolute right-[24%] top-[12%] h-8 w-8" />
-        <Sparkle
-          data-pop
-          className="absolute bottom-[22%] left-[30%] h-6 w-6"
+        <span data-pop className="absolute block right-[24%] top-[12%]"><Sparkle className="h-8 w-8" /></span>
+        <span data-pop className="absolute block bottom-[22%] left-[30%]"><Sparkle className="h-6 w-6"
           color="var(--pink)"
-        />
-        <Sparkle
-          data-pop
-          className="absolute right-[8%] bottom-[38%] h-5 w-5"
+        /></span>
+        <span data-pop className="absolute block right-[8%] bottom-[38%]"><Sparkle className="h-5 w-5"
           color="var(--blue)"
-        />
-
-        {/* Post-its = accesos directos */}
-        <nav
-          data-depth="1.6"
-          className="absolute right-[4%] top-[14%] z-20 flex flex-col items-end gap-3 max-sm:static max-sm:mt-8 max-sm:flex-row max-sm:flex-wrap max-sm:justify-center"
-          aria-label={lang === "es" ? "Accesos" : "Shortcuts"}
-        >
-          <span data-pop className="block">
-            <a
-              href="#proyectos"
-              onClick={go("proyectos")}
-              className="block transition-transform hover:-rotate-2 hover:scale-105"
-            >
-              <Sticky color="#7cc4f0" rotate={5}>
-                {H.stickies.projects[lang]}
-              </Sticky>
-            </a>
-          </span>
-          <span data-pop className="block">
-            <Link
-              href={`/${lang}/journal`}
-              className="block transition-transform hover:rotate-2 hover:scale-105"
-            >
-              <Sticky color="#f8d66a" rotate={-4}>
-                {H.stickies.journal[lang]}
-              </Sticky>
-            </Link>
-          </span>
-          <span data-pop className="block">
-            <a
-              href="#dejame"
-              onClick={go("dejame")}
-              className="block transition-transform hover:-rotate-2 hover:scale-105"
-            >
-              <Sticky color="#f4a3d0" rotate={3}>
-                {H.stickies.note[lang]}
-              </Sticky>
-            </a>
-          </span>
-        </nav>
+        /></span>
 
         <p
           className="absolute bottom-4 left-1/2 -translate-x-1/2 font-hand text-[1.4rem] text-ink/60 floaty"

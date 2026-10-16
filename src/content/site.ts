@@ -344,25 +344,36 @@ export const carpetas = {
   items: { es: "elementos", en: "items" },
 };
 
-/** "Dejame algo" estilo BeReal */
+/** "Dejame algo" estilo BeReal, con una cámara de rollo */
 export const bereal = {
   title: { es: "Tu BeReal para mí", en: "Your BeReal for me" },
   intro: {
-    es: "Sacate una foto (las dos cámaras, como BeReal) y dejame un mensaje. O solo el mensaje, también vale.",
-    en: "Snap a photo (both cameras, BeReal-style) and leave me a message. Or just the message, that works too.",
+    es: "Prendé la cámara, elegí un rollo y sacate una foto (en el celu salen las dos cámaras, como BeReal). Después escribile algo y mandámela.",
+    en: "Turn on the camera, pick a film and snap a photo (on a phone it takes both cameras, like BeReal). Then write something on it and send it to me.",
   },
-  open: { es: "Sacate una foto", en: "Take a photo" },
-  shoot: { es: "Sacar", en: "Snap" },
-  retake: { es: "Otra vez", en: "Retake" },
+  brand: "brigitte·cam",
+  power: { es: "Prender la cámara", en: "Turn on the camera" },
+  powerHint: { es: "sonreí :)", en: "say cheese :)" },
+  shoot: { es: "Sacar foto", en: "Take photo" },
+  flash: { es: "Flash", en: "Flash" },
+  timer: { es: "3 seg", en: "3 sec" },
+  film: { es: "Rollo", en: "Film" },
+  second: { es: "¡ahora la de atrás!", en: "now the back camera!" },
+  waiting: { es: "prendiendo…", en: "warming up…" },
+  developing: { es: "revelando…", en: "developing…" },
+  printHere: { es: "acá sale tu foto", en: "your photo prints here" },
+  caption: { es: "escribile algo a la foto…", en: "write something on it…" },
+  captionOnly: { es: "…o dejame solo un mensaje", en: "…or just leave me a message" },
+  retake: { es: "Otra", en: "Retake" },
   remove: { es: "Sin foto", en: "No photo" },
-  upload: { es: "o subí una", en: "or upload one" },
-  waiting: { es: "abriendo cámara…", en: "opening camera…" },
-  second: { es: "ahora la otra cámara…", en: "now the other camera…" },
+  upload: { es: "o subí una foto", en: "or upload a photo" },
+  off: { es: "Apagar", en: "Turn off" },
+  shots: { es: "fotos", en: "shots" },
   noCamera: {
-    es: "No pude abrir la cámara. Podés subir una foto o mandar solo el mensaje.",
-    en: "I couldn't open the camera. You can upload a photo or just send the message.",
+    es: "No pude prender la cámara (fijate el permiso). Podés subir una foto o mandar solo el mensaje.",
+    en: "I couldn't turn on the camera (check the permission). You can upload a photo or just send the message.",
   },
   tooBig: { es: "La foto es muy pesada (máximo 5 MB).", en: "That photo is too big (5 MB max)." },
-  sentWithPhoto: { es: "Llegó tu BeReal. Gracias!", en: "Your BeReal arrived. Thanks!" },
+  sentWithPhoto: { es: "Llegó tu foto. ¡Gracias!", en: "Your photo arrived. Thanks!" },
   privacy: { es: "La foto y el mensaje los veo solo yo. No se publica nada.", en: "Only I see the photo and the message. Nothing gets published." },
 };

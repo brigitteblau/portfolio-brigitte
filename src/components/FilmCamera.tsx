@@ -1,0 +1,585 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import clsx from "clsx";
+import type { Locale } from "@/lib/i18n";
+import { bereal as B, dejame as D } from "@/content/site";
+import { FILMS, cssFilter, develop, type Film } from "@/lib/film";
+import { Pin, Sparkle } from "./Stickers";
+
+/**
+ * "Dejame algo" con una cámara de rollo: visor en vivo con filtros,
+ * flash (la pantalla se pone blanca para iluminarte), cuenta regresiva,
+ * las dos cámaras como BeReal, y la foto que sale y se revela.
+ */
+
+const W = 1080;
+const H = 1440;
+const ROLL = 24;
+
+type Shot = { canvas: HTMLCanvasElement; mirror: boolean };
+type Phase = "off" | "opening" | "live" | "second" | "print";
+type Send = "idle" | "sending" | "sent" | "error";
+
+const stop = (s?: MediaStream | null) => s?.getTracks().forEach((t) => t.stop());
+
+function grab(v: HTMLVideoElement): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = v.videoWidth;
+  c.height = v.videoHeight;
+  c.getContext("2d")!.drawImage(v, 0, 0);
+  return c;
+}
+
+function cover(ctx: CanvasRenderingContext2D, src: HTMLCanvasElement, x: number, y: number, w: number, h: number, mirror: boolean) {
+  const r = Math.max(w / src.width, h / src.height);
+  const cw = w / r;
+  const ch = h / r;
+  ctx.save();
+  if (mirror) {
+    ctx.translate(x + w, y);
+    ctx.scale(-1, 1);
+    ctx.drawImage(src, (src.width - cw) / 2, (src.height - ch) / 2, cw, ch, 0, 0, w, h);
+  } else ctx.drawImage(src, (src.width - cw) / 2, (src.height - ch) / 2, cw, ch, x, y, w, h);
+  ctx.restore();
+}
+
+function rr(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+/** La foto "cruda": la grande ocupa todo y la selfie va chiquita arriba (BeReal). */
+function compose(main: Shot, inset?: Shot) {
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+  const ctx = c.getContext("2d")!;
+  cover(ctx, main.canvas, 0, 0, W, H, main.mirror);
+  if (inset) {
+    const iw = W * 0.31;
+    const ih = iw * (4 / 3);
+    ctx.save();
+    rr(ctx, 34, 34, iw + 12, ih + 12, 36);
+    ctx.fillStyle = "#111";
+    ctx.fill();
+    rr(ctx, 40, 40, iw, ih, 30);
+    ctx.clip();
+    cover(ctx, inset.canvas, 40, 40, iw, ih, inset.mirror);
+    ctx.restore();
+  }
+  return c;
+}
+
+/** Revela la foto cruda con el rollo elegido → JPEG */
+function print(raw: HTMLCanvasElement, film: Film): Promise<Blob | null> {
+  const c = document.createElement("canvas");
+  c.width = raw.width;
+  c.height = raw.height;
+  const ctx = c.getContext("2d", { willReadFrequently: true })!;
+  ctx.drawImage(raw, 0, 0);
+  develop(ctx, c.width, c.height, film);
+  return new Promise((res) => c.toBlob(res, "image/jpeg", 0.86));
+}
+
+/** Clic de obturador hecho con sonido sintético (sin archivos). */
+function shutterSound() {
+  try {
+    const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ac = new AC();
+    const len = ac.sampleRate * 0.09;
+    const buf = ac.createBuffer(1, len, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3) * (i < len * 0.15 || i > len * 0.45 ? 1 : 0.25);
+    const src = ac.createBufferSource();
+    src.buffer = buf;
+    const g = ac.createGain();
+    g.gain.value = 0.35;
+    src.connect(g).connect(ac.destination);
+    src.start();
+    src.onended = () => void ac.close();
+  } catch {
+    /* sin sonido, no pasa nada */
+  }
+}
+
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+export default function FilmCamera({ lang }: { lang: Locale }) {
+  const live = useRef<HTMLVideoElement>(null);
+  const stream = useRef<MediaStream | null>(null);
+  const raw = useRef<HTMLCanvasElement | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const startedAt = useRef(0);
+  const busy = useRef(false);
+
+  const [phase, setPhase] = useState<Phase>("off");
+  const [mirror, setMirror] = useState(true);
+  const [film, setFilm] = useState<Film>(FILMS[0]);
+  const [flashOn, setFlashOn] = useState(true);
+  const [timerOn, setTimerOn] = useState(false);
+  const [count, setCount] = useState<number | null>(null);
+  const [flash, setFlash] = useState<"screen" | "finder" | null>(null);
+  const [left, setLeft] = useState(ROLL);
+  const [photo, setPhoto] = useState<Blob | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [printKey, setPrintKey] = useState(0);
+  const [camError, setCamError] = useState("");
+  const [msg, setMsg] = useState("");
+  const [send, setSend] = useState<Send>("idle");
+  const [error, setError] = useState("");
+  const [withPhoto, setWithPhoto] = useState(false);
+
+  useEffect(() => () => stop(stream.current), []);
+  useEffect(() => {
+    if (!preview) return;
+    return () => URL.revokeObjectURL(preview);
+  }, [preview]);
+
+  const mark = useCallback(() => {
+    if (!startedAt.current) startedAt.current = Date.now();
+  }, []);
+
+  const openCam = useCallback(async (mode: "user" | "environment") => {
+    stop(stream.current);
+    const s = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: mode === "environment" ? { exact: "environment" } : "user", width: { ideal: 1440 }, height: { ideal: 1920 } },
+      audio: false,
+    });
+    stream.current = s;
+    setMirror(mode === "user");
+    const v = live.current;
+    if (v) {
+      v.srcObject = s;
+      v.muted = true;
+      v.playsInline = true;
+      await v.play().catch(() => {});
+    }
+  }, []);
+
+  const powerOn = async () => {
+    mark();
+    setCamError("");
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCamError(B.noCamera[lang]);
+      return;
+    }
+    setPhase("opening");
+    try {
+      await openCam("user");
+      setPhase("live");
+    } catch {
+      setPhase("off");
+      setCamError(B.noCamera[lang]);
+    }
+  };
+
+  const powerOff = () => {
+    stop(stream.current);
+    stream.current = null;
+    setPhase(photo ? "print" : "off");
+  };
+
+  /** Desarrolla la foto cruda con el rollo y la "imprime". */
+  const toPrint = async (canvas: HTMLCanvasElement, f: Film) => {
+    raw.current = canvas;
+    const blob = await print(canvas, f);
+    if (!blob) return;
+    setPhoto(blob);
+    setPreview(URL.createObjectURL(blob));
+    setPrintKey((k) => k + 1);
+    setPhase("print");
+  };
+
+  /** Cuenta regresiva + flash + clic, y devuelve el cuadro. */
+  const snap = async (secs: number, front: boolean): Promise<Shot | null> => {
+    for (let n = secs; n > 0; n--) {
+      setCount(n);
+      await wait(800);
+    }
+    setCount(null);
+    if (flashOn) {
+      // con la cámara de adelante, la pantalla entera se pone blanca y te ilumina
+      setFlash(front ? "screen" : "finder");
+      await wait(front ? 260 : 60);
+    }
+    const v = live.current;
+    if (!v?.videoWidth) {
+      setFlash(null);
+      return null;
+    }
+    const shot: Shot = { canvas: grab(v), mirror: front };
+    shutterSound();
+    navigator.vibrate?.(30);
+    setTimeout(() => setFlash(null), 140);
+    return shot;
+  };
+
+  const shoot = async () => {
+    if (busy.current || phase !== "live") return;
+    busy.current = true;
+    try {
+      const front = await snap(timerOn ? 3 : 0, true);
+      if (!front) return;
+      // ¿Hay otra cámara? (celular) → también la de atrás, como BeReal
+      const cams = (await navigator.mediaDevices.enumerateDevices().catch(() => [])).filter((d) => d.kind === "videoinput");
+      let back: Shot | null = null;
+      if (cams.length > 1) {
+        setPhase("second");
+        try {
+          await openCam("environment");
+          await wait(500);
+          back = await snap(2, false);
+        } catch {
+          back = null;
+        }
+      }
+      stop(stream.current);
+      stream.current = null;
+      setLeft((n) => Math.max(1, n - 1));
+      await toPrint(back ? compose(back, front) : compose(front), film);
+    } finally {
+      busy.current = false;
+    }
+  };
+
+  // Cambiar de rollo con la foto ya sacada la vuelve a revelar
+  const pickFilm = (f: Film) => {
+    setFilm(f);
+    if (phase === "print" && raw.current) void toPrint(raw.current, f);
+  };
+
+  const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    mark();
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setCamError("");
+    try {
+      const bmp = await createImageBitmap(file);
+      const c = document.createElement("canvas");
+      c.width = bmp.width;
+      c.height = bmp.height;
+      c.getContext("2d")!.drawImage(bmp, 0, 0);
+      stop(stream.current);
+      stream.current = null;
+      await toPrint(compose({ canvas: c, mirror: false }), film);
+    } catch {
+      setCamError(D.errors.photo[lang]);
+    }
+  };
+
+  const discard = () => {
+    raw.current = null;
+    setPhoto(null);
+    setPreview(null);
+    setPhase("off");
+  };
+
+  const fail = (code: string) => {
+    const key = (code in D.errors ? code : "generic") as keyof typeof D.errors;
+    setError(D.errors[key][lang]);
+    setSend("error");
+  };
+
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const message = String(form.get("message") ?? "").trim();
+    if (!photo && message.length < 3) return fail(message.length ? "short" : "empty");
+    if (photo && message.length > 0 && message.length < 3) return fail("short");
+    if (message.length > 2000) return fail("long");
+    if (photo && photo.size > 5 * 1024 * 1024) return fail("big");
+    form.set("startedAt", String(startedAt.current));
+    form.set("lang", lang);
+    if (photo) form.set("photo", photo, "foto.jpg");
+    setWithPhoto(!!photo);
+    setSend("sending");
+    setError("");
+    try {
+      const res = await fetch("/api/notes", { method: "POST", body: form });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setSend("sent");
+        return;
+      }
+      fail((data.error as string) ?? "generic");
+    } catch {
+      fail("generic");
+    }
+  };
+
+  if (send === "sent") {
+    return (
+      <div className="flex flex-col items-center gap-6 py-6 text-center" role="status">
+        {preview && withPhoto && (
+          <div className="w-[min(70vw,16rem)] rotate-[-4deg] bg-white p-3 pb-10 shadow-[0_20px_40px_-20px_rgba(31,33,40,.6)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={preview} alt="" className="aspect-[3/4] w-full object-cover" />
+          </div>
+        )}
+        <p className="text-[clamp(2rem,4vw,3.2rem)] font-black leading-tight tracking-[-0.03em]">{withPhoto ? B.sentWithPhoto[lang] : D.sent[lang]}</p>
+        <button
+          onClick={() => {
+            discard();
+            setMsg("");
+            setSend("idle");
+          }}
+          className="font-semibold underline decoration-2 underline-offset-4 hover:text-pink"
+        >
+          {D.another[lang]}
+        </button>
+      </div>
+    );
+  }
+
+  const camOn = phase === "live" || phase === "second" || phase === "opening";
+  const es = lang === "es";
+
+  return (
+    <form onSubmit={submit} className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]" noValidate>
+      {/* ───────── La cámara ───────── */}
+      <div className="relative mx-auto w-full max-w-[25rem] pt-5">
+        {/* botón disparador arriba */}
+        <button
+          type="button"
+          onClick={camOn ? shoot : powerOn}
+          disabled={phase === "opening" || phase === "second" || count !== null}
+          className="absolute right-[12%] top-0 z-10 h-7 w-20 rounded-t-[12px] bg-pink shadow-[inset_0_-5px_0_#b23f86] transition-transform active:translate-y-1.5"
+          aria-label={camOn ? B.shoot[lang] : B.power[lang]}
+        />
+        <div className="relative rounded-[28px] bg-[#d9d4c7] p-3 shadow-[inset_0_4px_0_rgba(255,255,255,.7),inset_0_-6px_0_rgba(0,0,0,.12),0_30px_50px_-24px_rgba(31,33,40,.7)] sm:p-4">
+          {/* placa de arriba */}
+          <div className="flex items-center justify-between px-2 pb-3">
+            <div
+              className={clsx(
+                "h-8 w-14 rounded-[6px] border-2 border-[#b9b2a2] transition-colors duration-100",
+                flash ? "bg-white shadow-[0_0_30px_10px_rgba(255,255,255,.9)]" : "bg-[linear-gradient(135deg,#f4f1ea,#cfc8b6)]",
+              )}
+              style={{ backgroundSize: "6px 6px" }}
+              aria-hidden
+            />
+            <p className="font-serif text-[1.35rem] italic leading-none tracking-[-0.01em] text-ink/80">{B.brand}</p>
+            <p className="rounded-[4px] bg-ink px-1.5 font-vhs text-[1.2rem] leading-tight text-[#ffa23a]" aria-label={`${left} ${B.shots[lang]}`}>
+              {String(left).padStart(2, "0")}
+            </p>
+          </div>
+
+          {/* cuerpo con cuerina rosa */}
+          <div
+            className="rounded-[20px] p-3 sm:p-4"
+            style={{ background: "radial-gradient(circle at 1px 1px, rgba(0,0,0,.12) 1px, transparent 1.5px) 0 0/6px 6px, #ee9fcf" }}
+          >
+            {/* visor */}
+            <div className="relative aspect-[3/4] overflow-hidden rounded-[16px] bg-ink shadow-[inset_0_0_0_6px_#1f2128,0_0_0_4px_#c9c2b1]">
+              <video
+                ref={live}
+                className={clsx("absolute inset-0 h-full w-full object-cover", mirror && "-scale-x-100", !camOn && "hidden")}
+                style={{ filter: cssFilter(film) }}
+                muted
+                playsInline
+                aria-label={es ? "Visor de la cámara" : "Camera viewfinder"}
+              />
+              {camOn && (
+                <>
+                  {/* viñeta y grano en vivo */}
+                  <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,${film.vignette * 0.9}) 100%)` }} />
+                  <div className="grain pointer-events-none absolute inset-0" style={{ opacity: film.grain ? 1 : 0 }} />
+                  <div className="pointer-events-none absolute inset-3 rounded-[10px] border border-white/30" />
+                  <span className="pointer-events-none absolute left-4 top-3 font-vhs text-[1.3rem] text-white [text-shadow:0_1px_4px_rgba(0,0,0,.6)]">● {film.name[lang]}</span>
+                  {film.date && (
+                    <span className="pointer-events-none absolute bottom-3 right-4 font-vhs text-[1.5rem] text-[#ffa23a] [text-shadow:0_0_6px_rgba(255,120,30,.9)]">
+                      {`'${String(new Date().getFullYear()).slice(2)} ${new Date().getMonth() + 1} ${new Date().getDate()}`}
+                    </span>
+                  )}
+                </>
+              )}
+
+              {phase === "print" && preview && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={preview} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40 blur-[2px]" />
+              )}
+
+              {(phase === "off" || phase === "print") && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center text-cream">
+                  {phase === "off" && <Sparkle className="h-10 w-10" />}
+                  <button type="button" onClick={powerOn} className="rounded-full bg-cream px-6 py-3 text-[1.05rem] font-bold text-ink shadow-[0_6px_0_#b9b2a2] transition-transform hover:scale-105 active:translate-y-1">
+                    {phase === "print" ? `↺ ${B.retake[lang]}` : `📸 ${B.power[lang]}`}
+                  </button>
+                  <button type="button" onClick={() => fileInput.current?.click()} className="text-[0.95rem] underline decoration-1 underline-offset-4 opacity-80 hover:opacity-100">
+                    {B.upload[lang]}
+                  </button>
+                  {camError && (
+                    <p className="max-w-[26ch] text-[0.9rem] text-yellow" role="alert">
+                      {camError}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {(phase === "opening" || phase === "second") && count === null && (
+                <p className="absolute inset-x-0 bottom-16 text-center font-hand text-[1.8rem] text-cream [text-shadow:0_2px_10px_rgba(0,0,0,.7)]">
+                  {phase === "opening" ? B.waiting[lang] : B.second[lang]}
+                </p>
+              )}
+              {phase === "live" && count === null && (
+                <p className="pointer-events-none absolute inset-x-0 top-12 text-center font-hand text-[1.6rem] text-cream [text-shadow:0_2px_10px_rgba(0,0,0,.7)]">{B.powerHint[lang]}</p>
+              )}
+              {count !== null && (
+                <p key={count} className="pointer-events-none absolute inset-0 grid animate-[sub_.5s_ease-out] place-items-center font-black italic text-[9rem] leading-none text-cream [text-shadow:0_6px_30px_rgba(0,0,0,.5)]" aria-live="assertive">
+                  {count}
+                </p>
+              )}
+              {flash === "finder" && <div className="absolute inset-0 bg-white" />}
+              {camOn && phase !== "opening" && (
+                <button type="button" onClick={powerOff} className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/50 text-cream" aria-label={B.off[lang]}>
+                  ×
+                </button>
+              )}
+            </div>
+
+            {/* controles */}
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFlashOn((v) => !v)}
+                  aria-pressed={flashOn}
+                  className={clsx("rounded-full px-3 py-1.5 text-[0.85rem] font-bold", flashOn ? "bg-yellow text-ink" : "bg-ink/20 text-ink/70")}
+                >
+                  ⚡ {B.flash[lang]}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTimerOn((v) => !v)}
+                  aria-pressed={timerOn}
+                  className={clsx("rounded-full px-3 py-1.5 text-[0.85rem] font-bold", timerOn ? "bg-blue text-cream" : "bg-ink/20 text-ink/70")}
+                >
+                  ⏱ {B.timer[lang]}
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={camOn ? shoot : powerOn}
+                disabled={phase === "opening" || phase === "second" || count !== null}
+                className="grid h-[70px] w-[70px] shrink-0 place-items-center rounded-full border-[5px] border-cream bg-pink shadow-[0_6px_0_#b23f86] transition-transform active:translate-y-1 disabled:opacity-60"
+                aria-label={camOn ? B.shoot[lang] : B.power[lang]}
+              >
+                <span className="h-[44px] w-[44px] rounded-full bg-cream/90" />
+              </button>
+            </div>
+          </div>
+
+          {/* el dial de rollos */}
+          <fieldset className="mt-3 px-1">
+            <legend className="sr-only">{B.film[lang]}</legend>
+            <div className="flex flex-wrap justify-center gap-2">
+              {FILMS.map((f) => {
+                const on = f.id === film.id;
+                return (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => pickFilm(f)}
+                    aria-pressed={on}
+                    className={clsx(
+                      "flex items-center gap-1.5 rounded-full border-2 px-2.5 py-1 text-[0.8rem] font-bold transition-transform",
+                      on ? "-translate-y-0.5 border-ink bg-cream shadow-[0_4px_0_#1f2128]" : "border-transparent bg-white/50 hover:bg-white/80",
+                    )}
+                  >
+                    <span className="h-3.5 w-3.5 rounded-full border border-ink/30" style={{ background: f.swatch }} />
+                    {f.name[lang]}
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+        </div>
+        <input ref={fileInput} type="file" accept="image/*" className="sr-only" tabIndex={-1} onChange={onFile} aria-label={B.upload[lang]} />
+      </div>
+
+      {/* ───────── La foto que sale + el mensaje ───────── */}
+      <div className="relative mx-auto w-full max-w-[26rem]">
+        <div key={printKey} className={clsx("relative bg-white p-3 pb-4 shadow-[0_24px_44px_-22px_rgba(31,33,40,.65)]", preview ? "animate-[eject_.9s_cubic-bezier(.2,.9,.3,1.2)_both]" : "")} style={{ rotate: "2deg" }}>
+          <Pin className="absolute -top-2 left-1/2 z-10 h-6 w-6 -translate-x-1/2" />
+          <div className="relative aspect-[3/4] overflow-hidden bg-[#ece8de]">
+            {preview ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={preview} alt={es ? "Tu foto" : "Your photo"} className="absolute inset-0 h-full w-full animate-[develop_4.5s_ease-out_both] object-cover" />
+                <span className="pointer-events-none absolute inset-x-0 top-1/2 animate-[develop-label_4.5s_ease-out_both] text-center font-hand text-[1.6rem] text-ink/60">{B.developing[lang]}</span>
+              </>
+            ) : (
+              <div className="absolute inset-3 flex items-center justify-center border-2 border-dashed border-ink/20 text-center font-hand text-[1.6rem] text-ink/40">{B.printHere[lang]} ✨</div>
+            )}
+          </div>
+          <label htmlFor="note-message" className="sr-only">
+            {B.caption[lang]}
+          </label>
+          <textarea
+            id="note-message"
+            name="message"
+            maxLength={2000}
+            rows={3}
+            value={msg}
+            onChange={(e) => setMsg(e.target.value)}
+            onFocus={mark}
+            placeholder={preview ? B.caption[lang] : `${B.caption[lang]} ${B.captionOnly[lang]}`}
+            className="mt-2 w-full resize-none bg-transparent px-1 font-hand text-[1.7rem] leading-[1.05] text-ink placeholder:text-ink/35 focus:outline-none"
+          />
+          <div className="flex items-center justify-between px-1">
+            {preview ? (
+              <button type="button" onClick={discard} className="text-[0.8rem] font-semibold text-ink/60 underline underline-offset-2 hover:text-red">
+                {B.remove[lang]}
+              </button>
+            ) : (
+              <span />
+            )}
+            <span className="font-mono text-[0.68rem] text-ink/40" aria-hidden>
+              {msg.length}/2000
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <label className="flex flex-col gap-1 text-[0.72rem] font-extrabold uppercase tracking-[0.1em] text-ink/70">
+            {D.name[lang]}
+            <input name="name" maxLength={80} autoComplete="name" className="rounded-[12px] border-2 border-ink/80 bg-white px-3 py-2.5 text-[1rem] font-normal normal-case tracking-normal text-ink focus:border-blue focus:outline-none" />
+          </label>
+          <label className="flex flex-col gap-1 text-[0.72rem] font-extrabold uppercase tracking-[0.1em] text-ink/70">
+            {D.email[lang]}
+            <input name="email" type="email" maxLength={120} autoComplete="email" className="rounded-[12px] border-2 border-ink/80 bg-white px-3 py-2.5 text-[1rem] font-normal normal-case tracking-normal text-ink focus:border-blue focus:outline-none" />
+          </label>
+        </div>
+        {/* Trampa para bots: invisible para personas */}
+        <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+          <label>
+            Website
+            <input name="website" tabIndex={-1} autoComplete="off" />
+          </label>
+        </div>
+        <div className="mt-5 flex flex-wrap items-center gap-4">
+          <button
+            type="submit"
+            disabled={send === "sending"}
+            className="rounded-full bg-pink px-8 py-3.5 text-[1.05rem] font-bold text-cream shadow-[0_8px_0_#b23f86] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_3px_0_#b23f86] disabled:opacity-60"
+          >
+            {send === "sending" ? D.sending[lang] : D.send[lang]}
+          </button>
+          <p role="alert" className="text-[0.95rem] font-semibold text-red">
+            {send === "error" && error}
+          </p>
+        </div>
+        <p className="mt-4 font-mono text-[0.75rem] text-ink/60">{B.privacy[lang]}</p>
+      </div>
+
+      {/* flash de pantalla: te ilumina la cara con la cámara de adelante */}
+      {flash === "screen" && <div className="fixed inset-0 z-[90] bg-white" aria-hidden />}
+    </form>
+  );
+}
