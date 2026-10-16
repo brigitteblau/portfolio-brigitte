@@ -108,6 +108,68 @@ function shutterSound() {
   }
 }
 
+/** Llavecita de metal (como las de las cámaras viejas) */
+function Switch({ on, onClick, label }: { on: boolean; onClick: () => void; label: string }) {
+  return (
+    <button type="button" role="switch" aria-checked={on} onClick={onClick} className="flex flex-col items-center gap-1" aria-label={label}>
+      <span className="relative block h-6 w-12 rounded-full bg-[#5a4a52] shadow-[inset_0_2px_4px_rgba(0,0,0,.55),0_1px_0_rgba(255,255,255,.5)]">
+        <span
+          className="absolute top-[3px] block h-[18px] w-[22px] rounded-full transition-[left] duration-200"
+          style={{ left: on ? 23 : 3, background: "linear-gradient(180deg,#fbfbf8,#b9b9b2)", boxShadow: "0 2px 3px rgba(0,0,0,.45)" }}
+        />
+      </span>
+      <span className="flex items-center gap-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#7a3a62] [text-shadow:0_1px_0_rgba(255,255,255,.45)]">
+        <span className={clsx("inline-block h-1.5 w-1.5 rounded-full transition-colors", on ? "bg-[#ffe066] shadow-[0_0_6px_2px_rgba(255,224,102,.9)]" : "bg-[#7a3a62]/40")} />
+        {label}
+      </span>
+    </button>
+  );
+}
+
+const LABEL: Record<string, { code: string; stripe: string; ink: string }> = {
+  kodak: { code: "200", stripe: "#e5483d", ink: "#1f2128" },
+  descartable: { code: "400", stripe: "#fbf8ee", ink: "#1f2128" },
+  polaroid: { code: "600", stripe: "linear-gradient(90deg,#e5483d,#f28c38,#f6c744,#3b9a5e,#4e75e5)", ink: "#1f2128" },
+  bn: { code: "B&N", stripe: "#fbf8ee", ink: "#fbf8ee" },
+  normal: { code: "—", stripe: "#4e75e5", ink: "#1f2128" },
+};
+
+/** Un rollo de 35 mm: tocás uno y se "carga" en la cámara */
+function Canister({ film, lang, on, tilt, onClick }: { film: Film; lang: Locale; on: boolean; tilt: number; onClick: () => void }) {
+  const l = LABEL[film.id] ?? LABEL.normal;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={on}
+      className="group flex w-[19%] max-w-[4.6rem] flex-col items-center gap-1.5 focus-visible:outline-none"
+      title={film.name[lang]}
+    >
+      <span
+        className={clsx("relative block w-full transition-transform duration-300", on ? "-translate-y-3" : "group-hover:-translate-y-1.5")}
+        style={{ rotate: `${on ? 0 : tilt}deg`, filter: on ? "drop-shadow(0 10px 8px rgba(31,33,40,.35))" : "drop-shadow(0 4px 4px rgba(31,33,40,.25))" }}
+      >
+        {/* la pestaña del carrete */}
+        <span className="mx-auto block h-2 w-[30%] rounded-t-[3px] bg-[linear-gradient(90deg,#8d8d88,#e9e9e4,#8d8d88)]" />
+        {/* tapa de arriba */}
+        <span className="block h-2.5 rounded-t-[6px] bg-[linear-gradient(90deg,#6f6f6a,#e9e9e4_40%,#9a9a94)]" />
+        {/* etiqueta */}
+        <span className="relative flex aspect-[3/4] flex-col items-center justify-center overflow-hidden" style={{ background: film.swatch }}>
+          <span className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.28),transparent_30%,rgba(255,255,255,.28)_55%,rgba(0,0,0,.2))]" />
+          <span className="relative h-2 w-full" style={{ background: l.stripe }} />
+          <span className="relative mt-1 font-mono text-[0.72rem] font-black leading-none" style={{ color: l.ink }}>
+            {l.code}
+          </span>
+        </span>
+        {/* tapa de abajo */}
+        <span className="block h-2.5 rounded-b-[6px] bg-[linear-gradient(90deg,#6f6f6a,#e9e9e4_40%,#9a9a94)]" />
+        {on && <span className="absolute -right-2 -top-3 rotate-12 text-[1.1rem]" aria-hidden>✨</span>}
+      </span>
+      <span className={clsx("text-center font-hand text-[1.05rem] leading-[0.95] sm:text-[1.2rem]", on ? "text-pink" : "text-ink/70")}>{film.name[lang]}</span>
+    </button>
+  );
+}
+
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export default function FilmCamera({ lang }: { lang: Locale }) {
@@ -443,63 +505,38 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
               )}
             </div>
 
-            {/* controles */}
+            {/* controles: dos llavecitas y el disparador */}
             <div className="mt-4 flex items-center justify-between gap-3">
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setFlashOn((v) => !v)}
-                  aria-pressed={flashOn}
-                  className={clsx("rounded-full px-3 py-1.5 text-[0.85rem] font-bold", flashOn ? "bg-yellow text-ink" : "bg-ink/20 text-ink/70")}
-                >
-                  ⚡ {B.flash[lang]}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTimerOn((v) => !v)}
-                  aria-pressed={timerOn}
-                  className={clsx("rounded-full px-3 py-1.5 text-[0.85rem] font-bold", timerOn ? "bg-blue text-cream" : "bg-ink/20 text-ink/70")}
-                >
-                  ⏱ {B.timer[lang]}
-                </button>
+              <div className="flex gap-4">
+                <Switch on={flashOn} onClick={() => setFlashOn((v) => !v)} label={B.flash[lang]} />
+                <Switch on={timerOn} onClick={() => setTimerOn((v) => !v)} label={B.timer[lang]} />
               </div>
               <button
                 type="button"
                 onClick={camOn ? shoot : powerOn}
                 disabled={phase === "opening" || phase === "second" || count !== null}
-                className="grid h-[70px] w-[70px] shrink-0 place-items-center rounded-full border-[5px] border-cream bg-pink shadow-[0_6px_0_#b23f86] transition-transform active:translate-y-1 disabled:opacity-60"
+                className="group relative grid h-[74px] w-[74px] shrink-0 place-items-center rounded-full disabled:opacity-70"
+                style={{ background: "conic-gradient(from 200deg, #f7f7f4, #9c9c96, #ececea, #7d7d78, #f7f7f4)", boxShadow: "0 6px 10px -4px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.15)" }}
                 aria-label={camOn ? B.shoot[lang] : B.power[lang]}
               >
-                <span className="h-[44px] w-[44px] rounded-full bg-cream/90" />
+                <span
+                  className="block h-[50px] w-[50px] rounded-full transition-transform duration-75 group-active:scale-90"
+                  style={{ background: "radial-gradient(circle at 35% 30%, #ffd3ec 0 12%, #e15cae 45%, #a8337c 100%)", boxShadow: "0 3px 0 #7d2259, inset 0 -3px 6px rgba(0,0,0,.25)" }}
+                />
               </button>
             </div>
           </div>
-
-          {/* el dial de rollos */}
-          <fieldset className="mt-3 px-1">
-            <legend className="sr-only">{B.film[lang]}</legend>
-            <div className="flex flex-wrap justify-center gap-2">
-              {FILMS.map((f) => {
-                const on = f.id === film.id;
-                return (
-                  <button
-                    key={f.id}
-                    type="button"
-                    onClick={() => pickFilm(f)}
-                    aria-pressed={on}
-                    className={clsx(
-                      "flex items-center gap-1.5 rounded-full border-2 px-2.5 py-1 text-[0.8rem] font-bold transition-transform",
-                      on ? "-translate-y-0.5 border-ink bg-cream shadow-[0_4px_0_#1f2128]" : "border-transparent bg-white/50 hover:bg-white/80",
-                    )}
-                  >
-                    <span className="h-3.5 w-3.5 rounded-full border border-ink/30" style={{ background: f.swatch }} />
-                    {f.name[lang]}
-                  </button>
-                );
-              })}
-            </div>
-          </fieldset>
         </div>
+
+        {/* los rollos, sueltos sobre el escritorio */}
+        <fieldset className="mt-6">
+          <legend className="mb-1 w-full text-center font-hand text-[1.5rem] leading-none text-ink/70">{es ? "elegí un rollo ↓" : "pick a film ↓"}</legend>
+          <div className="flex items-end justify-center gap-1 sm:gap-3">
+            {FILMS.map((f, i) => (
+              <Canister key={f.id} film={f} lang={lang} on={f.id === film.id} tilt={[-6, 4, -3, 6, -4][i % 5]} onClick={() => pickFilm(f)} />
+            ))}
+          </div>
+        </fieldset>
         <input ref={fileInput} type="file" accept="image/*" className="sr-only" tabIndex={-1} onChange={onFile} aria-label={B.upload[lang]} />
       </div>
 
