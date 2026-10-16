@@ -27,7 +27,7 @@ export const ui = {
     contact: { es: "Contacto", en: "Contact" },
   },
   fullName: "Brigitte Blau",
-  nameTag: { es: "me llamo", en: "my name is" },
+  nameTag: { es: "nombre:", en: "name:" },
   photoMissing: { es: "foto acá", en: "photo here" },
   skip: { es: "Saltar al contenido", en: "Skip to content" },
 } satisfies Record<string, unknown>;
@@ -275,6 +275,7 @@ export const dejame = {
     en: "An idea, a question, something you thought while reading this. You don't need to leave your name.",
   },
   placeholder: { es: "Escribí acá…", en: "Write here…" },
+  placeholderOptional: { es: "Un mensaje (opcional)…", en: "A message (optional)…" },
   name: { es: "Nombre (opcional)", en: "Name (optional)" },
   email: { es: "Mail, si querés que te conteste (opcional)", en: "Email, if you'd like a reply (optional)" },
   send: { es: "Enviar", en: "Send" },
@@ -288,9 +289,80 @@ export const dejame = {
     rate: { es: "Mandaste varios seguidos. Probá de nuevo en unos minutos.", en: "You've sent a few in a row. Try again in a few minutes." },
     off: { es: "Este espacio todavía no está activado. Mientras tanto, escribime por mail.", en: "This space isn't switched on yet. In the meantime, email me." },
     generic: { es: "No se pudo enviar. Probá de nuevo en un rato.", en: "It didn't go through. Try again in a bit." },
+    big: { es: "La foto es muy pesada (máximo 5 MB).", en: "That photo is too big (5 MB max)." },
+    photo: { es: "Esa foto no se pudo leer. Probá con otra (JPG, PNG o WebP).", en: "Couldn't read that photo. Try another one (JPG, PNG or WebP)." },
+    empty: { es: "Sacate una foto o escribí algo (mínimo 3 caracteres).", en: "Snap a photo or write something (at least 3 characters)." },
   },
   privacy: {
     es: "Lo leo solo yo. No se publica nada.",
     en: "Only I read it. Nothing gets published.",
   },
+};
+
+/** La portada */
+export const hero = {
+  hello: { es: "Holaaa!", en: "Hiii!" },
+  screenTitle: "brigitte.exe",
+  funFact: { es: "Dato", en: "Fun fact" },
+  funFactText: { es: "mi nombre lo vas a ir descubriendo", en: "you'll find out my name as you go" },
+  stickies: {
+    projects: { es: "mis proyectos", en: "my projects" },
+    journal: { es: "mi journal", en: "my journal" },
+    note: { es: "dejame algo!", en: "leave me a note!" },
+  },
+  scroll: { es: "bajá", en: "scroll" },
+};
+
+/** La ficha tipo "hello!" con datos */
+export const perfil = {
+  title: { es: "hola!", en: "hello!" },
+  fields: {
+    name: { es: "Nombre", en: "Name" },
+    notOnly: { es: "No solo soy", en: "Not just a" },
+    now: { es: "Ahora", en: "Now" },
+    goal: { es: "Meta", en: "Goal" },
+  },
+  nowValue: { es: "estudiante en ORT y partner en Grupo Mirrow", en: "student at ORT and partner at Grupo Mirrow" },
+  goalValue: { es: "dejar algo en el mundo", en: "leave something in the world" },
+};
+
+/** La frase grande con palabras de colores (es tuya, del cuaderno) */
+export const statement = {
+  tag: { es: "lo que cambió", en: "what changed" },
+  parts: {
+    es: [["De querer ser ", ""], ["perfecta", "blue"], [" a querer ", ""], ["dejar algo", "pink"], [" en el mundo ", ""], [":)", "yellow"]],
+    en: [["From wanting to be ", ""], ["perfect", "blue"], [" to wanting to ", ""], ["leave something", "pink"], [" in the world ", ""], [":)", "yellow"]],
+  } as Record<"es" | "en", [string, "" | "blue" | "pink" | "yellow"][]>,
+};
+
+/** El escritorio con carpetas */
+export const carpetas = {
+  title: { es: "Yep!", en: "Yep!" },
+  sub: { es: "Esta soy yo.", en: "That's me." },
+  hint: { es: "abrí una carpeta", en: "open a folder" },
+  close: { es: "Cerrar", en: "Close" },
+  items: { es: "elementos", en: "items" },
+};
+
+/** "Dejame algo" estilo BeReal */
+export const bereal = {
+  title: { es: "Tu BeReal para mí", en: "Your BeReal for me" },
+  intro: {
+    es: "Sacate una foto (las dos cámaras, como BeReal) y dejame un mensaje. O solo el mensaje, también vale.",
+    en: "Snap a photo (both cameras, BeReal-style) and leave me a message. Or just the message, that works too.",
+  },
+  open: { es: "Sacate una foto", en: "Take a photo" },
+  shoot: { es: "Sacar", en: "Snap" },
+  retake: { es: "Otra vez", en: "Retake" },
+  remove: { es: "Sin foto", en: "No photo" },
+  upload: { es: "o subí una", en: "or upload one" },
+  waiting: { es: "abriendo cámara…", en: "opening camera…" },
+  second: { es: "ahora la otra cámara…", en: "now the other camera…" },
+  noCamera: {
+    es: "No pude abrir la cámara. Podés subir una foto o mandar solo el mensaje.",
+    en: "I couldn't open the camera. You can upload a photo or just send the message.",
+  },
+  tooBig: { es: "La foto es muy pesada (máximo 5 MB).", en: "That photo is too big (5 MB max)." },
+  sentWithPhoto: { es: "Llegó tu BeReal. Gracias!", en: "Your BeReal arrived. Thanks!" },
+  privacy: { es: "La foto y el mensaje los veo solo yo. No se publica nada.", en: "Only I see the photo and the message. Nothing gets published." },
 };

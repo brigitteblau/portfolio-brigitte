@@ -2,38 +2,29 @@
 
 ![Moodboard](docs/moodboard.jpg)
 
-Una presentación que se scrollea para el costado. Va contando mi historia en eras y mi nombre se revela de a una letra.
+Un escritorio celeste con tarjetas, stickers, polaroids y post-its. La mayor parte de la página baja normal; solo la historia (las eras) va de costado. Mi nombre se revela de a una letra.
 
 **Stack:** Next.js 16 (App Router) + TypeScript + Tailwind 4 + GSAP (ScrollTrigger) + Lenis. Es bilingüe: `/es` y `/en`.
 
 ## Moodboard
 
-**Idea:** mi historia contada por eras, como una presentación que se mueve de costado. Es editorial y tiene actitud. Los objetos que la arman son un escritorio de computadora, una planilla y una cámara vieja. Nada de stickers ni "nena".
+**Idea:** un scrapbook digital. Fondo celeste rayado, tarjetas crema tipo diapositiva, y encima cosas pegadas: polaroids con clip o chinche, post-its, etiquetas de color, brillitos, una compu retro y carpetas de Mac.
 
 | Color | Hex | Dónde se usa |
 |---|---|---|
-| Hueso | `#E9EAEE` | fondo base |
-| Tinta | `#0D1124` | texto y el nombre tachado |
-| Cobalto | `#2B44FF` | acento principal, el asterisco, el contacto |
-| Lima | `#D4FF3A` | resaltados (la fila de "ahora" en la planilla, la selección de texto) |
-| Rojo tachón | `#FF3D2E` | las tachaduras de las etiquetas |
-| Verde cancha | `#0E4D33` | la era Deportes |
-| Sepia | `#EAD6BF` → `#D9B08F` | la era Nacer, nostálgica |
+| Celeste | `#C9D5F2` | el fondo, con rayitas blancas finas |
+| Crema | `#FBF8EE` | las tarjetas |
+| Tinta | `#1F2128` | texto |
+| Azul | `#4E75E5` | el degradé de "Holaaa!", acentos |
+| Rosa | `#E15CAE` | el sello, "dejar algo", el botón de enviar |
+| Amarillo | `#F6C744` | brillitos, post-its |
+| Verde | `#3B9A5E` | la etiqueta "Dato", Deportes |
+| Rojo | `#E5483D` | chinches y tachaduras |
+| Beige | `#E9E0C9` | la compu retro |
 
-**Tipografías:**
-- **Bodoni Moda** (itálica) para los títulos grandes ("Holaaa.", "Brigitte").
-- **Bricolage Grotesque** para el texto.
-- **JetBrains Mono** para las notas de presentador.
-- **Anton** para Deportes.
-- **VT323** para la cámara de Nacer.
+**Tipografías:** Inter Tight (títulos pesados en itálica y texto), Caveat (lo escrito a mano), Bodoni Moda (el "Yep!" y frases), VT323 (la cámara del cumple), JetBrains Mono (código).
 
-**Motivos:**
-- El nombre tachado (B██████), que se destapa letra por letra a medida que pasás de era.
-- El asterisco cobalto.
-- La planilla que termina en `=AHORA()`.
-- La cámara casera de Nacer.
-
-**Referencias:** el escritorio de Mac con sus carpetas, Excel, la tipografía editorial de revista, el collage y la cámara casera.
+**Motivos:** el nombre tapado que se destapa, la compu `brigitte.exe`, la ficha "hola!" con campos, las palabras de colores, la planilla que termina en `=AHORA()`, las carpetas life/design/random y el "Dejame algo" tipo BeReal.
 
 ## Correrlo
 
@@ -46,14 +37,17 @@ Cada `git push` a `main` se publica solo en Vercel.
 
 Lo que falta completar con información real está en **[CONTENT_TODO.md](CONTENT_TODO.md)**. Cualquier texto que empiece con `✎` no se publica.
 
-## "Dejame algo" (mensajes de visitantes)
+## "Dejame algo" (estilo BeReal)
 
-Los mensajes se guardan en una tabla privada de Supabase. Nadie los puede leer desde el sitio: los ves vos en Supabase → Table Editor → `visitor_notes`.
+La gente se puede sacar una foto (en el celular, las dos cámaras: la de atrás grande y la selfie chiquita, como BeReal), o subir una, y dejarte un mensaje. Todo queda **privado** en tu Supabase:
+
+- los mensajes, en la tabla `visitor_notes` (Table Editor);
+- las fotos, en el bucket privado `visitor-notes` (Storage). En la tabla, `photo_path` te dice cuál es la foto de cada mensaje.
 
 Para activarlo hay que hacer tres cosas:
 
-1. En Supabase, abrí **SQL Editor** y corré el archivo [`supabase/visitor_notes.sql`](supabase/visitor_notes.sql).
-2. En Vercel, entrá a **Settings → Environment Variables** y agregá estas dos variables:
+1. En Supabase, abrí **SQL Editor** y corré [`supabase/visitor_notes.sql`](supabase/visitor_notes.sql). Crea la tabla y el bucket privado (si ya tenías la tabla vieja, la actualiza).
+2. En Vercel, entrá a **Settings → Environment Variables** y agregá:
 
    | Variable | Valor |
    |---|---|
@@ -62,15 +56,11 @@ Para activarlo hay que hacer tres cosas:
 
 3. Volvé a desplegar (Deployments → Redeploy).
 
-Mientras no esté activado, el formulario lo dice y sugiere escribir por mail. No simula que el mensaje se envió.
+Mientras no esté activado, el formulario lo dice y sugiere escribir por mail. No simula que se envió.
 
-**Protecciones que ya tiene:**
-- Validación del lado del servidor: de 3 a 2000 caracteres, y que el mail tenga un formato válido.
-- Un campo trampa invisible para frenar bots.
-- Un tiempo mínimo de escritura.
-- Un límite de 3 mensajes cada 10 minutos por visitante. Funciona con un hash efímero en memoria, sin guardar IPs.
+**Protecciones:** validación en el servidor (mensaje de 3 a 2000 caracteres, o solo foto), la foto se chequea por sus bytes (JPG, PNG o WebP, máx. 5 MB) y se achica en el navegador antes de subir, campo trampa para bots, tiempo mínimo, y límite de 3 envíos cada 10 minutos por visitante con un hash efímero en memoria (sin guardar IPs). Las fotos nunca son públicas.
 
-**Opcional:** `NEXT_PUBLIC_SITE_URL` (por ejemplo, `https://brigitteblau.vercel.app`) sirve para fijar la URL que se usa en el sitemap y en Open Graph. Si no la ponés, se usa la URL de producción de Vercel.
+**Opcional:** `NEXT_PUBLIC_SITE_URL` (por ejemplo, `https://brigitteblau.vercel.app`) fija la URL del sitemap y de Open Graph.
 
 ## Dónde va cada cosa
 
@@ -121,10 +111,10 @@ Adentro podés usar `<Nota>…</Nota>` (un post-it), `<Fotos>…</Fotos>` (una g
 
 ## Cómo funciona (para cuando quieras tocarlo)
 
-- `src/components/Track.tsx` es el carrete. Fija la pantalla, convierte el scroll vertical en movimiento horizontal y maneja las flechas del teclado, los botones ← → y la barra de eras.
-- `src/components/Panel.tsx` es una diapositiva. Tiene dos opciones:
-  - `hold={1.5}`: la diapositiva se queda quieta 1,5 pantallas de scroll mientras pasa algo adentro (el tipeo, la planilla).
-  - `wide="auto"`: la diapositiva mide lo que mida su contenido (por ejemplo, el muro de proyectos).
-  - Adentro, `usePanel(({ enter, hold, through, exit }) => …)` te da el progreso (de 0 a 1) para animar.
-- `nameStep` en un Panel indica cuántas letras del nombre se ven a partir de esa diapositiva. Los valores están en `NAME_STEPS`, en `site.ts`.
-- Si la persona tiene "reducir movimiento" activado, todo se ve vertical y quieto.
+- La página (`src/app/[lang]/page.tsx`) va en este orden: Hero → Perfil → Eras (de costado) → Proyectos → Ahora → Carpetas → Journal + Dejame algo → ¿Querés conocerme? + Contacto. Cada parte está en `src/components/sections/`.
+- `src/components/Track.tsx` es el tramo horizontal: fija la pantalla solo mientras estás en las eras y convierte el scroll en movimiento de costado. En celular (y con "reducir movimiento") las tarjetas van una abajo de la otra.
+- `src/components/Panel.tsx` es una diapositiva de ese tramo. `hold={1.2}` la deja quieta un rato mientras pasa algo adentro (el tipeo). `usePanel(({ enter, hold, through, exit }) => …)` da el progreso para animar.
+- `src/components/Video.tsx`: los videos arrancan solos (sin sonido) cuando aparecen, con play/pausa y botón de sonido.
+- **Carpetas:** cada subcarpeta de `public/fotos/carpetas/` es una carpeta del escritorio. Soltá fotos o videos `.mp4` (con un `.jpg` del mismo nombre como portada) y aparecen solos.
+- El nombre: `NameStep` (o `nameStep` en un Panel) dice cuántas letras se ven a partir de esa parte. Los valores están en `NAME_STEPS`, en `site.ts`.
+- Los stickers (polaroid, post-it, etiqueta, brillito, compu retro, carpetas, manchitas con cara) están en `src/components/Stickers.tsx`.

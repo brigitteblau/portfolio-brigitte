@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import "@fontsource-variable/bricolage-grotesque/standard.css";
+import "@fontsource-variable/inter-tight/wght.css";
+import "@fontsource-variable/inter-tight/wght-italic.css";
+import "@fontsource-variable/caveat/index.css";
 import "@fontsource-variable/bodoni-moda/standard.css";
 import "@fontsource-variable/bodoni-moda/standard-italic.css";
 import "@fontsource/vt323/index.css";
-import "@fontsource/anton/index.css";
 import "@fontsource-variable/jetbrains-mono/index.css";
 import "../globals.css";
 import { isLocale, locales, type Locale } from "@/lib/i18n";

@@ -31,10 +31,10 @@ export default function MenuBar({ lang }: { lang: Locale }) {
   const switchHref = pathname.replace(/^\/(es|en)(?=\/|$)/, `/${other}`);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-9 items-center justify-between border-b border-navy/10 bg-white px-3 text-[0.875rem] sm:px-4">
+    <header className="fixed inset-x-2 top-2 z-50 flex h-10 items-center justify-between rounded-full bg-cream/95 px-2 text-[0.9rem] font-semibold shadow-[0_10px_24px_-14px_rgba(31,33,40,.6)] sm:inset-x-4 sm:px-3">
       <nav className="flex min-w-0 items-center gap-0.5 sm:gap-2" aria-label="Principal">
-        <Link href={`/${lang}`} className="flex items-center gap-2 rounded px-1.5 py-0.5 hover:bg-navy/10">
-          <Asterisk className="h-4 w-4 shrink-0" color="var(--cobalt)" />
+        <Link href={`/${lang}`} className="flex items-center gap-2 rounded-full px-1.5 py-1 sm:px-2.5 hover:bg-sky">
+          <Asterisk className="h-4 w-4 shrink-0" color="var(--pink)" />
           <span className="sr-only">{ui.fullName}</span>
         </Link>
         {(
@@ -46,7 +46,7 @@ export default function MenuBar({ lang }: { lang: Locale }) {
           ] as const
         ).map(([id, label]) =>
           id === "journal" ? (
-            <Link key={id} href={`/${lang}/journal`} className="whitespace-nowrap rounded px-1.5 py-0.5 hover:bg-navy/10">
+            <Link key={id} href={`/${lang}/journal`} className="whitespace-nowrap rounded-full px-1.5 py-1 sm:px-2.5 hover:bg-sky">
               {label[lang]}
             </Link>
           ) : (
@@ -59,7 +59,7 @@ export default function MenuBar({ lang }: { lang: Locale }) {
                   window.dispatchEvent(new CustomEvent("goto", { detail: id }));
                 }
               }}
-              className={`whitespace-nowrap rounded px-1.5 py-0.5 hover:bg-navy/10 ${id === "contacto" ? "hidden md:inline" : ""}`}
+              className={`whitespace-nowrap rounded-full px-1.5 py-1 sm:px-2.5 hover:bg-sky ${id === "contacto" ? "hidden md:inline" : ""}`}
             >
               {label[lang]}
             </Link>
@@ -70,7 +70,7 @@ export default function MenuBar({ lang }: { lang: Locale }) {
         <Link
           href={switchHref}
           hrefLang={other}
-          className="rounded px-1.5 py-0.5 hover:bg-navy/10"
+          className="rounded-full px-1.5 py-1 sm:px-2.5 hover:bg-sky"
           aria-label={other === "en" ? "Switch to English" : "Cambiar a español"}
         >
           <span className={lang === "es" ? "font-semibold" : "opacity-50"}>ES</span>

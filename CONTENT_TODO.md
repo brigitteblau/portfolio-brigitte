@@ -47,6 +47,16 @@ Los 3 destacados (Hunda, Dragonfish × Tienda Nube y Trak) están escritos **sol
 - [ ] **"Este sitio empezó en un cuaderno"** es una entrada de ejemplo y está como **borrador** (`draft: true`): no se publica. Usala de plantilla o borrala.
 - [ ] Primeras entradas reales. Temas que sugirió la devolución: ideas a las 2 AM, cosas que estoy construyendo, preguntas que todavía no respondí, lo que voy aprendiendo, fotos y momentos.
 
-## "Dejame algo" (mensajes)
+## Carpetas (life / design / random)
 
-- [ ] Activarlo en Supabase. Son 3 pasos y están en el README, sección **"Dejame algo"**.
+- [ ] Revisá que estés cómoda con las fotos que puse en cada carpeta (`public/fotos/carpetas/`), sobre todo las que tienen a otras personas: confirmá que están de acuerdo con aparecer.
+- [ ] El video `random/3.mp4` lo giré; fijate que haya quedado derecho.
+- [ ] ¿Querés más carpetas? Creá otra subcarpeta (por ejemplo `golf/` o `viajes/`) y aparece sola.
+
+## Inicio
+
+- [ ] El "Dato" de la portada hoy es "mi nombre lo vas a ir descubriendo". Si tenés un fun fact real tuyo, cambialo en `site.ts` → `hero.funFactText`.
+
+## "Dejame algo" (BeReal)
+
+- [ ] Activarlo en Supabase: correr de nuevo `supabase/visitor_notes.sql` (ahora también crea el bucket privado de fotos) y poner las 2 variables en Vercel. Pasos en el README.

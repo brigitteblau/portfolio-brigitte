@@ -2,58 +2,69 @@
 @import "lenis/dist/lenis.css";
 
 /*
-  Sistema base: "el escritorio". Cada era sobreescribe --bg / --ink / --accent
-  con su propio branding (ver clases .era-*).
+  Sistema: un escritorio celeste rayado con tarjetas crema tipo diapositiva,
+  stickers, polaroids con clip, etiquetas y brillitos.
 */
 :root {
-  --desk: #ffffff; /* base: blanco puro */
-  --navy: #0d1124; /* tinta */
-  --cobalt: #2b44ff; /* azul eléctrico */
-  --folder: #8ec5f0;
-  --white: #ffffff;
-  --orange: #ff6a2b;
-  --red: #ff3d2e;
-  --yellow: #d4ff3a; /* lima, el acento de resaltado */
-  --pink: #f2a7c3;
-  --green: #0e4d33;
+  --sky: #c9d5f2; /* fondo celeste */
+  --sky-deep: #b7c7ee;
+  --cream: #fbf8ee; /* tarjetas */
+  --ink: #1f2128;
+  --blue: #4e75e5;
+  --blue-soft: #b9cbf6;
+  --pink: #e15cae;
+  --yellow: #f6c744;
+  --green: #3b9a5e;
+  --red: #e5483d;
+  --orange: #f28c38;
+  --beige: #e9e0c9; /* compu retro */
 
-  --bg: var(--desk);
-  --ink: var(--navy);
-  --accent: var(--cobalt);
+  /* compat con componentes viejos */
+  --navy: var(--ink);
+  --cobalt: var(--blue);
+  --white: var(--cream);
+  --desk: var(--sky);
 }
 
 @theme inline {
-  --color-desk: var(--desk);
-  --color-navy: var(--navy);
-  --color-cobalt: var(--cobalt);
-  --color-folder: var(--folder);
-  --color-paper: var(--white);
-  --color-orange: var(--orange);
-  --color-red: var(--red);
-  --color-yellow: var(--yellow);
-  --color-pink: var(--pink);
-  --color-green: var(--green);
+  --color-sky: var(--sky);
+  --color-sky-deep: var(--sky-deep);
+  --color-cream: var(--cream);
   --color-ink: var(--ink);
-  --color-accent: var(--accent);
+  --color-blue: var(--blue);
+  --color-blue-soft: var(--blue-soft);
+  --color-pink: var(--pink);
+  --color-yellow: var(--yellow);
+  --color-green: var(--green);
+  --color-red: var(--red);
+  --color-orange: var(--orange);
+  --color-beige: var(--beige);
+  /* compat */
+  --color-navy: var(--ink);
+  --color-cobalt: var(--blue);
+  --color-paper: var(--cream);
+  --color-desk: var(--sky);
 
-  --font-sans: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-sans: "Inter Tight Variable", "Helvetica Neue", Arial, sans-serif;
   --font-serif: "Bodoni Moda Variable", "Didot", serif;
+  --font-hand: "Caveat Variable", "Bradley Hand", cursive;
   --font-vhs: "VT323", ui-monospace, monospace;
-  --font-sport: "Anton", Impact, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 }
 
 html {
-  background: var(--desk);
-  color: var(--navy);
+  background: var(--sky);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+/* El fondo celeste con rayitas finas verticales */
 body {
-  background: var(--desk);
-  color: var(--navy);
-  font-family: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  background-color: var(--sky);
+  background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.28) 0 2px, transparent 2px 10px);
+  color: var(--ink);
+  font-family: "Inter Tight Variable", "Helvetica Neue", Arial, sans-serif;
   font-size: 1.0625rem;
   line-height: 1.5;
   overflow-x: clip;
@@ -61,20 +72,34 @@ body {
 
 ::selection {
   background: var(--yellow);
-  color: var(--navy);
+  color: var(--ink);
 }
 
 :focus-visible {
-  outline: 3px solid var(--cobalt);
+  outline: 3px solid var(--blue);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
-/* Carrete horizontal */
-.reel:not([data-flat]) > .panel { width: var(--w); }
-.reel[data-flat] > .panel { width: 100%; height: auto; min-height: 100svh; }
+/* Tarjeta tipo diapositiva: crema, bordes redondeados, sombra suave */
+.slide {
+  background: var(--cream);
+  border-radius: 26px;
+  box-shadow:
+    inset 0 0 0 6px rgba(255, 255, 255, 0.7),
+    0 24px 48px -26px rgba(52, 72, 140, 0.55),
+    0 2px 0 rgba(52, 72, 140, 0.08);
+}
 
-/* Grano de película, para la parte nostálgica */
+/* El "hello!" grande: azul que se desvanece hacia abajo */
+.hello-grad {
+  background: linear-gradient(180deg, #4e75e5 35%, #8fa9f0 75%, #d5e0fa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Grano de película (estático), para la parte nostálgica */
 .grain::after {
   content: "";
   position: absolute;
@@ -84,37 +109,35 @@ body {
   opacity: 0.1;
 }
 
-@keyframes grain {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-3%, 2%); }
-  50% { transform: translate(2%, -3%); }
-  75% { transform: translate(-1%, 3%); }
-  100% { transform: translate(0, 0); }
+/* Brillitos que titilan */
+@keyframes twinkle {
+  0%, 100% { transform: scale(1) rotate(0); opacity: 1; }
+  50% { transform: scale(0.75) rotate(20deg); opacity: 0.7; }
+}
+.twinkle { animation: twinkle 2.6s ease-in-out infinite; }
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.floaty { animation: floaty 5s ease-in-out infinite; }
+
+@keyframes sub {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
 }
 
-/* Papel punteado del cuaderno (journal) */
-.dot-paper {
-  background-color: var(--white);
-  background-image: radial-gradient(rgba(13, 17, 36, 0.16) 1px, transparent 1.2px);
-  background-size: 22px 22px;
-}
-
-/* Cuadrícula de planilla */
-.sheet-grid {
-  background-image:
-    linear-gradient(#d4d8e0 1px, transparent 1px),
-    linear-gradient(90deg, #d4d8e0 1px, transparent 1px);
-  background-size: 100% 36px, 120px 100%;
-}
-
-
+/* Carrete horizontal (solo la parte de las eras) */
+.reel:not([data-flat]) > .panel { width: var(--w); }
+.reel[data-flat] > .panel { width: 100%; height: auto; min-height: auto; }
+.reel[data-flat] > .panel > div { width: 100%; transform: none !important; }
 
 .prose-journal p { margin: 0 0 1.1em; }
-.prose-journal h2 { font-family: "Bodoni Moda Variable", serif; font-style: italic; font-size: 2rem; line-height: 1.1; margin: 1.6em 0 0.5em; }
-.prose-journal img { border-radius: 4px; margin: 1.5em 0; width: 100%; height: auto; }
+.prose-journal h2 { font-weight: 800; font-size: 2rem; line-height: 1.1; letter-spacing: -0.02em; margin: 1.6em 0 0.5em; }
+.prose-journal img { border-radius: 6px; margin: 1.5em 0; width: 100%; height: auto; }
 .prose-journal video { margin: 1.5em auto; }
 .prose-journal a { text-decoration: underline; text-underline-offset: 3px; }
-.prose-journal blockquote { font-family: "Bodoni Moda Variable", serif; font-style: italic; font-size: 1.9rem; line-height: 1.15; margin: 1.2em 0; padding-left: 1rem; border-left: 3px solid var(--cobalt); }
+.prose-journal blockquote { font-family: "Caveat Variable", cursive; font-size: 2rem; line-height: 1.15; margin: 1.2em 0; padding-left: 1rem; border-left: 4px solid var(--pink); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -123,20 +146,3 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
-
-.reel[data-flat] > .panel > div { width: 100%; transform: none !important; }
-
-/* Nota al margen de cada diapositiva ("explicación") */
-.slide-note {
-  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
-  font-size: 0.78rem;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  opacity: 0.7;
-}
-
-@keyframes sub {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; }
-}
-.reel[data-flat] [data-row] { flex-wrap: wrap; height: auto; }

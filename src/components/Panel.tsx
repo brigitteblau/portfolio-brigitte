@@ -171,7 +171,15 @@ export function usePanelVideo(ref: React.RefObject<HTMLVideoElement | null>) {
     const v = ref.current;
     if (!v) return;
     const visible = enter > 0.02 && exit < 0.98;
-    if (visible && v.paused) void v.play().catch(() => {});
+    if (visible && v.paused) {
+      // iOS solo reproduce solo si el video está silenciado como propiedad (no alcanza el atributo)
+      if (!v.dataset.user) {
+        v.muted = true;
+        v.defaultMuted = true;
+      }
+      v.playsInline = true;
+      void v.play().catch(() => {});
+    }
     else if (!visible && !v.paused) v.pause();
   });
 }

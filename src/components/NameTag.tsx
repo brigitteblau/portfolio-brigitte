@@ -53,26 +53,42 @@ export default function NameTag({ lang }: { lang: Locale }) {
 
   return (
     <div
-      className="pointer-events-none fixed right-3 top-12 z-40 flex select-none items-center gap-2.5 rounded-full bg-white py-1.5 pl-3.5 pr-2 shadow-[0_0_0_1px_rgba(13,17,36,.08)] sm:right-6 sm:top-14"
+      className="pointer-events-none fixed right-3 top-[3.6rem] z-40 flex select-none items-center gap-2 rounded-[10px] bg-cream py-1.5 pl-3 pr-2.5 shadow-[0_10px_24px_-14px_rgba(31,33,40,.6)] sm:right-6 sm:top-16"
       aria-live="polite"
       aria-label={`${ui.nameTag[lang]} ${letters.slice(0, n).join("")}`}
     >
-      <span className="font-mono text-[0.7rem] opacity-60">{ui.nameTag[lang]}</span>
-      <span className="flex items-center gap-[2px] font-serif text-[1.25rem] italic leading-none sm:text-[1.45rem]">
+      <span className="text-[0.62rem] font-extrabold uppercase tracking-[0.08em] text-ink/70">{ui.nameTag[lang]}</span>
+      <span className="flex items-center gap-[2px] text-[1.15rem] font-bold leading-none tracking-[-0.02em] sm:text-[1.3rem]">
         {letters.map((ch, i) =>
           i < n ? (
             <span
               key={i}
               className="inline-block transition-[color,transform] duration-500"
-              style={{ color: i === justRevealed ? "var(--cobalt)" : undefined, transform: i === justRevealed ? "translateY(-2px)" : "none" }}
+              style={{ color: i === justRevealed ? "var(--pink)" : undefined, transform: i === justRevealed ? "translateY(-3px) scale(1.15)" : "none" }}
             >
               {ch}
             </span>
           ) : (
-            <span key={i} className="inline-block h-[0.85em] w-[0.5em] rounded-[2px] bg-navy" />
+            <span key={i} className="inline-block h-[0.85em] w-[0.5em] rounded-[2px] bg-ink" />
           ),
         )}
       </span>
     </div>
   );
+}
+
+/** Pone el nombre en `n` letras cuando esta parte de la página está en pantalla. */
+export function NameStep({ n }: { n: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = ref.current?.parentElement;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && setNameStep(n)),
+      { rootMargin: "-45% 0px -45% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [n]);
+  return <span ref={ref} hidden />;
 }

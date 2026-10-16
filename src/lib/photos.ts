@@ -50,3 +50,42 @@ export function allPhotos(): PhotoSet {
     contacto: listPhotos("contacto"),
   };
 }
+
+const MEDIA = /\.(jpe?g|png|webp|avif|gif|mp4|webm|mov)$/i;
+const VID = /\.(mp4|webm|mov)$/i;
+
+export type Media = { src: string; kind: "img" | "video"; poster?: string };
+export type Folder = { name: string; items: Media[] };
+
+/**
+ * Las carpetas del escritorio: cada subcarpeta de public/fotos/carpetas es una carpeta.
+ * Fotos y videos; si un video tiene un .jpg con el mismo nombre, ese es su portada (y no se lista aparte).
+ */
+export function listCarpetas(): Folder[] {
+  const root = path.join(process.cwd(), "public", "fotos", "carpetas");
+  let dirs: string[] = [];
+  try {
+    dirs = fs.readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory() && !d.name.startsWith(".")).map((d) => d.name);
+  } catch {
+    return [];
+  }
+  const order = ["life", "design", "random"];
+  dirs.sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b));
+  return dirs
+    .map((name) => {
+      const files = fs.readdirSync(path.join(root, name)).filter((f) => MEDIA.test(f) && !f.startsWith("."));
+      const videoBases = new Set(files.filter((f) => VID.test(f)).map((f) => f.replace(/\.\w+$/, "")));
+      const url = (f: string) => `/fotos/carpetas/${encodeURIComponent(name)}/${encodeURIComponent(f)}`;
+      const items: Media[] = files
+        .filter((f) => VID.test(f) || !videoBases.has(f.replace(/\.\w+$/, "")))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+        .map((f) => {
+          if (!VID.test(f)) return { src: url(f), kind: "img" as const };
+          const base = f.replace(/\.\w+$/, "");
+          const poster = files.find((g) => !VID.test(g) && g.replace(/\.\w+$/, "") === base);
+          return { src: url(f), kind: "video" as const, poster: poster ? url(poster) : undefined };
+        });
+      return { name, items };
+    })
+    .filter((f) => f.items.length > 0);
+}
