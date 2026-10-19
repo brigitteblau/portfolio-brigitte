@@ -2,8 +2,10 @@
  * POST /api/notes — guarda un "Dejame algo" (mensaje y/o foto estilo BeReal) en Supabase.
  *
  * Variables de entorno (en Vercel → Settings → Environment Variables):
- *   SUPABASE_URL               https://xxxx.supabase.co
- *   SUPABASE_SERVICE_ROLE_KEY  la service role key (secreta, solo servidor)
+ * Va al proyecto "mi portfolio" de Supabase con su clave PÚBLICA (la que Supabase
+ * pensó para estar a la vista). En la base, esa clave solo puede AGREGAR mensajes y
+ * SUBIR fotos nuevas: nunca leer, cambiar ni borrar (ver supabase/visitor_notes.sql).
+ * Si algún día querés otra base, se puede pisar con las variables SUPABASE_URL y SUPABASE_KEY.
  *
  * Acepta multipart/form-data (con foto) o JSON (solo texto).
  * La foto va a un bucket PRIVADO de Storage ("visitor-notes"); en la tabla queda solo la ruta.
@@ -13,6 +15,11 @@
  * y límite de envíos por visitante (en memoria, sin guardar IPs).
  */
 import { createHash, randomUUID } from "node:crypto";
+
+const PUBLIC_URL = "https://gloxzdqigdbtrlgwugvm.supabase.co";
+// Clave pública (rol "anon") del proyecto: no es secreta.
+const PUBLIC_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsb3h6ZHFpZ2RidHJsZ3d1Z3ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1ODc5NjYsImV4cCI6MjA5ODE2Mzk2Nn0.AQJlpZY2SNxQueKeFhnIQmrEzOxTPpU8zIBANcDQRds";
 
 const MAX = 2000;
 const MAX_PHOTO = 5 * 1024 * 1024;
@@ -100,8 +107,8 @@ export async function POST(request: Request) {
   const key = createHash("sha256").update(fwd + new Date().toDateString()).digest("hex").slice(0, 16);
   if (rateLimited(key)) return fail("rate", 429);
 
-  const url = process.env.SUPABASE_URL?.replace(/\/$/, "");
-  const secret = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = (process.env.SUPABASE_URL ?? PUBLIC_URL).replace(/\/$/, "");
+  const secret = process.env.SUPABASE_KEY ?? PUBLIC_KEY;
   if (!url || !secret) return fail("off", 503);
   const auth = { apikey: secret, Authorization: `Bearer ${secret}` };
 
@@ -130,8 +137,6 @@ export async function POST(request: Request) {
     });
     if (!res.ok) {
       console.error("visitor_notes insert failed", res.status, await res.text().catch(() => ""));
-      // No dejar fotos huérfanas
-      if (photoPath) await fetch(`${url}/storage/v1/object/${BUCKET}/${photoPath}`, { method: "DELETE", headers: auth }).catch(() => {});
       return fail("generic", 502);
     }
     return Response.json({ ok: true });
