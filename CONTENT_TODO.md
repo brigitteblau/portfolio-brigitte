@@ -59,6 +59,7 @@ Los 3 destacados (Hunda, Dragonfish × Tienda Nube y Trak) están escritos **sol
 
 - [ ] El "Dato" de la portada hoy es "mi nombre lo vas a ir descubriendo". Si tenés un fun fact real tuyo, cambialo en `site.ts` → `hero.funFactText`.
 
-## "Dejame algo" (BeReal)
+## "Dejame una foto"
 
-- [ ] Activarlo en Supabase: correr de nuevo `supabase/visitor_notes.sql` (ahora también crea el bucket privado de fotos) y poner las 2 variables en Vercel. Pasos en el README.
+- [x] Conectado a Supabase y con aviso por mail.
+- [ ] Mandá una foto de prueba desde el celu para ver que llegue con la foto adjunta.

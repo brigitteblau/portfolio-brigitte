@@ -39,3 +39,13 @@ create policy "visitors can upload a photo" on storage.objects
     bucket_id = 'visitor-notes'
     and name ~ '^[0-9]{4}-[0-9]{2}/[0-9a-f-]{36}\.(jpg|png|webp)$'
   );
+
+-- Aviso por mail: cada fila nueva llama a la Edge Function notify-note (supabase/functions/notify-note),
+-- que te manda un mail con la foto adjunta usando Resend. La clave de Resend está en el Vault
+-- (vault.create_secret(..., 'resend_api_key')), nunca en el código.
+alter table public.visitor_notes add column if not exists notified_at timestamptz;
+create extension if not exists pg_net with schema extensions;
+create schema if not exists private;
+-- private.visitor_notes_notify(): hace net.http_post a /functions/v1/notify-note con { id }.
+-- create or replace trigger visitor_notes_email after insert on public.visitor_notes
+--   for each row execute function private.visitor_notes_notify();

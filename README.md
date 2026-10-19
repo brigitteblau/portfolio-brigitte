@@ -37,28 +37,14 @@ Cada `git push` a `main` se publica solo en Vercel.
 
 Lo que falta completar con información real está en **[CONTENT_TODO.md](CONTENT_TODO.md)**. Cualquier texto que empiece con `✎` no se publica.
 
-## "Dejame algo" (estilo BeReal)
+## "Dejame una foto" (ya está andando)
 
-La gente se puede sacar una foto (en el celular, las dos cámaras: la de atrás grande y la selfie chiquita, como BeReal), o subir una, y dejarte un mensaje. Todo queda **privado** en tu Supabase:
+La gente se saca una foto con la cámara de rollo (o sube una) y te deja un mensaje. Va todo a tu proyecto **"mi portfolio"** de Supabase:
 
-- los mensajes, en la tabla `visitor_notes` (Table Editor);
-- las fotos, en el bucket privado `visitor-notes` (Storage). En la tabla, `photo_path` te dice cuál es la foto de cada mensaje.
+- **Te llega un mail** a brigitteyaelblau@gmail.com con la foto adjunta, el mensaje y el nombre/mail si lo pusieron (lo manda la Edge Function `notify-note` con Resend).
+- Los mensajes quedan en **Table Editor → visitor_notes**. Las fotos, en **Storage → visitor-notes** (privado), una carpeta por mes.
 
-Para activarlo hay que hacer tres cosas:
-
-1. En Supabase, abrí **SQL Editor** y corré [`supabase/visitor_notes.sql`](supabase/visitor_notes.sql). Crea la tabla y el bucket privado (si ya tenías la tabla vieja, la actualiza).
-2. En Vercel, entrá a **Settings → Environment Variables** y agregá:
-
-   | Variable | Valor |
-   |---|---|
-   | `SUPABASE_URL` | la Project URL (`https://xxxx.supabase.co`) |
-   | `SUPABASE_SERVICE_ROLE_KEY` | la service role key (Settings → API). Es secreta: nunca va con el prefijo `NEXT_PUBLIC_`. |
-
-3. Volvé a desplegar (Deployments → Redeploy).
-
-Mientras no esté activado, el formulario lo dice y sugiere escribir por mail. No simula que se envió.
-
-**Protecciones:** validación en el servidor (mensaje de 3 a 2000 caracteres, o solo foto), la foto se chequea por sus bytes (JPG, PNG o WebP, máx. 5 MB) y se achica en el navegador antes de subir, campo trampa para bots, tiempo mínimo, y límite de 3 envíos cada 10 minutos por visitante con un hash efímero en memoria (sin guardar IPs). Las fotos nunca son públicas.
+**Cómo está protegido:** el sitio usa la clave pública de Supabase, que en la base solo puede *agregar* un mensaje o *subir* una foto nueva: no puede leer, cambiar ni borrar nada. Además: validación en el servidor, la foto se chequea por sus bytes (JPG/PNG/WebP, máx. 5 MB), campo trampa para bots, tiempo mínimo y límite de envíos por visitante. La clave de Resend está guardada en el Vault de Supabase, no en el código. Todo el SQL está en [`supabase/visitor_notes.sql`](supabase/visitor_notes.sql).
 
 **Opcional:** `NEXT_PUBLIC_SITE_URL` (por ejemplo, `https://brigitteblau.vercel.app`) fija la URL del sitemap y de Open Graph.
 
