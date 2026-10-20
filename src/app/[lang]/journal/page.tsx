@@ -9,7 +9,10 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/journal">)
   const { lang } = await params;
   return {
     title: "Journal",
-    description: lang === "es" ? "Lo que pienso, lo que veo y lo que voy aprendiendo." : "What I think, what I see, and what I'm learning.",
+    description:
+      lang === "es"
+        ? "El journal de Brigitte Blau: ensayos, textos, fotos y videos sobre programar, emprender y lo que voy pensando."
+        : "Brigitte Blau's journal: essays, writing, photos and videos about coding, building things and what I'm thinking about.",
     alternates: { canonical: `/${lang}/journal`, languages: { es: "/es/journal", en: "/en/journal" } },
   };
 }
@@ -18,6 +21,7 @@ const kindLabel = {
   post: { es: "post", en: "post" },
   fotos: { es: "fotos", en: "photos" },
   video: { es: "video", en: "video" },
+  ensayo: { es: "ensayo", en: "essay" },
 };
 
 export default async function JournalIndex({ params }: PageProps<"/[lang]/journal">) {

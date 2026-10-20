@@ -20,6 +20,8 @@ const STATUS_COLOR: Record<Status, string> = {
   idea: "var(--pink)",
   proposal: "var(--yellow)",
   exploring: "#8a6be0",
+  dream: "#c0399a",
+  live: "var(--green)",
 };
 
 const DARK = ["#0D1124", "#2B44FF", "#0E4D33", "#FF3D2E", "#5B6178"];
@@ -43,7 +45,7 @@ function Mini({ item, lang, photo, i, onOpen }: { item: Item; lang: Locale; phot
   const { p } = item;
   const dark = DARK.includes(p.color);
   return (
-    <li data-card className="w-[44vw] max-w-[13rem] shrink-0 snap-start sm:w-auto sm:max-w-none">
+    <li data-card>
       <button onClick={onOpen} className="group block w-full text-left" aria-haspopup="dialog">
         <span
           className="relative block bg-white p-2 pb-3 shadow-[0_12px_24px_-14px_rgba(31,33,40,.6)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:rotate-0"
@@ -59,11 +61,6 @@ function Mini({ item, lang, photo, i, onOpen }: { item: Item; lang: Locale; phot
                 {p.name}
               </span>
             )}
-            {item.kind === "featured" && (
-              <span className="absolute right-1.5 top-1.5 grid h-6 w-6 place-items-center rounded-full bg-yellow text-[0.8rem]" aria-hidden>
-                ★
-              </span>
-            )}
           </span>
           <span className="mt-2 flex items-start justify-between gap-1 px-0.5">
             <span className="text-[0.95rem] font-bold leading-tight">{p.name}</span>
@@ -71,6 +68,37 @@ function Mini({ item, lang, photo, i, onOpen }: { item: Item; lang: Locale; phot
           <span className="mt-1 block px-0.5">
             <Chip status={p.status} lang={lang} />
           </span>
+        </span>
+      </button>
+    </li>
+  );
+}
+
+/** La tarjeta grande: una empresa con todo lo que hago adentro (Grupo Mirrow) */
+function Big({ item, lang, photo, onOpen }: { item: Item & { kind: "featured" }; lang: Locale; photo?: string; onOpen: () => void }) {
+  const p = item.p;
+  return (
+    <li data-card className="col-span-2 md:row-span-2">
+      <button onClick={onOpen} className="group block h-full w-full text-left" aria-haspopup="dialog">
+        <span className="relative flex h-full flex-col overflow-hidden rounded-[20px] bg-ink p-4 text-cream shadow-[0_18px_34px_-18px_rgba(31,33,40,.7)] transition-transform duration-300 group-hover:-translate-y-1 sm:p-6">
+          {photo && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={photo} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-30 transition-opacity duration-500 group-hover:opacity-40" />
+          )}
+          <span className="relative flex items-center gap-2">
+            <Chip status={p.status} lang={lang} />
+            {p.role && <span className="rounded-full bg-pink px-2 py-0.5 text-[0.68rem] font-bold">{p.role[lang]}</span>}
+          </span>
+          <span className="relative mt-3 block text-[clamp(2.2rem,5vw,4rem)] font-black italic leading-[0.88] tracking-[-0.05em]">{p.name}</span>
+          <span className="relative mt-2 block max-w-[46ch] text-[0.95rem] leading-snug text-cream/85">{p.what[lang]}</span>
+          <span className="relative mt-auto flex flex-wrap gap-1.5 pt-5">
+            {p.parts?.map((x) => (
+              <span key={x.name} className="rounded-full bg-cream/15 px-2.5 py-1 text-[0.78rem] font-semibold backdrop-blur-[1px]">
+                {x.name}
+              </span>
+            ))}
+          </span>
+          <span className="relative mt-4 font-hand text-[1.3rem] leading-none text-yellow">{lang === "es" ? "todo lo que hago ahí →" : "everything I do there →"}</span>
         </span>
       </button>
     </li>
@@ -104,7 +132,32 @@ function Ficha({ item, lang, photo }: { item: Item; lang: Locale; photo?: string
         <Chip status={p.status} lang={lang} />
       </div>
       {context && <p className="mt-1 text-[0.9rem] text-ink/60">{context}</p>}
+      {item.kind === "featured" && item.p.role && <p className="mt-2 inline-block rounded-full bg-pink px-3 py-1 text-[0.85rem] font-bold text-cream">{item.p.role[lang]}</p>}
       <p className="mt-3 text-[1.1rem] font-medium leading-snug">{p.what[lang]}</p>
+      {item.kind === "featured" && item.p.parts && (
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+          {item.p.parts.map((x) => (
+            <li key={x.name} className="rounded-[14px] border-2 border-ink/80 bg-white p-3">
+              <p className="font-bold leading-tight">{x.name}</p>
+              <p className="mt-1 text-[0.9rem] leading-snug text-ink/80">{x.what[lang]}</p>
+              {(x.href || x.repo) && (
+                <p className="mt-2 flex flex-wrap gap-2 text-[0.82rem] font-semibold">
+                  {x.href && (
+                    <a href={x.href} target="_blank" rel="noreferrer" className="text-pink underline underline-offset-2">
+                      {L.visit[lang]} ↗
+                    </a>
+                  )}
+                  {x.repo && (
+                    <a href={x.repo} target="_blank" rel="noreferrer" className="text-blue underline underline-offset-2">
+                      {L.code[lang]} ↗
+                    </a>
+                  )}
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
       {blocks.length > 0 && (
         <div className="mt-5 space-y-4">
           {blocks.map((b) => (
@@ -166,7 +219,7 @@ export default function Proyectos({ lang, photos }: { lang: Locale; photos: Reco
 
   return (
     <section ref={root} id="proyectos" className="relative px-3 py-6 sm:px-6" aria-labelledby="proyectos-title">
-      <NameStep n={NAME_STEPS.ahora} />
+      <NameStep n={NAME_STEPS.proyectos} />
       <div className="slide relative mx-auto max-w-[1500px] overflow-hidden px-4 py-8 sm:px-10 sm:py-10">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -180,15 +233,16 @@ export default function Proyectos({ lang, photos }: { lang: Locale; photos: Reco
           </p>
         </div>
 
-        {/* En celular: una fila que se desliza de costado. En compu: grilla. */}
-        <ul className="-mx-4 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pt-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:px-0 md:grid-cols-4 xl:grid-cols-6" data-lenis-prevent-touch>
-          {items.map((it, i) => (
-            <Mini key={it.p.id} item={it} lang={lang} photo={photos[it.p.id]} i={i} onOpen={() => setOpen(i)} />
-          ))}
+        {/* La empresa grande + los proyectos chiquitos al lado */}
+        <ul className="mt-6 grid grid-cols-2 gap-4 pt-3 sm:gap-6 md:grid-cols-4">
+          {items.map((it, i) =>
+            it.kind === "featured" && it.p.parts ? (
+              <Big key={it.p.id} item={it} lang={lang} photo={photos[it.p.id]} onOpen={() => setOpen(i)} />
+            ) : (
+              <Mini key={it.p.id} item={it} lang={lang} photo={photos[it.p.id]} i={i} onOpen={() => setOpen(i)} />
+            ),
+          )}
         </ul>
-        <p className="mt-2 flex items-center gap-2 text-[0.8rem] text-ink/60">
-          <span className="grid h-5 w-5 place-items-center rounded-full bg-yellow text-[0.7rem]">★</span> {lang === "es" ? "destacados" : "featured"}
-        </p>
       </div>
 
       <Modal open={current !== null} onClose={close} label={current?.p.name ?? ""} closeLabel={X.close[lang]}>

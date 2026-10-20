@@ -46,6 +46,19 @@ La gente se saca una foto con la cámara de rollo (o sube una) y te deja un mens
 
 **Cómo está protegido:** el sitio usa la clave pública de Supabase, que en la base solo puede *agregar* un mensaje o *subir* una foto nueva: no puede leer, cambiar ni borrar nada. Además: validación en el servidor, la foto se chequea por sus bytes (JPG/PNG/WebP, máx. 5 MB), campo trampa para bots, tiempo mínimo y límite de envíos por visitante. La clave de Resend está guardada en el Vault de Supabase, no en el código. Todo el SQL está en [`supabase/visitor_notes.sql`](supabase/visitor_notes.sql).
 
+## "Charlemos" (agendar una call)
+
+Un formulario para que cualquiera te pida una call "como una charla con una amiga": elige temas, hasta 3 días (los próximos 14, hora de Buenos Aires) y un horario. Se guarda en Supabase (**Table Editor → call_requests**) y **te llega un mail** con todo; respondés ese mail para confirmar y mandar el link. También está en su propia página: `/es/charlemos`.
+
+## SEO (para que Google y las IAs te encuentren)
+
+- Título, descripción y palabras clave en español e inglés (joven emprendedora, desarrolladora backend/frontend, ORT, Grupo Mirrow, Buenos Aires, portfolio).
+- Datos estructurados (JSON-LD): quién sos (`Person`, con Grupo Mirrow y ORT) y cada entrada del journal (`BlogPosting`, con tu nombre como autora).
+- Páginas propias e indexables: `/es` y `/en`, `/journal`, **cada entrada del journal**, `/foto` (la cámara tipo BeReal) y `/charlemos`.
+- [`/sitemap.xml`](https://brigitteblau.vercel.app/sitemap.xml), [`/robots.txt`](https://brigitteblau.vercel.app/robots.txt) y [`/llms.txt`](https://brigitteblau.vercel.app/llms.txt) (un resumen para ChatGPT, Perplexity, Claude, etc.). Todo se arma solo con el contenido real: cuando sumás una entrada al journal, aparece sola.
+- Para ensayos o tesis: en el `.mdx` del journal poné `kind: ensayo`.
+- Google Search Console: si Google te da un código de verificación, va en la variable `GOOGLE_SITE_VERIFICATION` (o pasámelo y lo pongo).
+
 **Opcional:** `NEXT_PUBLIC_SITE_URL` (por ejemplo, `https://brigitteblau.vercel.app`) fija la URL del sitemap y de Open Graph.
 
 ## Dónde va cada cosa

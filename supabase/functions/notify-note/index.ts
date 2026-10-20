@@ -1,4 +1,5 @@
-// Manda un mail a Brigitte cuando alguien le deja una foto o un mensaje en el portfolio.
+// Manda un mail a Brigitte cuando alguien le deja una foto o un mensaje en el portfolio,
+// o cuando alguien pide agendar una call ("Charlemos").
 // La llama un trigger de la base (private.visitor_notes_notify) cada vez que entra una fila.
 // Solo procesa filas recién creadas y que todavía no avisó (así nadie puede usarla para mandar mails de más).
 // La clave de Resend está guardada en el Vault de Supabase (resend_api_key), no en el código.
@@ -14,12 +15,16 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("no", { status: 405 });
   let id = "";
+  let kind = "note";
   try {
-    id = String((await req.json()).id ?? "");
+    const body = await req.json();
+    id = String(body.id ?? "");
+    kind = body.kind === "call" ? "call" : "note";
   } catch {
     return Response.json({ ok: false }, { status: 400 });
   }
   if (!/^[0-9a-f-]{36}$/.test(id)) return Response.json({ ok: false }, { status: 400 });
+  if (kind === "call") return callMail(id);
 
   // Reclamar la fila (una sola vez, y solo si es nueva)
   const rows = await sql`
@@ -76,3 +81,49 @@ Deno.serve(async (req) => {
     return Response.json({ ok: false }, { status: 502 });
   }
 });
+
+/** "Charlemos": alguien quiere una call. */
+async function callMail(id: string) {
+  const rows = await sql`
+    update public.call_requests set notified_at = now()
+    where id = ${id} and notified_at is null and created_at > now() - interval '15 minutes'
+    returning id, created_at, name, email, topics, message, days, slot, lang`;
+  const c = rows[0];
+  if (!c) return Response.json({ ok: true, skipped: true });
+  try {
+    const [{ secret }] = await sql`select decrypted_secret as secret from vault.decrypted_secrets where name = 'resend_api_key' limit 1`;
+    const fmtDay = new Intl.DateTimeFormat("es-AR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+    const days = (c.days as (string | Date)[]).map((d) => fmtDay.format(new Date(d))).join(", ") || "cualquier día";
+    const topics = (c.topics as string[]).join(" · ");
+    const html = `
+      <div style="font-family:Helvetica,Arial,sans-serif;max-width:520px;margin:auto;color:#1f2128">
+        <p style="font-size:22px;font-weight:800;margin:0 0 4px">☎️ ${esc(c.name)} quiere charlar con vos</p>
+        <p style="color:#777;margin:0 0 16px">desde tu portfolio (${c.lang})</p>
+        <table style="font-size:16px;line-height:1.5;border-collapse:collapse">
+          <tr><td style="padding:4px 12px 4px 0;color:#777">Mail</td><td><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#777">Días</td><td>${esc(days)}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#777">Horario</td><td>${esc(c.slot)}</td></tr>
+          ${topics ? `<tr><td style="padding:4px 12px 4px 0;color:#777">Temas</td><td>${esc(topics)}</td></tr>` : ""}
+        </table>
+        ${c.message ? `<p style="font-size:18px;line-height:1.4;background:#fbf8ee;border-left:4px solid #4e75e5;padding:12px 14px;margin:16px 0">${esc(c.message).replace(/\n/g, "<br>")}</p>` : ""}
+        <p style="margin:16px 0 0;color:#555">Respondé este mail para confirmar el día y mandar el link de la call.</p>
+      </div>`;
+    const send = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "Tu portfolio <onboarding@resend.dev>",
+        to: [TO],
+        reply_to: c.email,
+        subject: `☎️ ${c.name} quiere agendar una call`,
+        html,
+      }),
+    });
+    if (!send.ok) throw new Error(`resend ${send.status}: ${await send.text()}`);
+    return Response.json({ ok: true });
+  } catch (e) {
+    console.error("notify-call", e);
+    await sql`update public.call_requests set notified_at = null where id = ${id}`;
+    return Response.json({ ok: false }, { status: 502 });
+  }
+}

@@ -5,6 +5,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { locales, type Locale } from "@/lib/i18n";
 import { getEntry, listEntries, publishedSlugs } from "@/lib/journal";
 import { journal as J } from "@/content/site";
+import { siteUrl } from "@/lib/site-url";
 
 export const dynamicParams = false;
 
@@ -25,8 +26,10 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/journal/[s
       canonical: `/${lang}/journal/${slug}`,
       languages: { es: `/es/journal/${slug}`, en: `/en/journal/${slug}` },
     },
+    authors: [{ name: "Brigitte Blau" }],
     openGraph: {
       type: "article",
+      authors: ["Brigitte Blau"],
       title: meta.title,
       publishedTime: meta.date || undefined,
       images: meta.cover ? [{ url: meta.cover }] : undefined,
@@ -55,8 +58,24 @@ export default async function JournalEntry({ params }: PageProps<"/[lang]/journa
   const older = pos >= 0 && pos < all.length - 1 ? all[pos + 1] : undefined;
   const fmt = new Intl.DateTimeFormat(lang === "es" ? "es-AR" : "en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
+  const url = `${siteUrl()}/${lang}/journal/${slug}`;
+  const ld = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: meta.title,
+    description: meta.excerpt,
+    datePublished: meta.date || undefined,
+    inLanguage: lang,
+    url,
+    mainEntityOfPage: url,
+    image: meta.cover ? `${siteUrl()}${meta.cover}` : undefined,
+    keywords: meta.tags.join(", ") || undefined,
+    author: { "@type": "Person", name: "Brigitte Blau", url: `${siteUrl()}/${lang}` },
+  };
+
   return (
     <main id="main" className="min-h-[100svh] px-3 pb-10 pt-16 text-ink sm:px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <article className="slide mx-auto max-w-[52rem] px-5 py-10 sm:px-12 sm:py-14">
         <Link href={`/${lang}/journal`} className="inline-block rounded-full bg-sky px-4 py-1.5 text-[0.9rem] font-semibold hover:bg-blue hover:text-cream">
           ← {J.back[lang]}
@@ -65,7 +84,8 @@ export default async function JournalEntry({ params }: PageProps<"/[lang]/journa
           {meta.date && (
             <p className="flex flex-wrap gap-x-3 font-mono text-[0.8rem] text-ink/60">
               <time dateTime={meta.date}>{fmt.format(new Date(meta.date))}</time>
-              {meta.kind === "post" && <span>{meta.minutes} {J.readTime[lang]}</span>}
+              <span>{lang === "es" ? "por" : "by"} Brigitte Blau</span>
+              {(meta.kind === "post" || meta.kind === "ensayo") && <span>{meta.minutes} {J.readTime[lang]}</span>}
               {meta.tags.map((t) => (
                 <span key={t}>#{t}</span>
               ))}

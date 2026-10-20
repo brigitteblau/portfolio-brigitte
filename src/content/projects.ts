@@ -10,7 +10,7 @@
  */
 import type { L } from "@/lib/i18n";
 
-export type Status = "dev" | "mvp" | "prototype" | "idea" | "proposal" | "exploring";
+export type Status = "dev" | "mvp" | "prototype" | "idea" | "proposal" | "exploring" | "dream" | "live";
 
 export const statusLabel: Record<Status, L> = {
   dev: { es: "en desarrollo", en: "in progress" },
@@ -19,7 +19,12 @@ export const statusLabel: Record<Status, L> = {
   idea: { es: "idea", en: "idea" },
   proposal: { es: "propuesta", en: "proposal" },
   exploring: { es: "exploración", en: "exploration" },
+  dream: { es: "mi sueño", en: "my dream" },
+  live: { es: "en marcha", en: "running" },
 };
+
+/** Una parte de un proyecto grande (lo que hago dentro de Grupo Mirrow). */
+export type Part = { name: string; what: L; href?: string; repo?: string; tags?: string[] };
 
 export type Featured = {
   id: string;
@@ -39,9 +44,72 @@ export type Featured = {
   repo?: string;
   href?: string;
   color: string;
+  /** mi rol, si es una empresa */
+  role?: L;
+  /** lo que hago adentro, cuando es algo grande */
+  parts?: Part[];
 };
 
 export const featured: Featured[] = [
+  {
+    id: "mirrow",
+    name: "Grupo Mirrow",
+    status: "live",
+    role: { es: "Partner y directora", en: "Partner and director" },
+    what: {
+      es: "Empresa argentina con 56 años de trayectoria que fabrica indumentaria masculina y uniformes para empresas. Soy partner y directora, y llevo toda la parte digital.",
+      en: "An Argentine company with 56 years in the business, making menswear and corporate uniforms. I'm a partner and director, and I run everything digital.",
+    },
+    did: {
+      es: "Las webs, la tienda online, las integraciones con el sistema de gestión, el Instagram y la venta B2B de uniformes.",
+      en: "The websites, the online store, the integrations with the management system, the Instagram and B2B uniform sales.",
+    },
+    challenge: {
+      es: "Conectar el ERP Dragonfish con Tienda Nube desde cero para reemplazar un módulo pago: los problemas vinieron en cadena (un 502 en el panel embebido, el token OAuth después de reinstalar, los webhooks de privacidad).",
+      en: "Connecting the Dragonfish ERP to Tienda Nube from scratch to replace a paid module: problems came in a chain (a 502 in the embedded panel, the OAuth token after reinstalling, the privacy webhooks).",
+    },
+    now: { es: "✎ en qué estás ahora en Mirrow", en: "✎ what you're on right now at Mirrow" },
+    stack: ["Next.js", "Node.js", "TypeScript", "Tienda Nube", "FastAPI", "YOLO", "SEO"],
+    href: "https://grupomirrow.com",
+    color: "#0D1124",
+    parts: [
+      {
+        name: "tiendamirrow.com",
+        what: { es: "La tienda online: rediseño con look futurista, versión mobile y animaciones 3D, manteniendo el logo.", en: "The online store: a futuristic redesign, mobile version and 3D animations, keeping the logo." },
+        href: "https://tiendamirrow.com",
+        tags: ["E-commerce", "Diseño"],
+      },
+      {
+        name: "Landing con SEO",
+        what: { es: "Landing en Next.js pensada para Google: keywords de cada producto, datos estructurados, sitemap y robots.", en: "A Next.js landing built for Google: product keywords, structured data, sitemap and robots." },
+        tags: ["Next.js", "SEO"],
+      },
+      {
+        name: "uniformesmirrow.com",
+        what: { es: "La web de uniformes para empresas, y la venta B2B: busco y contacto empresas desde LinkedIn.", en: "The corporate uniforms site, plus B2B sales: I find and reach out to companies on LinkedIn." },
+        href: "https://uniformesmirrow.com",
+        tags: ["B2B", "Ventas"],
+      },
+      {
+        name: "Dragonfish × Tienda Nube",
+        what: { es: "Un conector a medida que sincroniza el stock del ERP con la tienda online.", en: "A custom connector that syncs ERP stock with the online store." },
+        repo: "https://github.com/brigitteblau/dragonfish-vercel",
+        tags: ["Node.js", "Vercel", "OAuth"],
+      },
+      {
+        name: "Trak",
+        what: { es: "Analítica del local con visión por computadora: cuánta gente entra, cuánto se queda y por dónde se mueve (MVP).", en: "In-store analytics with computer vision: how many people come in, how long they stay and where they go (MVP)." },
+        repo: "https://github.com/brigitteblau/trak",
+        tags: ["YOLO", "FastAPI", "React"],
+      },
+      {
+        name: "Instagram",
+        what: { es: "El Instagram de la marca: contenido, fotos de producto y campañas.", en: "The brand's Instagram: content, product photos and campaigns." },
+        href: "https://www.instagram.com/mirrow.oficial/",
+        tags: ["Contenido"],
+      },
+    ],
+  },
   {
     id: "hunda",
     name: "Hunda",
@@ -67,56 +135,6 @@ export const featured: Featured[] = [
     repo: "https://github.com/brigitteblau/hunda",
     color: "#FF3D2E",
   },
-  {
-    id: "dragonfish-tiendanube",
-    name: "Dragonfish × Tienda Nube",
-    status: "dev",
-    what: {
-      es: "Un conector a medida que sincroniza el ERP de una tienda de ropa (Dragonfish) con su tienda online en Tienda Nube.",
-      en: "A custom connector that syncs a clothing store's ERP (Dragonfish) with its Tienda Nube online shop.",
-    },
-    did: {
-      es: "Lo construí desde cero para reemplazar un módulo pago: funciones serverless en Node.js y TypeScript en Vercel, una tarea programada en PowerShell en un Amazon WorkSpace y una app de partner de Tienda Nube.",
-      en: "I built it from scratch to replace a paid module: Node.js/TypeScript serverless functions on Vercel, a PowerShell scheduled task on an Amazon WorkSpace, and a Tienda Nube partner app.",
-    },
-    challenge: {
-      es: "Los problemas vinieron en cadena: un error 502 en el panel embebido, renovar el token OAuth después de reinstalar la app, los webhooks de privacidad que exige Tienda Nube y el manejo de variables de entorno.",
-      en: "Problems came in a chain: a 502 in the embedded panel, refreshing the OAuth token after reinstalling the app, the privacy webhooks Tienda Nube requires, and environment variable management.",
-    },
-    now: {
-      es: "En desarrollo, con la integración armada y ajustando la sincronización de productos.",
-      en: "In progress: the integration is in place and I'm tuning the product sync.",
-    },
-    stack: ["Node.js", "TypeScript", "Vercel", "PowerShell", "OAuth"],
-    context: { es: "Para Mirrow, una tienda de ropa en Buenos Aires.", en: "For Mirrow, a clothing store in Buenos Aires." },
-    repo: "https://github.com/brigitteblau/dragonfish-vercel",
-    color: "#2B44FF",
-  },
-  {
-    id: "trak",
-    name: "Trak",
-    status: "mvp",
-    what: {
-      es: "Analítica de una tienda física con visión por computadora: a partir del video de las cámaras, cuánta gente entra, cuánto tiempo se queda y por dónde se mueve.",
-      en: "Computer-vision analytics for a physical store: from camera footage, how many people come in, how long they stay, and where they move.",
-    },
-    did: {
-      es: "Armé el MVP: un backend en FastAPI que sigue personas con YOLO y extrae eventos (entrada, salida, cambio de zona), el esquema en Supabase y un dashboard en React con horas pico y tiempo de permanencia.",
-      en: "I built the MVP: a FastAPI backend that tracks people with YOLO and extracts events (entry, exit, zone change), the Supabase schema, and a React dashboard with peak hours and dwell time.",
-    },
-    challenge: {
-      es: "Pasar de detectar personas en un video a eventos que sirvan para el negocio: zonas como entrada, vidriera y mostrador, y métricas agregadas por hora.",
-      en: "Going from detecting people in a video to events a business can use: zones like entrance, window and counter, and metrics aggregated by hour.",
-    },
-    now: {
-      es: "MVP funcionando. Lo próximo es probarlo con grabaciones reales y ajustar las zonas al plano del local.",
-      en: "Working MVP. Next: testing it on real footage and fitting the zones to the actual floor plan.",
-    },
-    stack: ["Python", "YOLO", "FastAPI", "Supabase", "React"],
-    context: { es: "Para Mirrow.", en: "For Mirrow." },
-    repo: "https://github.com/brigitteblau/trak",
-    color: "#0E4D33",
-  },
 ];
 
 export type Project = {
@@ -133,29 +151,6 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    id: "mirrow-web",
-    name: "Mirrow",
-    what: {
-      es: "Landing con SEO y el rediseño de la tienda online.",
-      en: "SEO landing page and the online store redesign.",
-    },
-    tags: ["Next.js", "SEO"],
-    href: "https://tiendamirrow.com",
-    h: 3,
-    color: "#0D1124",
-  },
-  {
-    id: "forma",
-    name: "FORMA",
-    what: {
-      es: "Web B2B de uniformes corporativos para Grupo Mirrow, con SEO pensado desde el principio.",
-      en: "B2B site for Grupo Mirrow's corporate uniforms, with SEO built in from the start.",
-    },
-    tags: ["Next.js", "SEO", "B2B"],
-    h: 1,
-    color: "#D9DBE2",
-  },
-  {
     id: "mema",
     name: "Mema",
     status: "prototype",
@@ -168,74 +163,16 @@ export const projects: Project[] = [
     color: "#D9DBE2",
   },
   {
-    id: "photobooth",
-    name: "TIC Experience",
-    what: {
-      es: "Photobooth interactivo para un evento de ORT, con estética tipo TouchDesigner.",
-      en: "Interactive photobooth for an ORT event, TouchDesigner-style.",
-    },
-    tags: ["React", "Creative tech"],
-    href: "https://github.com/brigitteblau/photobooth",
-    h: 1,
-    color: "#D4FF3A",
-  },
-  {
-    id: "rega",
-    name: "Rega",
-    what: {
-      es: "App de mindfulness que intercepta las redes y propone una pausa.",
-      en: "A mindfulness app that intercepts social media and offers a pause.",
-    },
-    tags: ["Supabase", "Prisma", "Mobile"],
-    h: 2,
-    color: "#9AA0B4",
-  },
-  {
-    id: "hand-tracking",
-    name: "Hand tracking",
-    status: "exploring",
-    what: {
-      es: "Partículas y visuales generativos que siguen tus manos.",
-      en: "Particles and generative visuals that follow your hands.",
-    },
-    tags: ["MediaPipe", "Generative art"],
-    h: 3,
-    color: "#5B6178",
-  },
-  {
-    id: "fitform",
-    name: "FitForm",
-    status: "proposal",
-    what: {
-      es: "Férulas de muñeca paramétricas a partir de un formulario web.",
-      en: "Parametric wrist splints from a web form.",
-    },
-    tags: ["CadQuery"],
-    h: 1,
-    color: "#FF3D2E",
-  },
-  {
-    id: "cupertino",
-    name: "Cupertino Store",
-    what: {
-      es: "Estrategia y landing para un negocio de importación de iPhones.",
-      en: "Strategy and landing page for an iPhone import business.",
-    },
-    tags: ["Next.js", "Radix"],
-    h: 2,
-    color: "#2B44FF",
-  },
-  {
     id: "vulkan",
     name: "Vulkán",
-    status: "idea",
+    status: "dream",
     what: {
-      es: "Una marca de volcanes de chocolate.",
-      en: "A chocolate lava cake brand.",
+      es: "Una marca de volcanes de chocolate. Todavía no existe: es mi sueño.",
+      en: "A chocolate lava cake brand. It doesn't exist yet: it's my dream.",
     },
     tags: ["Branding"],
     h: 1,
-    color: "#0D1124",
+    color: "#e5483d",
   },
 ];
 

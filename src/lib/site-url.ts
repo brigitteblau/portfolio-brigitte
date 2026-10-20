@@ -1,6 +1,5 @@
-/** URL pública del sitio (para canonical, sitemap y Open Graph). */
+/** URL pública del sitio (para canonical, sitemap, Open Graph y llms.txt). */
+const PROD = "https://brigitteblau.vercel.app";
+
 export const siteUrl = () =>
-  (
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")
-  ).replace(/\/$/, "");
+  (process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.VERCEL ? PROD : "http://localhost:3000")).replace(/\/$/, "");

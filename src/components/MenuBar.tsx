@@ -42,7 +42,7 @@ export default function MenuBar({ lang }: { lang: Locale }) {
             ["proyectos", ui.menu.projects],
             ["journal", ui.menu.journal],
             ["dejame", ui.menu.note],
-            ["contacto", ui.menu.contact],
+            ["charlemos", ui.menu.contact],
           ] as const
         ).map(([id, label]) =>
           id === "journal" ? (
@@ -59,7 +59,7 @@ export default function MenuBar({ lang }: { lang: Locale }) {
                   window.dispatchEvent(new CustomEvent("goto", { detail: id }));
                 }
               }}
-              className={`whitespace-nowrap rounded-full px-1.5 py-1 sm:px-2.5 hover:bg-sky ${id === "contacto" ? "hidden md:inline" : ""}`}
+              className={`whitespace-nowrap rounded-full px-1.5 py-1 sm:px-2.5 hover:bg-sky ${id === "charlemos" ? "hidden md:inline" : ""}`}
             >
               {label[lang]}
             </Link>

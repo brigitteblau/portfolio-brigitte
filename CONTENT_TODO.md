@@ -63,3 +63,9 @@ Los 3 destacados (Hunda, Dragonfish × Tienda Nube y Trak) están escritos **sol
 
 - [x] Conectado a Supabase y con aviso por mail.
 - [ ] Mandá una foto de prueba desde el celu para ver que llegue con la foto adjunta.
+
+## SEO
+
+- [ ] Dar de alta el sitio en Google Search Console y mandar el sitemap (pasame el código de verificación).
+- [ ] Poner el link del portfolio en tu LinkedIn, GitHub, Instagram y en grupomirrow.com: los links desde otros sitios son lo que más ayuda a salir arriba en Google.
+- [ ] Mirrow: en qué estás ahora (`projects.ts` → mirrow → `now`).

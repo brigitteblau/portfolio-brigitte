@@ -5,16 +5,8 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import type { Locale } from "@/lib/i18n";
-import { hero as H, intro } from "@/content/site";
-import {
-  Burst,
-  PersonIcon,
-  Polaroid,
-  RetroComputer,
-  Sparkle,
-  Sticky,
-  Tag,
-} from "../Stickers";
+import { hero as H } from "@/content/site";
+import { Burst, PersonIcon, RetroComputer, Sparkle, Sticky, Tag } from "../Stickers";
 import { NameStep } from "../NameTag";
 
 gsap.registerPlugin(useGSAP);
@@ -24,76 +16,51 @@ const go = (id: string) => (e: React.MouseEvent) => {
   window.dispatchEvent(new CustomEvent("goto", { detail: id }));
 };
 
-export default function Hero({
-  lang,
-  photo,
-}: {
-  lang: Locale;
-  photo?: string;
-}) {
+const TONE = { blue: "var(--blue)", pink: "var(--pink)", yellow: "var(--yellow)", "": undefined } as const;
+
+/**
+ * Portada: qué hago HOY, en una frase grande de colores, con mi foto en la compu
+ * y dos botones claros (charlar o dejarme una foto). La historia viene más abajo.
+ */
+export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const tl = gsap.timeline({ defaults: { ease: "back.out(1.8)" } });
-      tl.from("[data-card]", {
-        y: 40,
-        opacity: 0,
-        duration: 0.7,
-        ease: "power3.out",
-      })
-        .from(
-          "[data-hello] span",
-          {
-            yPercent: 120,
-            rotate: () => gsap.utils.random(-12, 12),
-            stagger: 0.06,
-            duration: 0.8,
-          },
-          "-=0.3",
-        )
-        .from(
-          "[data-pc]",
-          { y: 120, opacity: 0, duration: 0.9, ease: "expo.out" },
-          "-=0.5",
-        )
-        .from(
-          "[data-pop]",
-          {
-            scale: 0,
-            rotate: () => gsap.utils.random(-40, 40),
-            stagger: 0.09,
-            duration: 0.6,
-          },
-          "-=0.5",
-        );
-
+      tl.from("[data-card]", { y: 40, opacity: 0, duration: 0.6, ease: "power3.out" })
+        .from("[data-hello]", { scale: 0.6, rotate: -8, opacity: 0, duration: 0.6 }, "-=0.2")
+        .from("[data-w]", { yPercent: 60, opacity: 0, stagger: 0.04, duration: 0.6, ease: "power3.out" }, "-=0.3")
+        .from("[data-sub]", { y: 14, opacity: 0, stagger: 0.06, duration: 0.4, ease: "power2.out" }, "-=0.3")
+        .from("[data-pc]", { y: 80, rotate: 4, opacity: 0, duration: 0.9, ease: "expo.out" }, "-=0.6")
+        .from("[data-pop]", { scale: 0, rotate: () => gsap.utils.random(-30, 30), stagger: 0.07, duration: 0.5 }, "-=0.5");
     },
     { scope: root },
   );
 
+  // La frase, palabra por palabra (para animarla)
+  const words = H.statement[lang].flatMap(([text, color]) =>
+    text
+      .split(/(\s+)/)
+      .filter((w) => w.trim())
+      .map((w) => ({ w, color })),
+  );
+
   return (
-    <section
-      ref={root}
-      className="relative px-3 pb-6 pt-12 sm:px-6 sm:pt-14"
-      aria-label={H.hello[lang]}
-    >
+    <section ref={root} className="relative px-3 pb-6 pt-12 sm:px-6 sm:pt-14" aria-labelledby="hero-title">
       <NameStep n={0} />
-      <div
-        data-card
-        className="slide relative mx-auto flex min-h-[calc(100svh-5rem)] max-w-[1500px] flex-col items-center justify-center overflow-hidden px-4 py-10"
-      >
-        {/* Fila de arriba: el dato y los post-its (no tapan el título) */}
-        <div className="relative z-20 mb-4 flex w-full flex-wrap items-start justify-between gap-6 md:mb-0 md:px-4">
+      <div data-card className="slide relative mx-auto flex min-h-[calc(100svh-5rem)] max-w-[1500px] flex-col overflow-hidden px-5 py-6 sm:px-10 sm:py-8">
+        {/* Fila de arriba: el dato y los post-its */}
+        <div className="relative z-20 flex flex-wrap items-start justify-between gap-4">
           <div className="hidden sm:block">
             <span data-pop className="flex items-center gap-1">
               <span className="block">
-                <Sparkle className="h-9 w-9" />
+                <Sparkle className="h-8 w-8" />
               </span>
               <Tag>{H.funFact[lang]}</Tag>
             </span>
-            <p data-pop className="ml-6 mt-2 max-w-[15ch] font-hand text-[1.6rem] leading-[1] text-ink/80">
+            <p data-pop className="ml-6 mt-2 max-w-[17ch] font-hand text-[1.45rem] leading-[1] text-ink/80">
               {H.funFactText[lang]}
             </p>
           </div>
@@ -106,12 +73,8 @@ export default function Hero({
               ] as const
             ).map(([href, id, label, color, rot]) => (
               <span key={href} data-pop className="block">
-                <Link
-                  href={href}
-                  onClick={id ? go(id) : undefined}
-                  className="block transition-transform duration-300 hover:-translate-y-1 hover:rotate-1"
-                >
-                  <Sticky color={color} rotate={rot} className="!px-3 !pb-3 !pt-5 !text-[1.3rem]">
+                <Link href={href} onClick={id ? go(id) : undefined} className="block transition-transform duration-300 hover:-translate-y-1 hover:rotate-1">
+                  <Sticky color={color} rotate={rot} className="!px-3 !pb-3 !pt-5 !text-[1.25rem]">
                     {label[lang]}
                   </Sticky>
                 </Link>
@@ -120,85 +83,83 @@ export default function Hero({
           </nav>
         </div>
 
-        {/* Holaaa! */}
-        <h1
-          data-hello
-          className="relative z-0 flex overflow-hidden px-[0.06em] pb-[0.08em] text-center text-[clamp(3.6rem,17vw,17rem)] font-black italic leading-[0.85] tracking-[-0.06em]"
-          aria-label={H.hello[lang]}
-        >
-          {H.hello[lang].split("").map((c, i) => (
-            <span
-              key={i}
+        {/* Centro: la frase + la compu con mi foto */}
+        <div className="relative z-10 my-auto grid items-center gap-8 py-6 md:grid-cols-[1.25fr_0.75fr] md:gap-10">
+          <div>
+            <p
+              data-hello
+              className="hello-grad inline-block pb-[0.05em] pr-[0.08em] text-[clamp(3rem,7vw,6.5rem)] font-black italic leading-[0.85] tracking-[-0.06em]"
               aria-hidden
-              className="hello-grad inline-block pr-[0.04em]"
             >
-              {c}
-            </span>
-          ))}
-        </h1>
-
-        {/* La compu retro, encima del título */}
-        <div
-          data-pc
-          className="relative z-10 mt-2 w-[min(64vw,330px)] md:-mt-[min(3vw,2.5rem)]"
-        >
-          <RetroComputer>
-            <div className="absolute inset-[7%] flex flex-col overflow-hidden rounded-[6px] bg-cream shadow-[0_4px_0_rgba(0,0,0,.15)]">
-              <div className="flex items-center justify-between bg-ink px-2 py-1 font-mono text-[0.6rem] text-cream">
-                <span>{H.screenTitle}</span>
-                <span aria-hidden>× </span>
-              </div>
-              <p className="flex-1 px-2.5 pt-2 text-[clamp(0.62rem,1.1vw,0.82rem)] font-semibold leading-snug text-ink">
-                {intro.nameLine[lang]}
-              </p>
-              <div className="flex justify-end px-2 pb-2">
-                <span className="rounded bg-ink px-2 py-0.5 font-mono text-[0.55rem] text-cream">
-                  OK
+              {H.hello[lang]}
+            </p>
+            <h1 id="hero-title" className="mt-2 max-w-[17ch] text-[clamp(2.4rem,5.4vw,5.4rem)] font-black leading-[0.95] tracking-[-0.045em]">
+              <span className="sr-only">{H.hello[lang]} </span>
+              {words.map(({ w, color }, i) => (
+                <span key={i} data-w className="mr-[0.22em] inline-block" style={{ color: TONE[color] }}>
+                  {w}
                 </span>
-              </div>
+              ))}
+            </h1>
+            <ul className="mt-5 flex flex-wrap gap-2" aria-label={lang === "es" ? "Qué hago" : "What I do"}>
+              {H.roles.map((r, i) => (
+                <li key={i} data-sub className="rounded-full border-2 border-ink/80 bg-white px-3 py-1 text-[0.9rem] font-semibold sm:text-[0.95rem]">
+                  {r[lang]}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <a
+                data-sub
+                href="#charlemos"
+                onClick={go("charlemos")}
+                className="rounded-full bg-ink px-6 py-3.5 text-[1.05rem] font-bold text-cream shadow-[0_6px_0_#000] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_#000]"
+              >
+                {H.cta.call[lang]}
+              </a>
+              <a
+                data-sub
+                href="#dejame"
+                onClick={(e) => {
+                  go("dejame")(e);
+                  setTimeout(() => window.dispatchEvent(new Event("camera:on")), 900);
+                }}
+                className="rounded-full bg-pink px-6 py-3.5 text-[1.05rem] font-bold text-cream shadow-[0_6px_0_#b23f86] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_#b23f86]"
+              >
+                {H.cta.photo[lang]}
+              </a>
             </div>
-          </RetroComputer>
-        </div>
+          </div>
 
-        <p className="relative z-10 mt-6 max-w-[46ch] text-center text-[clamp(1rem,1.5vw,1.2rem)] font-medium leading-snug">
-          {intro.does[lang]}
-        </p>
-
-        <div className="absolute bottom-[8%] left-[4%] z-20 hidden w-[min(18vw,200px)] lg:block"
-        >
-          <div data-pop>
-            <Polaroid rotate={-8} holder="clip">
-              <div className="aspect-square">
-                {photo ? (
+          {/* La compu retro: en la pantalla estoy yo */}
+          <div data-pc className="relative mx-auto w-[min(78vw,360px)] md:w-full md:max-w-[400px]">
+            <RetroComputer>
+              <div className="absolute inset-[6%] overflow-hidden rounded-[6px] bg-ink">
+                {photo && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={photo}
-                    alt={lang === "es" ? "Yo" : "Me"}
-                    className="h-full w-full object-cover"
-                  />
-                ) : null}
+                  <img src={photo} alt={lang === "es" ? "Yo" : "Me"} className="h-full w-full object-cover" />
+                )}
+                <div className="absolute inset-x-0 top-0 flex items-center justify-between bg-ink/85 px-2 py-1 font-mono text-[0.62rem] text-cream">
+                  <span>{H.screenTitle}</span>
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red" /> {H.screenLabel[lang]}
+                  </span>
+                </div>
+                <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,.08)_0,rgba(0,0,0,.08)_1px,transparent_1px,transparent_3px)]" aria-hidden />
               </div>
-            </Polaroid>
-          </div>
-          <div data-pop className="absolute -bottom-6 -left-6 w-16 sm:w-20">
-            <Burst>
-              <PersonIcon className="h-1/2 w-1/2" />
-            </Burst>
+            </RetroComputer>
+            <div data-pop className="absolute -left-5 -top-5 w-16 sm:w-20">
+              <Burst>
+                <PersonIcon className="h-1/2 w-1/2" />
+              </Burst>
+            </div>
+            <span data-pop className="absolute -right-2 top-1/3 block">
+              <Sparkle className="h-8 w-8" color="var(--pink)" />
+            </span>
           </div>
         </div>
 
-        <span data-pop className="absolute block right-[24%] top-[12%]"><Sparkle className="h-8 w-8" /></span>
-        <span data-pop className="absolute block bottom-[22%] left-[30%]"><Sparkle className="h-6 w-6"
-          color="var(--pink)"
-        /></span>
-        <span data-pop className="absolute block right-[8%] bottom-[38%]"><Sparkle className="h-5 w-5"
-          color="var(--blue)"
-        /></span>
-
-        <p
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 font-hand text-[1.4rem] text-ink/60 floaty"
-          aria-hidden
-        >
+        <p className="floaty mx-auto font-hand text-[1.35rem] text-ink/55" aria-hidden>
           {H.scroll[lang]} ↓
         </p>
       </div>

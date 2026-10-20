@@ -15,11 +15,7 @@
  * y límite de envíos por visitante (en memoria, sin guardar IPs).
  */
 import { createHash, randomUUID } from "node:crypto";
-
-const PUBLIC_URL = "https://gloxzdqigdbtrlgwugvm.supabase.co";
-// Clave pública (rol "anon") del proyecto: no es secreta.
-const PUBLIC_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsb3h6ZHFpZ2RidHJsZ3d1Z3ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1ODc5NjYsImV4cCI6MjA5ODE2Mzk2Nn0.AQJlpZY2SNxQueKeFhnIQmrEzOxTPpU8zIBANcDQRds";
+import { SUPABASE_URL, SUPABASE_KEY } from "@/lib/supabase-public";
 
 const MAX = 2000;
 const MAX_PHOTO = 5 * 1024 * 1024;
@@ -107,8 +103,8 @@ export async function POST(request: Request) {
   const key = createHash("sha256").update(fwd + new Date().toDateString()).digest("hex").slice(0, 16);
   if (rateLimited(key)) return fail("rate", 429);
 
-  const url = (process.env.SUPABASE_URL ?? PUBLIC_URL).replace(/\/$/, "");
-  const secret = process.env.SUPABASE_KEY ?? PUBLIC_KEY;
+  const url = SUPABASE_URL;
+  const secret = SUPABASE_KEY;
   if (!url || !secret) return fail("off", 503);
   const auth = { apikey: secret, Authorization: `Bearer ${secret}` };
 

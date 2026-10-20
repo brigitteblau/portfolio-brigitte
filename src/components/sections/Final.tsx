@@ -56,7 +56,7 @@ function Conocerme({ lang }: { lang: Locale }) {
     setTaunt(C.noTaunts[tries.current % C.noTaunts.length][lang]);
   };
 
-  const yes = () => window.dispatchEvent(new CustomEvent("goto", { detail: "contacto" }));
+  const yes = () => window.dispatchEvent(new CustomEvent("goto", { detail: "charlemos" }));
 
   return (
     <div ref={root} id="conocerme" className="slide relative flex min-h-[86svh] flex-col items-center justify-center overflow-hidden px-4 py-14">
@@ -164,13 +164,21 @@ function Contacto({ lang, photos }: { lang: Locale; photos: string[] }) {
   );
 }
 
-export default function Final({ lang, photos }: { lang: Locale; photos: string[] }) {
+/** Cierre: ¿Querés conocerme? → (Sí) → Charlemos → Contacto */
+export default function Final({ lang, photos, children }: { lang: Locale; photos: string[]; children?: React.ReactNode }) {
   return (
-    <section className="relative px-3 pb-10 pt-6 sm:px-6" aria-label={C.question[lang]}>
-      <div className="mx-auto max-w-[1500px] space-y-6">
-        <Conocerme lang={lang} />
-        <Contacto lang={lang} photos={photos} />
-      </div>
-    </section>
+    <>
+      <section className="relative px-3 pt-6 sm:px-6" aria-label={C.question[lang]}>
+        <div className="mx-auto max-w-[1500px]">
+          <Conocerme lang={lang} />
+        </div>
+      </section>
+      {children}
+      <section className="relative px-3 pb-10 pt-6 sm:px-6" aria-label={K.title[lang]}>
+        <div className="mx-auto max-w-[1500px]">
+          <Contacto lang={lang} photos={photos} />
+        </div>
+      </section>
+    </>
   );
 }

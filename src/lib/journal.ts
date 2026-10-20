@@ -15,7 +15,7 @@ export type EntryMeta = {
   slug: string;
   title: string;
   date: string;
-  kind: "post" | "fotos" | "video";
+  kind: "post" | "fotos" | "video" | "ensayo";
   cover?: string;
   excerpt?: string;
   tags: string[];

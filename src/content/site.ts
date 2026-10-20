@@ -11,11 +11,12 @@ export const NAME = "Brigitte";
 /** Cuántas letras del nombre se revelan al terminar cada parte. */
 export const NAME_STEPS = {
   intro: 0,
-  nacer: 2, // B R
-  deportes: 4, // I G
-  programacion: 6, // I T
-  proyectos: 7, // T
-  ahora: 8, // E  → nombre completo
+  ahora: 2, // B R  (Hoy)
+  proyectos: 4, // I G
+  nacer: 5, // I
+  deportes: 6, // T
+  programacion: 7, // T
+  // y al final, en "¿Querés conocerme?", el nombre completo (E)
 } as const;
 
 export const ui = {
@@ -24,7 +25,7 @@ export const ui = {
     projects: { es: "Proyectos", en: "Projects" },
     journal: { es: "Journal", en: "Journal" },
     note: { es: "Dejame una foto", en: "Leave a photo" },
-    contact: { es: "Contacto", en: "Contact" },
+    contact: { es: "Charlemos", en: "Let's talk" },
   },
   fullName: "Brigitte Blau",
   nameTag: { es: "nombre:", en: "name:" },
@@ -151,7 +152,7 @@ export const programacion = {
 
 export const proyectos = {
   era: { es: "Proyectos", en: "Projects" },
-  title: { es: "(muchos, muchos)", en: "(many, many)" },
+  title: { es: "en lo que estoy hoy", en: "what I'm on today" },
   featuredTitle: { es: "Tres, contados de cerca", en: "Three, up close" },
   othersTitle: { es: "Y otros", en: "And others" },
   labels: {
@@ -318,6 +319,22 @@ export const hero = {
     note: { es: "dejame una foto! 📸", en: "leave me a photo! 📸" },
   },
   scroll: { es: "bajá", en: "scroll" },
+  /** La frase grande de la portada: lo que hago hoy (palabras de color como la de "perfecta") */
+  statement: {
+    es: [["Programo, emprendo y quiero ", ""], ["dejar algo", "pink"], [" en el ", ""], ["mundo", "blue"], [" :)", "yellow"]],
+    en: [["I code, I build things and I want to ", ""], ["leave something", "pink"], [" in the ", ""], ["world", "blue"], [" :)", "yellow"]],
+  } as Record<"es" | "en", [string, "" | "blue" | "pink" | "yellow"][]>,
+  roles: [
+    { es: "Desarrolladora backend", en: "Backend developer" },
+    { es: "Partner y directora en Grupo Mirrow", en: "Partner & director at Grupo Mirrow" },
+    { es: "Estudiante en ORT", en: "Student at ORT" },
+    { es: "Buenos Aires", en: "Buenos Aires" },
+  ] as L[],
+  cta: {
+    call: { es: "Agendá una call ☎️", en: "Book a call ☎️" },
+    photo: { es: "Dejame una foto 📸", en: "Leave me a photo 📸" },
+  },
+  screenLabel: { es: "en vivo", en: "live" },
 };
 
 /** La ficha tipo "hello!" con datos */
@@ -400,4 +417,45 @@ export const extra = {
     en: "Snap a photo and leave it for me. I want to see who stopped by.",
   },
   fab: { es: "dejame una foto", en: "leave me a photo" },
+};
+
+/** "Charlemos": agendar una call, como una charla con una amiga */
+export const charlemos = {
+  title: { es: "Charlemos ☎️", en: "Let's talk ☎️" },
+  sub: {
+    es: "¿Necesitás una charla con una amiga? ¿Querés hablar de un proyecto, de emprender, de programar o de lo que sea? Agendá una call: me llega un mail y te contesto para confirmar.",
+    en: "Need a chat with a friend? Want to talk about a project, starting something, coding, or anything at all? Book a call: I get an email and I'll reply to confirm.",
+  },
+  topicsLabel: { es: "¿De qué querés hablar?", en: "What do you want to talk about?" },
+  topics: [
+    { id: "proyecto", label: { es: "un proyecto", en: "a project" } },
+    { id: "emprender", label: { es: "emprender", en: "starting something" } },
+    { id: "programar", label: { es: "programar", en: "coding" } },
+    { id: "colegio", label: { es: "colegio / ORT", en: "school / ORT" } },
+    { id: "charla", label: { es: "una charla y ya", en: "just a chat" } },
+    { id: "otro", label: { es: "otra cosa", en: "something else" } },
+  ],
+  daysLabel: { es: "Elegí hasta 3 días", en: "Pick up to 3 days" },
+  slotLabel: { es: "¿A qué hora más o menos?", en: "Roughly what time?" },
+  slots: [
+    { id: "mañana", label: { es: "mañana", en: "morning" } },
+    { id: "tarde", label: { es: "tarde", en: "afternoon" } },
+    { id: "noche", label: { es: "noche", en: "evening" } },
+    { id: "cualquiera", label: { es: "me da igual", en: "any time" } },
+  ],
+  name: { es: "Tu nombre", en: "Your name" },
+  email: { es: "Tu mail (para mandarte el link)", en: "Your email (to send you the link)" },
+  message: { es: "Algo más que quieras contarme (opcional)", en: "Anything else? (optional)" },
+  send: { es: "Agendar ☎️", en: "Book it ☎️" },
+  sending: { es: "Mandando…", en: "Sending…" },
+  sent: { es: "¡Listo! Me llegó. Te escribo para confirmar el día.", en: "Done! I got it. I'll email you to confirm the day." },
+  another: { es: "Pedir otra", en: "Book another" },
+  tz: { es: "Hora de Buenos Aires", en: "Buenos Aires time" },
+  errors: {
+    name: { es: "Poné tu nombre.", en: "Add your name." },
+    email: { es: "Ese mail no parece válido.", en: "That email doesn't look right." },
+    long: { es: "El mensaje es muy largo.", en: "The message is too long." },
+    rate: { es: "Ya mandaste varios. Probá más tarde.", en: "You've sent a few already. Try later." },
+    generic: { es: "No se pudo mandar. Probá de nuevo en un rato.", en: "It didn't go through. Try again in a bit." },
+  },
 };

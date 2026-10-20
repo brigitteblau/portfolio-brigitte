@@ -43,7 +43,7 @@ export default function Hoy({ lang, photos }: { lang: Locale; photos: string[] }
 
   return (
     <section ref={root} id="hoy" className="relative px-3 py-6 sm:px-6" aria-labelledby="hoy-title">
-      <NameStep n={NAME_STEPS.ahora - 1} />
+      <NameStep n={NAME_STEPS.ahora} />
       <div className="slide relative mx-auto grid max-w-[1500px] gap-6 overflow-hidden px-5 py-8 sm:px-10 sm:py-12 md:grid-cols-[1.2fr_0.8fr]">
         <div>
           <h2 id="hoy-title" className="hello-grad pb-[0.06em] pr-[0.08em] text-[clamp(4rem,11vw,9rem)] font-black italic leading-[0.85] tracking-[-0.06em]">
