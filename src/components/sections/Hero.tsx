@@ -5,7 +5,6 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import type { Locale } from "@/lib/i18n";
 import { hero as H } from "@/content/site";
-import { RetroComputer, Sparkle } from "../Stickers";
 import { NameStep } from "../NameTag";
 
 gsap.registerPlugin(useGSAP);
@@ -15,112 +14,90 @@ const go = (id: string) => (e: React.MouseEvent) => {
   window.dispatchEvent(new CustomEvent("goto", { detail: id }));
 };
 
-const TONE = { blue: "var(--blue)", pink: "var(--pink)", yellow: "var(--yellow)", "": undefined } as const;
-
 /**
- * Portada: qué hago HOY, en una frase grande de colores, con mi foto en la compu
- * y dos botones claros (charlar o dejarme una foto). La historia viene más abajo.
+ * Portada: "Hola, soy backend DEVELOPER" en grande, con mi foto recortada en el medio
+ * (tapa parte de las letras), qué hago en una línea y un solo botón principal.
  */
-export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) {
+export default function Hero({ lang, cutout }: { lang: Locale; cutout?: string }) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const tl = gsap.timeline({ defaults: { ease: "back.out(1.8)" } });
-      tl.from("[data-card]", { y: 40, opacity: 0, duration: 0.6, ease: "power3.out" })
-        .from("[data-hello]", { scale: 0.6, rotate: -8, opacity: 0, duration: 0.6 }, "-=0.2")
-        .from("[data-w]", { yPercent: 60, opacity: 0, stagger: 0.04, duration: 0.6, ease: "power3.out" }, "-=0.3")
-        .from("[data-sub]", { y: 14, opacity: 0, stagger: 0.06, duration: 0.4, ease: "power2.out" }, "-=0.3")
-        .from("[data-pc]", { y: 80, rotate: 4, opacity: 0, duration: 0.9, ease: "expo.out" }, "-=0.6")
-        .from("[data-pop]", { scale: 0, rotate: () => gsap.utils.random(-30, 30), stagger: 0.07, duration: 0.5 }, "-=0.5");
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from("[data-card]", { y: 30, opacity: 0, duration: 0.5 })
+        .from("[data-l1]", { yPercent: 80, opacity: 0, stagger: 0.08, duration: 0.7 }, "-=0.2")
+        .from("[data-l2]", { yPercent: 60, opacity: 0, duration: 0.8 }, "-=0.5")
+        .from("[data-me]", { yPercent: 25, opacity: 0, duration: 1, ease: "expo.out" }, "-=0.6")
+        .from("[data-foot]", { y: 16, opacity: 0, stagger: 0.08, duration: 0.5 }, "-=0.5");
     },
     { scope: root },
   );
 
-  // La frase, palabra por palabra (para animarla)
-  const words = H.statement[lang].flatMap(([text, color]) =>
-    text
-      .split(/(\s+)/)
-      .filter((w) => w.trim())
-      .map((w) => ({ w, color })),
-  );
+  const es = lang === "es";
 
   return (
     <section ref={root} className="relative px-3 pb-6 pt-12 sm:px-6 sm:pt-14" aria-labelledby="hero-title">
       <NameStep n={0} />
-      <div data-card className="slide relative mx-auto flex min-h-[calc(100svh-5rem)] max-w-[1500px] flex-col overflow-hidden px-5 py-6 sm:px-10 sm:py-8">
-        {/* Centro: la frase + la compu con mi foto */}
-        <div className="relative z-10 my-auto grid items-center gap-8 py-4 md:grid-cols-[1.2fr_0.8fr] md:gap-12">
-          <div>
-            <p
-              data-hello
-              className="hello-grad inline-block pb-[0.05em] pr-[0.08em] text-[clamp(2.4rem,5vw,4.5rem)] font-black italic leading-[0.85] tracking-[-0.06em]"
-              aria-hidden
-            >
-              {H.hello[lang]}
-            </p>
-            <h1 id="hero-title" className="mt-2 max-w-[17ch] text-[clamp(2.4rem,5.4vw,5.4rem)] font-black leading-[0.95] tracking-[-0.045em]">
-              <span className="sr-only">{H.hello[lang]} </span>
-              {words.map(({ w, color }, i) => (
-                <span key={i} data-w className="mr-[0.22em] inline-block" style={{ color: TONE[color] }}>
-                  {w}
-                </span>
-              ))}
-            </h1>
-            <p data-sub className="mt-5 max-w-[46ch] text-[clamp(1.05rem,1.5vw,1.3rem)] font-medium leading-snug text-ink/75">
-              {H.roles.slice(0, 3).map((r) => r[lang]).join(" · ")}
-            </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <a
-                data-sub
-                href="#charlemos"
-                onClick={go("charlemos")}
-                className="rounded-full bg-ink px-6 py-3.5 text-[1.05rem] font-bold text-cream shadow-[0_6px_0_#000] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_#000]"
-              >
-                {H.cta.call[lang]}
-              </a>
-              <a
-                data-sub
-                href="#dejame"
-                onClick={(e) => {
-                  go("dejame")(e);
-                  setTimeout(() => window.dispatchEvent(new Event("camera:on")), 900);
-                }}
-                className="rounded-full bg-pink px-6 py-3.5 text-[1.05rem] font-bold text-cream shadow-[0_6px_0_#b23f86] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_#b23f86]"
-              >
-                {H.cta.photo[lang]}
-              </a>
-            </div>
-          </div>
-
-          {/* La compu retro: en la pantalla estoy yo */}
-          <div data-pc className="relative mx-auto w-[min(78vw,360px)] md:w-full md:max-w-[400px]">
-            <RetroComputer>
-              <div className="absolute inset-[6%] overflow-hidden rounded-[6px] bg-ink">
-                {photo && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={photo} alt={lang === "es" ? "Yo" : "Me"} className="h-full w-full object-cover" />
-                )}
-                <div className="absolute inset-x-0 top-0 flex items-center justify-between bg-ink/85 px-2 py-1 font-mono text-[0.62rem] text-cream">
-                  <span>{H.screenTitle}</span>
-                  <span className="flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red" /> {H.screenLabel[lang]}
-                  </span>
-                </div>
-                <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,.08)_0,rgba(0,0,0,.08)_1px,transparent_1px,transparent_3px)]" aria-hidden />
-              </div>
-            </RetroComputer>
-            <span data-pop className="absolute -right-3 -top-3 block">
-              <Sparkle className="h-9 w-9" />
+      <div data-card className="slide relative mx-auto h-[calc(100svh-5rem)] min-h-[560px] max-w-[1500px] overflow-hidden">
+        {/* Las palabras grandes, ATRÁS de la foto */}
+        <h1 id="hero-title" className="pointer-events-none absolute inset-x-0 top-[7%] z-0 select-none text-center md:top-[16%]">
+          <span className="flex flex-wrap items-baseline justify-center gap-x-[0.3em] px-4 font-serif text-[clamp(2.4rem,7vw,7.5rem)] font-normal italic leading-[1] tracking-[-0.02em] md:flex-nowrap md:gap-x-[clamp(9rem,24vw,22rem)]">
+            <span data-l1 className="inline-block">
+              {H.big.left[lang]}
             </span>
-          </div>
-        </div>
+            <span data-l1 className="inline-block">
+              {H.big.right[lang]}
+            </span>
+          </span>
+          <span data-l2 className="mt-1 block text-[clamp(3.6rem,15.5vw,15rem)] font-black leading-[0.85] tracking-[-0.05em] text-blue md:mt-[0.06em]">
+            {H.big.word[lang]}
+          </span>
+        </h1>
 
-        <p className="floaty mx-auto font-hand text-[1.35rem] text-ink/55" aria-hidden>
-          {H.scroll[lang]} ↓
-        </p>
+        {/* Yo, recortada, ADELANTE de las letras */}
+        {cutout && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            data-me
+            src={cutout}
+            alt={es ? "Brigitte" : "Brigitte"}
+            className="pointer-events-none absolute bottom-0 left-1/2 z-10 w-auto max-w-none -translate-x-1/2 object-contain object-bottom [filter:grayscale(1)_contrast(1.06)_brightness(1.03)] max-md:h-[68%] md:h-[80%]"
+          />
+        )}
+
+        {/* Abajo: qué hago · el botón · la frase */}
+        <div className="absolute inset-x-0 bottom-0 z-20 grid items-end gap-4 px-5 pb-6 sm:px-10 md:grid-cols-[1fr_auto_1fr] md:pb-9">
+          <p data-foot className="hidden max-w-[30ch] text-[0.82rem] font-extrabold uppercase leading-snug tracking-[0.04em] md:block">
+            <span className="mb-3 block h-[3px] w-14 bg-ink" aria-hidden />
+            {H.side[lang]}
+          </p>
+          <div data-foot className="flex flex-col items-center gap-2">
+            <a
+              href="#charlemos"
+              onClick={go("charlemos")}
+              className="rounded-full bg-blue px-10 py-4 text-[1.05rem] font-extrabold uppercase tracking-[0.04em] text-cream shadow-[0_10px_30px_-10px_rgba(78,117,229,.9)] transition-transform hover:-translate-y-0.5 active:translate-y-0.5"
+            >
+              {es ? "Charlemos ☎️" : "Let's talk ☎️"}
+            </a>
+            <a
+              href="#dejame"
+              onClick={(e) => {
+                go("dejame")(e);
+                setTimeout(() => window.dispatchEvent(new Event("camera:on")), 900);
+              }}
+              className="rounded-full bg-cream/90 px-3 py-1 text-[0.85rem] font-semibold text-ink underline decoration-pink decoration-2 underline-offset-4"
+            >
+              {es ? "o dejame una foto 📸" : "or leave me a photo 📸"}
+            </a>
+          </div>
+          <p data-foot className="hidden justify-self-end text-right text-[1rem] font-medium leading-snug text-ink/55 md:block md:max-w-[26ch]">
+            {H.statement[lang].map(([t]) => t).join("")}
+          </p>
+        </div>
       </div>
+      {/* En celular, lo que hago va abajo de la tarjeta */}
+      <p className="mx-auto mt-4 max-w-[34ch] px-2 text-center text-[0.95rem] font-bold uppercase leading-snug tracking-[0.03em] md:hidden">{H.side[lang]}</p>
     </section>
   );
 }

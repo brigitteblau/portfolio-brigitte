@@ -327,9 +327,18 @@ export const hero = {
   roles: [
     { es: "Desarrolladora backend", en: "Backend developer" },
     { es: "Partner y directora en Grupo Mirrow", en: "Partner & director at Grupo Mirrow" },
-    { es: "Estudiante en ORT", en: "Student at ORT" },
     { es: "Buenos Aires", en: "Buenos Aires" },
   ] as L[],
+  /** La portada, estilo "I'm ui/ux DESIGNER": dos líneas grandes con mi foto en el medio */
+  big: {
+    left: { es: "Hola, soy", en: "Hi, I'm a" },
+    right: { es: "backend", en: "backend" },
+    word: { es: "DEVELOPER", en: "DEVELOPER" },
+  },
+  side: {
+    es: "Backend, 3D y visión por computadora. Partner y directora en Grupo Mirrow.",
+    en: "Backend, 3D and computer vision. Partner & director at Grupo Mirrow.",
+  },
   cta: {
     call: { es: "Agendá una call ☎️", en: "Book a call ☎️" },
     photo: { es: "Dejame una foto 📸", en: "Leave me a photo 📸" },

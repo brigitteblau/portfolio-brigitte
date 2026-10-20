@@ -197,97 +197,6 @@ function Switch({
   );
 }
 
-const LABEL: Record<string, { code: string; stripe: string; ink: string }> = {
-  kodak: { code: "200", stripe: "#e5483d", ink: "#1f2128" },
-  descartable: { code: "400", stripe: "#fbf8ee", ink: "#1f2128" },
-  polaroid: {
-    code: "600",
-    stripe: "linear-gradient(90deg,#e5483d,#f28c38,#f6c744,#3b9a5e,#4e75e5)",
-    ink: "#1f2128",
-  },
-  bn: { code: "B&N", stripe: "#fbf8ee", ink: "#fbf8ee" },
-  normal: { code: "—", stripe: "#4e75e5", ink: "#1f2128" },
-};
-
-/** Un rollo de 35 mm: tocás uno y se "carga" en la cámara */
-function Canister({
-  film,
-  lang,
-  on,
-  tilt,
-  onClick,
-}: {
-  film: Film;
-  lang: Locale;
-  on: boolean;
-  tilt: number;
-  onClick: () => void;
-}) {
-  const l = LABEL[film.id] ?? LABEL.normal;
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={on}
-      className="group flex w-[19%] max-w-[4.6rem] flex-col items-center gap-1.5 focus-visible:outline-none"
-      title={film.name[lang]}
-    >
-      <span
-        className={clsx(
-          "relative block w-full transition-transform duration-300",
-          on ? "-translate-y-3" : "group-hover:-translate-y-1.5",
-        )}
-        style={{
-          rotate: `${on ? 0 : tilt}deg`,
-          filter: on
-            ? "drop-shadow(0 10px 8px rgba(31,33,40,.35))"
-            : "drop-shadow(0 4px 4px rgba(31,33,40,.25))",
-        }}
-      >
-        {/* la pestaña del carrete */}
-        <span className="mx-auto block h-2 w-[30%] rounded-t-[3px] bg-[linear-gradient(90deg,#8d8d88,#e9e9e4,#8d8d88)]" />
-        {/* tapa de arriba */}
-        <span className="block h-2.5 rounded-t-[6px] bg-[linear-gradient(90deg,#6f6f6a,#e9e9e4_40%,#9a9a94)]" />
-        {/* etiqueta */}
-        <span
-          className="relative flex aspect-[3/4] flex-col items-center justify-center overflow-hidden"
-          style={{ background: film.swatch }}
-        >
-          <span className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.28),transparent_30%,rgba(255,255,255,.28)_55%,rgba(0,0,0,.2))]" />
-          <span
-            className="relative h-2 w-full"
-            style={{ background: l.stripe }}
-          />
-          <span
-            className="relative mt-1 font-mono text-[0.72rem] font-black leading-none"
-            style={{ color: l.ink }}
-          >
-            {l.code}
-          </span>
-        </span>
-        {/* tapa de abajo */}
-        <span className="block h-2.5 rounded-b-[6px] bg-[linear-gradient(90deg,#6f6f6a,#e9e9e4_40%,#9a9a94)]" />
-        {on && (
-          <span
-            className="absolute -right-2 -top-3 rotate-12 text-[1.1rem]"
-            aria-hidden
-          >
-            ✨
-          </span>
-        )}
-      </span>
-      <span
-        className={clsx(
-          "text-center font-hand text-[1.05rem] leading-[0.95] sm:text-[1.2rem]",
-          on ? "text-pink" : "text-ink/70",
-        )}
-      >
-        {film.name[lang]}
-      </span>
-    </button>
-  );
-}
-
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export default function FilmCamera({
@@ -306,7 +215,10 @@ export default function FilmCamera({
 
   const [phase, setPhase] = useState<Phase>("off");
   const [mirror, setMirror] = useState(true);
-  const [film, setFilm] = useState<Film>(FILMS[0]);
+  const [film, setFilm] = useState<Film>(
+    FILMS.find((f) => f.id === "normal") ?? FILMS[0],
+  );
+  const [thumbs, setThumbs] = useState<Record<string, string>>({});
   const [flashOn, setFlashOn] = useState(true);
   const [timerOn, setTimerOn] = useState(false);
   const [count, setCount] = useState<number | null>(null);
@@ -386,9 +298,35 @@ export default function FilmCamera({
     setPhase(photo ? "print" : "off");
   };
 
+  /** Miniaturas de la foto con cada filtro (para elegir después de sacarla). */
+  const makeThumbs = (canvas: HTMLCanvasElement) => {
+    const out: Record<string, string> = {};
+    for (const f of FILMS) {
+      const c = document.createElement("canvas");
+      c.width = 180;
+      c.height = 240;
+      const ctx = c.getContext("2d", { willReadFrequently: true })!;
+      ctx.drawImage(canvas, 0, 0, c.width, c.height);
+      develop(ctx, c.width, c.height, { ...f, date: false });
+      out[f.id] = c.toDataURL("image/jpeg", 0.8);
+    }
+    setThumbs(out);
+  };
+
+  /** Cambia el filtro de la foto ya sacada (sin volver a "imprimirla"). */
+  const applyFilm = async (f: Film) => {
+    setFilm(f);
+    if (!raw.current) return;
+    const blob = await print(raw.current, f);
+    if (!blob) return;
+    setPhoto(blob);
+    setPreview(URL.createObjectURL(blob));
+  };
+
   /** Desarrolla la foto cruda con el rollo y la "imprime". */
   const toPrint = async (canvas: HTMLCanvasElement, f: Film) => {
     raw.current = canvas;
+    makeThumbs(canvas);
     const blob = await print(canvas, f);
     if (!blob) return;
     setPhoto(blob);
@@ -452,11 +390,7 @@ export default function FilmCamera({
     }
   };
 
-  // Cambiar de rollo con la foto ya sacada la vuelve a revelar
-  const pickFilm = (f: Film) => {
-    setFilm(f);
-    if (phase === "print" && raw.current) void toPrint(raw.current, f);
-  };
+  const pickFilm = (f: Film) => void applyFilm(f);
 
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     mark();
@@ -605,7 +539,7 @@ export default function FilmCamera({
                     />
                     <div className="pointer-events-none absolute inset-3 rounded-[10px] border border-white/30" />
                     <span className="pointer-events-none absolute left-4 top-3 font-vhs text-[1.3rem] text-white [text-shadow:0_1px_4px_rgba(0,0,0,.6)]">
-                      ● {film.name[lang]}
+                      ● REC
                     </span>
                     {film.date && (
                       <span className="pointer-events-none absolute bottom-3 right-4 font-vhs text-[1.5rem] text-[#ffa23a] [text-shadow:0_0_6px_rgba(255,120,30,.9)]">
@@ -753,26 +687,9 @@ export default function FilmCamera({
           />
         </div>
 
-        {/* los rollos, sueltos sobre el escritorio */}
+        {/* mandar solo un mensaje */}
         <div className="min-w-0 lg:col-start-1 lg:row-start-2 lg:self-start">
-          <fieldset className="min-w-0">
-            <legend className="mb-1 w-full text-center font-hand text-[1.5rem] leading-none text-ink/70 lg:text-left">
-              {es ? "elegí un rollo ↓" : "pick a film ↓"}
-            </legend>
-            <div className="flex items-end justify-center gap-1 sm:gap-3 lg:justify-start">
-              {FILMS.map((f, i) => (
-                <Canister
-                  key={f.id}
-                  film={f}
-                  lang={lang}
-                  on={f.id === film.id}
-                  tilt={[-6, 4, -3, 6, -4][i % 5]}
-                  onClick={() => pickFilm(f)}
-                />
-              ))}
-            </div>
-          </fieldset>
-          <p className="mt-5 text-center lg:text-left">
+          <p className="text-center lg:text-left">
             <button
               type="button"
               onClick={() => setSheet(true)}
@@ -859,6 +776,56 @@ export default function FilmCamera({
                   </div>
                 )}
               </div>
+              {preview && (
+                <fieldset className="mt-3 min-w-0">
+                  <legend className="mb-1.5 font-hand text-[1.35rem] leading-none text-ink/70">
+                    {es ? "¿le ponemos un filtro? ✨" : "add a filter? ✨"}
+                  </legend>
+                  <div
+                    className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]"
+                    data-lenis-prevent
+                  >
+                    {[...FILMS].sort((a, b) => (a.id === "normal" ? -1 : b.id === "normal" ? 1 : 0)).map((f) => {
+                      const on = f.id === film.id;
+                      return (
+                        <button
+                          key={f.id}
+                          type="button"
+                          onClick={() => pickFilm(f)}
+                          aria-pressed={on}
+                          className="flex w-[4.4rem] shrink-0 flex-col items-center gap-1"
+                        >
+                          <span
+                            className={clsx(
+                              "block aspect-[3/4] w-full overflow-hidden rounded-[8px] border-2 transition-transform",
+                              on
+                                ? "-translate-y-0.5 border-pink shadow-[0_4px_0_#b23f86]"
+                                : "border-transparent",
+                            )}
+                          >
+                            {thumbs[f.id] && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={thumbs[f.id]}
+                                alt=""
+                                className="h-full w-full object-cover"
+                              />
+                            )}
+                          </span>
+                          <span
+                            className={clsx(
+                              "text-center text-[0.7rem] font-bold leading-tight",
+                              on ? "text-pink" : "text-ink/70",
+                            )}
+                          >
+                            {f.name[lang]}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              )}
               <label htmlFor="note-message" className="sr-only">
                 {B.caption[lang]}
               </label>
