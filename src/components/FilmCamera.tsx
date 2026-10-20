@@ -290,7 +290,13 @@ function Canister({
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export default function FilmCamera({ lang }: { lang: Locale }) {
+export default function FilmCamera({
+  lang,
+  aside,
+}: {
+  lang: Locale;
+  aside?: React.ReactNode;
+}) {
   const live = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
   const raw = useRef<HTMLCanvasElement | null>(null);
@@ -519,249 +525,265 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
 
   return (
     <>
-      {/* ───────── La cámara ───────── */}
-      <div className="relative mx-auto w-full max-w-[25rem] pt-5">
-        {/* botón disparador arriba */}
-        <button
-          type="button"
-          onClick={camOn ? shoot : powerOn}
-          disabled={phase === "opening" || phase === "second" || count !== null}
-          className="absolute right-[12%] top-0 z-10 h-7 w-20 rounded-t-[12px] bg-pink shadow-[inset_0_-5px_0_#b23f86] transition-transform active:translate-y-1.5"
-          aria-label={camOn ? B.shoot[lang] : B.power[lang]}
-        />
-        <div className="relative rounded-[28px] bg-[#d9d4c7] p-3 shadow-[inset_0_4px_0_rgba(255,255,255,.7),inset_0_-6px_0_rgba(0,0,0,.12),0_30px_50px_-24px_rgba(31,33,40,.7)] sm:p-4">
-          {/* placa de arriba */}
-          <div className="flex items-center justify-between px-2 pb-3">
-            <div
-              className={clsx(
-                "h-8 w-14 rounded-[6px] border-2 border-[#b9b2a2] transition-colors duration-100",
-                flash
-                  ? "bg-white shadow-[0_0_30px_10px_rgba(255,255,255,.9)]"
-                  : "bg-[linear-gradient(135deg,#f4f1ea,#cfc8b6)]",
-              )}
-              style={{ backgroundSize: "6px 6px" }}
-              aria-hidden
-            />
-            <p className="font-serif text-[1.35rem] italic leading-none tracking-[-0.01em] text-ink/80">
-              {B.brand}
-            </p>
-            <p
-              className="rounded-[4px] bg-ink px-1.5 font-vhs text-[1.2rem] leading-tight text-[#ffa23a]"
-              aria-label={`${left} ${B.shots[lang]}`}
-            >
-              {String(left).padStart(2, "0")}
-            </p>
+      {/* Todo en una pantalla: a la izquierda el título y los rollos, a la derecha la cámara bien grande */}
+      <div className="grid items-center gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,1fr)_min(32rem,calc((100svh-9rem)/1.8))] lg:grid-rows-[auto_auto]">
+        {aside && (
+          <div className="min-w-0 lg:col-start-1 lg:row-start-1 lg:self-end">
+            {aside}
           </div>
-
-          {/* cuerpo con cuerina rosa */}
-          <div
-            className="rounded-[20px] p-3 sm:p-4"
-            style={{
-              background:
-                "radial-gradient(circle at 1px 1px, rgba(0,0,0,.12) 1px, transparent 1.5px) 0 0/6px 6px, #ee9fcf",
-            }}
-          >
-            {/* visor */}
-            <div className="relative aspect-[3/4] overflow-hidden rounded-[16px] bg-ink shadow-[inset_0_0_0_6px_#1f2128,0_0_0_4px_#c9c2b1]">
-              <video
-                ref={live}
+        )}
+        {/* ───────── La cámara ───────── */}
+        <div className="relative mx-auto w-[min(100%,30rem,calc((100svh-9rem)/1.8))] pt-5 lg:w-full lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          {/* botón disparador arriba */}
+          <button
+            type="button"
+            onClick={camOn ? shoot : powerOn}
+            disabled={
+              phase === "opening" || phase === "second" || count !== null
+            }
+            className="absolute right-[12%] top-0 z-10 h-7 w-20 rounded-t-[12px] bg-pink shadow-[inset_0_-5px_0_#b23f86] transition-transform active:translate-y-1.5"
+            aria-label={camOn ? B.shoot[lang] : B.power[lang]}
+          />
+          <div className="relative rounded-[28px] bg-[#d9d4c7] p-3 shadow-[inset_0_4px_0_rgba(255,255,255,.7),inset_0_-6px_0_rgba(0,0,0,.12),0_30px_50px_-24px_rgba(31,33,40,.7)] sm:p-4">
+            {/* placa de arriba */}
+            <div className="flex items-center justify-between px-2 pb-3">
+              <div
                 className={clsx(
-                  "absolute inset-0 h-full w-full object-cover",
-                  mirror && "-scale-x-100",
-                  !camOn && "hidden",
+                  "h-8 w-14 rounded-[6px] border-2 border-[#b9b2a2] transition-colors duration-100",
+                  flash
+                    ? "bg-white shadow-[0_0_30px_10px_rgba(255,255,255,.9)]"
+                    : "bg-[linear-gradient(135deg,#f4f1ea,#cfc8b6)]",
                 )}
-                style={{ filter: cssFilter(film) }}
-                muted
-                playsInline
-                aria-label={es ? "Visor de la cámara" : "Camera viewfinder"}
+                style={{ backgroundSize: "6px 6px" }}
+                aria-hidden
               />
-              {camOn && (
-                <>
-                  {/* viñeta y grano en vivo */}
-                  <div
-                    className="pointer-events-none absolute inset-0"
-                    style={{
-                      background: `radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,${film.vignette * 0.9}) 100%)`,
-                    }}
-                  />
-                  <div
-                    className="grain pointer-events-none absolute inset-0"
-                    style={{ opacity: film.grain ? 1 : 0 }}
-                  />
-                  <div className="pointer-events-none absolute inset-3 rounded-[10px] border border-white/30" />
-                  <span className="pointer-events-none absolute left-4 top-3 font-vhs text-[1.3rem] text-white [text-shadow:0_1px_4px_rgba(0,0,0,.6)]">
-                    ● {film.name[lang]}
-                  </span>
-                  {film.date && (
-                    <span className="pointer-events-none absolute bottom-3 right-4 font-vhs text-[1.5rem] text-[#ffa23a] [text-shadow:0_0_6px_rgba(255,120,30,.9)]">
-                      {`'${String(new Date().getFullYear()).slice(2)} ${new Date().getMonth() + 1} ${new Date().getDate()}`}
-                    </span>
+              <p className="font-serif text-[1.35rem] italic leading-none tracking-[-0.01em] text-ink/80">
+                {B.brand}
+              </p>
+              <p
+                className="rounded-[4px] bg-ink px-1.5 font-vhs text-[1.2rem] leading-tight text-[#ffa23a]"
+                aria-label={`${left} ${B.shots[lang]}`}
+              >
+                {String(left).padStart(2, "0")}
+              </p>
+            </div>
+
+            {/* cuerpo con cuerina rosa */}
+            <div
+              className="rounded-[20px] p-3 sm:p-4"
+              style={{
+                background:
+                  "radial-gradient(circle at 1px 1px, rgba(0,0,0,.12) 1px, transparent 1.5px) 0 0/6px 6px, #ee9fcf",
+              }}
+            >
+              {/* visor */}
+              <div className="relative aspect-[3/4] overflow-hidden rounded-[16px] bg-ink shadow-[inset_0_0_0_6px_#1f2128,0_0_0_4px_#c9c2b1]">
+                <video
+                  ref={live}
+                  className={clsx(
+                    "absolute inset-0 h-full w-full object-cover",
+                    mirror && "-scale-x-100",
+                    !camOn && "hidden",
                   )}
-                </>
-              )}
-
-              {phase === "print" && preview && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={preview}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover opacity-40 blur-[2px]"
+                  style={{ filter: cssFilter(film) }}
+                  muted
+                  playsInline
+                  aria-label={es ? "Visor de la cámara" : "Camera viewfinder"}
                 />
-              )}
+                {camOn && (
+                  <>
+                    {/* viñeta y grano en vivo */}
+                    <div
+                      className="pointer-events-none absolute inset-0"
+                      style={{
+                        background: `radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,${film.vignette * 0.9}) 100%)`,
+                      }}
+                    />
+                    <div
+                      className="grain pointer-events-none absolute inset-0"
+                      style={{ opacity: film.grain ? 1 : 0 }}
+                    />
+                    <div className="pointer-events-none absolute inset-3 rounded-[10px] border border-white/30" />
+                    <span className="pointer-events-none absolute left-4 top-3 font-vhs text-[1.3rem] text-white [text-shadow:0_1px_4px_rgba(0,0,0,.6)]">
+                      ● {film.name[lang]}
+                    </span>
+                    {film.date && (
+                      <span className="pointer-events-none absolute bottom-3 right-4 font-vhs text-[1.5rem] text-[#ffa23a] [text-shadow:0_0_6px_rgba(255,120,30,.9)]">
+                        {`'${String(new Date().getFullYear()).slice(2)} ${new Date().getMonth() + 1} ${new Date().getDate()}`}
+                      </span>
+                    )}
+                  </>
+                )}
 
-              {(phase === "off" || phase === "print") && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center text-cream">
-                  {phase === "off" && <Sparkle className="h-10 w-10" />}
-                  {phase === "print" && (
+                {phase === "print" && preview && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={preview}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover opacity-40 blur-[2px]"
+                  />
+                )}
+
+                {(phase === "off" || phase === "print") && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center text-cream">
+                    {phase === "off" && <Sparkle className="h-10 w-10" />}
+                    {phase === "print" && (
+                      <button
+                        type="button"
+                        onClick={() => setSheet(true)}
+                        className="rounded-full bg-pink px-6 py-3 text-[1.05rem] font-bold text-cream shadow-[0_6px_0_#b23f86] transition-transform hover:scale-105 active:translate-y-1"
+                      >
+                        {es
+                          ? "✉️ ver mi foto y mandarla"
+                          : "✉️ see my photo and send it"}
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => setSheet(true)}
-                      className="rounded-full bg-pink px-6 py-3 text-[1.05rem] font-bold text-cream shadow-[0_6px_0_#b23f86] transition-transform hover:scale-105 active:translate-y-1"
+                      onClick={powerOn}
+                      className="rounded-full bg-cream px-6 py-3 text-[1.05rem] font-bold text-ink shadow-[0_6px_0_#b9b2a2] transition-transform hover:scale-105 active:translate-y-1"
                     >
-                      {es ? "✉️ ver mi foto y mandarla" : "✉️ see my photo and send it"}
+                      {phase === "print"
+                        ? `↺ ${B.retake[lang]}`
+                        : `📸 ${B.power[lang]}`}
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={powerOn}
-                    className="rounded-full bg-cream px-6 py-3 text-[1.05rem] font-bold text-ink shadow-[0_6px_0_#b9b2a2] transition-transform hover:scale-105 active:translate-y-1"
-                  >
-                    {phase === "print"
-                      ? `↺ ${B.retake[lang]}`
-                      : `📸 ${B.power[lang]}`}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fileInput.current?.click()}
-                    className="text-[0.95rem] underline decoration-1 underline-offset-4 opacity-80 hover:opacity-100"
-                  >
-                    {B.upload[lang]}
-                  </button>
-                  {camError && (
-                    <p
-                      className="max-w-[26ch] text-[0.9rem] text-yellow"
-                      role="alert"
+                    <button
+                      type="button"
+                      onClick={() => fileInput.current?.click()}
+                      className="text-[0.95rem] underline decoration-1 underline-offset-4 opacity-80 hover:opacity-100"
                     >
-                      {camError}
+                      {B.upload[lang]}
+                    </button>
+                    {camError && (
+                      <p
+                        className="max-w-[26ch] text-[0.9rem] text-yellow"
+                        role="alert"
+                      >
+                        {camError}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {(phase === "opening" || phase === "second") &&
+                  count === null && (
+                    <p className="absolute inset-x-0 bottom-16 text-center font-hand text-[1.8rem] text-cream [text-shadow:0_2px_10px_rgba(0,0,0,.7)]">
+                      {phase === "opening" ? B.waiting[lang] : B.second[lang]}
                     </p>
                   )}
-                </div>
-              )}
-
-              {(phase === "opening" || phase === "second") &&
-                count === null && (
-                  <p className="absolute inset-x-0 bottom-16 text-center font-hand text-[1.8rem] text-cream [text-shadow:0_2px_10px_rgba(0,0,0,.7)]">
-                    {phase === "opening" ? B.waiting[lang] : B.second[lang]}
+                {phase === "live" && count === null && (
+                  <p className="pointer-events-none absolute inset-x-0 top-12 text-center font-hand text-[1.6rem] text-cream [text-shadow:0_2px_10px_rgba(0,0,0,.7)]">
+                    {B.powerHint[lang]}
                   </p>
                 )}
-              {phase === "live" && count === null && (
-                <p className="pointer-events-none absolute inset-x-0 top-12 text-center font-hand text-[1.6rem] text-cream [text-shadow:0_2px_10px_rgba(0,0,0,.7)]">
-                  {B.powerHint[lang]}
-                </p>
-              )}
-              {count !== null && (
-                <p
-                  key={count}
-                  className="pointer-events-none absolute inset-0 grid animate-[sub_.5s_ease-out] place-items-center font-black italic text-[9rem] leading-none text-cream [text-shadow:0_6px_30px_rgba(0,0,0,.5)]"
-                  aria-live="assertive"
-                >
-                  {count}
-                </p>
-              )}
-              {flash === "finder" && (
-                <div className="absolute inset-0 bg-white" />
-              )}
-              {camOn && phase !== "opening" && (
+                {count !== null && (
+                  <p
+                    key={count}
+                    className="pointer-events-none absolute inset-0 grid animate-[sub_.5s_ease-out] place-items-center font-black italic text-[9rem] leading-none text-cream [text-shadow:0_6px_30px_rgba(0,0,0,.5)]"
+                    aria-live="assertive"
+                  >
+                    {count}
+                  </p>
+                )}
+                {flash === "finder" && (
+                  <div className="absolute inset-0 bg-white" />
+                )}
+                {camOn && phase !== "opening" && (
+                  <button
+                    type="button"
+                    onClick={powerOff}
+                    className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/50 text-cream"
+                    aria-label={B.off[lang]}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {/* controles: dos llavecitas y el disparador */}
+              <div className="mt-4 flex items-center justify-between gap-3">
+                <div className="flex gap-4">
+                  <Switch
+                    on={flashOn}
+                    onClick={() => setFlashOn((v) => !v)}
+                    label={B.flash[lang]}
+                  />
+                  <Switch
+                    on={timerOn}
+                    onClick={() => setTimerOn((v) => !v)}
+                    label={B.timer[lang]}
+                  />
+                </div>
                 <button
                   type="button"
-                  onClick={powerOff}
-                  className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/50 text-cream"
-                  aria-label={B.off[lang]}
-                >
-                  ×
-                </button>
-              )}
-            </div>
-
-            {/* controles: dos llavecitas y el disparador */}
-            <div className="mt-4 flex items-center justify-between gap-3">
-              <div className="flex gap-4">
-                <Switch
-                  on={flashOn}
-                  onClick={() => setFlashOn((v) => !v)}
-                  label={B.flash[lang]}
-                />
-                <Switch
-                  on={timerOn}
-                  onClick={() => setTimerOn((v) => !v)}
-                  label={B.timer[lang]}
-                />
-              </div>
-              <button
-                type="button"
-                onClick={camOn ? shoot : powerOn}
-                disabled={
-                  phase === "opening" || phase === "second" || count !== null
-                }
-                className="group relative grid h-[74px] w-[74px] shrink-0 place-items-center rounded-full disabled:opacity-70"
-                style={{
-                  background:
-                    "conic-gradient(from 200deg, #f7f7f4, #9c9c96, #ececea, #7d7d78, #f7f7f4)",
-                  boxShadow:
-                    "0 6px 10px -4px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.15)",
-                }}
-                aria-label={camOn ? B.shoot[lang] : B.power[lang]}
-              >
-                <span
-                  className="block h-[50px] w-[50px] rounded-full transition-transform duration-75 group-active:scale-90"
+                  onClick={camOn ? shoot : powerOn}
+                  disabled={
+                    phase === "opening" || phase === "second" || count !== null
+                  }
+                  className="group relative grid h-[74px] w-[74px] shrink-0 place-items-center rounded-full disabled:opacity-70"
                   style={{
                     background:
-                      "radial-gradient(circle at 35% 30%, #ffd3ec 0 12%, #e15cae 45%, #a8337c 100%)",
+                      "conic-gradient(from 200deg, #f7f7f4, #9c9c96, #ececea, #7d7d78, #f7f7f4)",
                     boxShadow:
-                      "0 3px 0 #7d2259, inset 0 -3px 6px rgba(0,0,0,.25)",
+                      "0 6px 10px -4px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.15)",
                   }}
-                />
-              </button>
+                  aria-label={camOn ? B.shoot[lang] : B.power[lang]}
+                >
+                  <span
+                    className="block h-[50px] w-[50px] rounded-full transition-transform duration-75 group-active:scale-90"
+                    style={{
+                      background:
+                        "radial-gradient(circle at 35% 30%, #ffd3ec 0 12%, #e15cae 45%, #a8337c 100%)",
+                      boxShadow:
+                        "0 3px 0 #7d2259, inset 0 -3px 6px rgba(0,0,0,.25)",
+                    }}
+                  />
+                </button>
+              </div>
             </div>
           </div>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            tabIndex={-1}
+            onChange={onFile}
+            aria-label={B.upload[lang]}
+          />
         </div>
 
         {/* los rollos, sueltos sobre el escritorio */}
-        <fieldset className="mt-6">
-          <legend className="mb-1 w-full text-center font-hand text-[1.5rem] leading-none text-ink/70">
-            {es ? "elegí un rollo ↓" : "pick a film ↓"}
-          </legend>
-          <div className="flex items-end justify-center gap-1 sm:gap-3">
-            {FILMS.map((f, i) => (
-              <Canister
-                key={f.id}
-                film={f}
-                lang={lang}
-                on={f.id === film.id}
-                tilt={[-6, 4, -3, 6, -4][i % 5]}
-                onClick={() => pickFilm(f)}
-              />
-            ))}
-          </div>
-        </fieldset>
-        <p className="mt-5 text-center">
-          <button
-            type="button"
-            onClick={() => setSheet(true)}
-            className="font-hand text-[1.4rem] leading-none text-ink/60 underline decoration-1 underline-offset-4 hover:text-pink"
-          >
-            {es ? "…o mandame solo un mensaje ✉️" : "…or just send me a message ✉️"}
-          </button>
-        </p>
-        <input
-          ref={fileInput}
-          type="file"
-          accept="image/*"
-          className="sr-only"
-          tabIndex={-1}
-          onChange={onFile}
-          aria-label={B.upload[lang]}
-        />
+        <div className="min-w-0 lg:col-start-1 lg:row-start-2 lg:self-start">
+          <fieldset className="min-w-0">
+            <legend className="mb-1 w-full text-center font-hand text-[1.5rem] leading-none text-ink/70 lg:text-left">
+              {es ? "elegí un rollo ↓" : "pick a film ↓"}
+            </legend>
+            <div className="flex items-end justify-center gap-1 sm:gap-3 lg:justify-start">
+              {FILMS.map((f, i) => (
+                <Canister
+                  key={f.id}
+                  film={f}
+                  lang={lang}
+                  on={f.id === film.id}
+                  tilt={[-6, 4, -3, 6, -4][i % 5]}
+                  onClick={() => pickFilm(f)}
+                />
+              ))}
+            </div>
+          </fieldset>
+          <p className="mt-5 text-center lg:text-left">
+            <button
+              type="button"
+              onClick={() => setSheet(true)}
+              className="font-hand text-[1.4rem] leading-none text-ink/60 underline decoration-1 underline-offset-4 hover:text-pink"
+            >
+              {es
+                ? "…o mandame solo un mensaje ✉️"
+                : "…or just send me a message ✉️"}
+            </button>
+          </p>
+        </div>
       </div>
 
       {/* ───────── La foto que sale + el mensaje: en un pop-up ───────── */}
