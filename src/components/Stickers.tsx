@@ -126,7 +126,7 @@ export function RetroComputer({ className, children }: { className?: string; chi
   return (
     <div className={clsx("relative", className)}>
       <div className="rounded-[18px] bg-beige p-[7%] pb-[10%] shadow-[inset_-6px_-8px_0_rgba(0,0,0,.08),0_20px_30px_-18px_rgba(0,0,0,.5)]">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-[#f3a6d6] shadow-[inset_0_0_0_4px_#cbbf9f,inset_0_0_24px_rgba(0,0,0,.18)]">{children}</div>
+        <div data-screen className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-[#f3a6d6] shadow-[inset_0_0_0_4px_#cbbf9f,inset_0_0_24px_rgba(0,0,0,.18)]">{children}</div>
         <div className="mt-[5%] flex justify-end gap-2 pr-2" aria-hidden>
           <span className="h-2 w-6 rounded-full bg-[#cbbf9f]" />
           <span className="h-2 w-2 rounded-full bg-[#8bd17c]" />

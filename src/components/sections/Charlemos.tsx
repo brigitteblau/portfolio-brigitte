@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import type { Locale } from "@/lib/i18n";
 import { charlemos as C } from "@/content/site";
-import { Sparkle, Sticky } from "../Stickers";
+import { Sparkle } from "../Stickers";
 
 type State = "idle" | "sending" | "sent" | "error";
 
@@ -24,9 +24,9 @@ function nextDays(lang: Locale) {
 export default function Charlemos({ lang }: { lang: Locale }) {
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
-  const [topics, setTopics] = useState<string[]>([]);
+  const topics: string[] = [];
   const [days, setDays] = useState<string[]>([]);
-  const [slot, setSlot] = useState("cualquiera");
+  const slot = "cualquiera";
   const startedAt = useRef(0);
   const mark = useCallback(() => {
     if (!startedAt.current) startedAt.current = Date.now();
@@ -82,12 +82,6 @@ export default function Charlemos({ lang }: { lang: Locale }) {
     }
   };
 
-  const chip = (on: boolean) =>
-    clsx(
-      "rounded-full border-2 px-3 py-1.5 text-[0.92rem] font-semibold transition-transform",
-      on ? "-translate-y-0.5 border-ink bg-ink text-cream shadow-[0_3px_0_#000]" : "border-ink/25 bg-white hover:border-ink/60",
-    );
-
   return (
     <section id="charlemos" className="relative scroll-mt-16 px-3 py-6 sm:px-6" aria-labelledby="charlemos-title">
       <div
@@ -100,11 +94,6 @@ export default function Charlemos({ lang }: { lang: Locale }) {
               <span className="hello-grad pb-[0.06em] pr-[0.08em]">{C.title[lang].replace(" ☎️", "")}</span> <span aria-hidden>☎️</span>
             </h2>
             <p className="mt-4 max-w-[38ch] text-[clamp(1.05rem,1.6vw,1.25rem)] font-medium leading-snug">{C.sub[lang]}</p>
-            <div className="mt-6 hidden lg:block">
-              <Sticky color="#f8d66a" rotate={-4} className="max-w-[15rem] !text-[1.3rem]">
-                {lang === "es" ? "sin vueltas, de lo que quieras :)" : "no pressure, about anything :)"}
-              </Sticky>
-            </div>
             <Sparkle className="absolute right-4 top-2 h-9 w-9" />
           </div>
 
@@ -115,7 +104,6 @@ export default function Charlemos({ lang }: { lang: Locale }) {
                 onClick={() => {
                   setState("idle");
                   setDays([]);
-                  setTopics([]);
                 }}
                 className="font-semibold underline decoration-2 underline-offset-4 hover:text-pink"
               >
@@ -124,17 +112,6 @@ export default function Charlemos({ lang }: { lang: Locale }) {
             </div>
           ) : (
             <form onSubmit={submit} noValidate className="flex min-w-0 flex-col gap-5">
-              <fieldset className="min-w-0">
-                <legend className="mb-2 text-[0.72rem] font-extrabold uppercase tracking-[0.12em] text-ink/70">{C.topicsLabel[lang]}</legend>
-                <div className="flex flex-wrap gap-2">
-                  {C.topics.map((t) => (
-                    <button key={t.id} type="button" aria-pressed={topics.includes(t.id)} onClick={() => toggle(topics, setTopics, t.id)} className={chip(topics.includes(t.id))}>
-                      {t.label[lang]}
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
-
               <fieldset className="min-w-0">
                 <legend className="mb-2 text-[0.72rem] font-extrabold uppercase tracking-[0.12em] text-ink/70">
                   {C.daysLabel[lang]} <span className="font-normal normal-case tracking-normal">· {C.tz[lang]}</span>
@@ -159,17 +136,6 @@ export default function Charlemos({ lang }: { lang: Locale }) {
                       </button>
                     );
                   })}
-                </div>
-              </fieldset>
-
-              <fieldset className="min-w-0">
-                <legend className="mb-2 text-[0.72rem] font-extrabold uppercase tracking-[0.12em] text-ink/70">{C.slotLabel[lang]}</legend>
-                <div className="flex flex-wrap gap-2">
-                  {C.slots.map((s) => (
-                    <button key={s.id} type="button" aria-pressed={slot === s.id} onClick={() => setSlot(s.id)} className={chip(slot === s.id)}>
-                      {s.label[lang]}
-                    </button>
-                  ))}
                 </div>
               </fieldset>
 

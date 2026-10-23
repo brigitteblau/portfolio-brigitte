@@ -2,102 +2,184 @@
 
 import { useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import type { Locale } from "@/lib/i18n";
 import { hero as H } from "@/content/site";
+import { RetroComputer, Sparkle } from "../Stickers";
 import { NameStep } from "../NameTag";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const go = (id: string) => (e: React.MouseEvent) => {
   e.preventDefault();
   window.dispatchEvent(new CustomEvent("goto", { detail: id }));
 };
 
+const TONE = { blue: "#9fb6ff", pink: "#ff9fd6", yellow: "var(--yellow)", "": undefined } as const;
+
+/** Suma offsetLeft/Top desde `el` hasta `stop` (sin que las transformaciones afecten la medida). */
+function offsetWithin(el: HTMLElement, stop: HTMLElement) {
+  let x = 0;
+  let y = 0;
+  let n: HTMLElement | null = el;
+  while (n && n !== stop) {
+    x += n.offsetLeft;
+    y += n.offsetTop;
+    n = n.offsetParent as HTMLElement | null;
+  }
+  return { x, y };
+}
+
 /**
- * Portada: "Hola, soy backend DEVELOPER" en grande, con mi foto recortada en el medio
- * (tapa parte de las letras), qué hago en una línea y un solo botón principal.
+ * Portada: "Holaaa!" y la tele con mi foto. Al bajar, la tele se agranda hasta ocupar
+ * toda la pantalla y adentro aparece lo que hago. Ahí arranca el portfolio.
  */
-export default function Hero({ lang, cutout }: { lang: Locale; cutout?: string }) {
+export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) {
   const root = useRef<HTMLElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const tv = useRef<HTMLDivElement>(null);
+  const final = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from("[data-card]", { y: 30, opacity: 0, duration: 0.5 })
-        .from("[data-l1]", { yPercent: 80, opacity: 0, stagger: 0.08, duration: 0.7 }, "-=0.2")
-        .from("[data-l2]", { yPercent: 60, opacity: 0, duration: 0.8 }, "-=0.5")
-        .from("[data-me]", { yPercent: 25, opacity: 0, duration: 1, ease: "expo.out" }, "-=0.6")
-        .from("[data-foot]", { y: 16, opacity: 0, stagger: 0.08, duration: 0.5 }, "-=0.5");
+      const mm = gsap.matchMedia();
+      // Entrada
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap
+          .timeline({ defaults: { ease: "back.out(1.6)" } })
+          .from("[data-hello] span", { yPercent: 110, rotate: () => gsap.utils.random(-10, 10), stagger: 0.05, duration: 0.8 })
+          .from(tv.current, { y: 120, opacity: 0, duration: 0.9, ease: "expo.out" }, "-=0.5")
+          .from("[data-hint]", { opacity: 0, duration: 0.4 }, "-=0.2");
+
+        // El zoom con el scroll: la pantalla de la tele termina tapando toda la vista
+        const st = stage.current!;
+        const box = tv.current!;
+        const screen = box.querySelector<HTMLElement>("[data-screen]")!;
+        const geo = () => {
+          const s = offsetWithin(screen, box);
+          const b = offsetWithin(box, st);
+          const cx = s.x + screen.offsetWidth / 2;
+          const cy = s.y + screen.offsetHeight / 2;
+          const scale = Math.max(st.clientWidth / screen.offsetWidth, st.clientHeight / screen.offsetHeight) * 1.04;
+          return { cx, cy, dx: st.clientWidth / 2 - (b.x + cx), dy: st.clientHeight / 2 - (b.y + cy), scale };
+        };
+        let g = geo();
+        gsap.set(box, { transformOrigin: `${g.cx}px ${g.cy}px` });
+
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.5,
+            invalidateOnRefresh: true,
+            onRefreshInit: () => {
+              g = geo();
+              gsap.set(box, { transformOrigin: `${g.cx}px ${g.cy}px` });
+            },
+            onUpdate: (self) => {
+              if (final.current) final.current.style.pointerEvents = self.progress > 0.8 ? "auto" : "none";
+            },
+          },
+        });
+        tl.to("[data-hint]", { opacity: 0, duration: 0.08 }, 0)
+          .to("[data-hello]", { yPercent: -60, opacity: 0, duration: 0.35 }, 0)
+          .to(box, { x: () => g.dx, y: () => g.dy, scale: () => g.scale, duration: 0.7, ease: "power2.in" }, 0.02)
+          .to("[data-glare]", { opacity: 0, duration: 0.2 }, 0.5)
+          .fromTo(final.current, { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0.72)
+          .from("[data-final] > *", { y: 30, opacity: 0, stagger: 0.03, duration: 0.12 }, 0.76)
+          .to({}, { duration: 0.1 });
+      });
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(final.current, { opacity: 1, pointerEvents: "auto" });
+      });
+      return () => mm.revert();
     },
     { scope: root },
   );
 
   const es = lang === "es";
+  const words = H.statement[lang];
 
   return (
-    <section ref={root} className="relative px-3 pb-6 pt-12 sm:px-6 sm:pt-14" aria-labelledby="hero-title">
+    <section ref={root} className="relative h-[260svh] motion-reduce:h-auto" aria-labelledby="hero-title">
       <NameStep n={0} />
-      <div data-card className="slide relative mx-auto h-[calc(100svh-5rem)] min-h-[560px] max-w-[1500px] overflow-hidden">
-        {/* Las palabras grandes, ATRÁS de la foto */}
-        <h1 id="hero-title" className="pointer-events-none absolute inset-x-0 top-[7%] z-0 select-none text-center md:top-[16%]">
-          <span className="flex flex-wrap items-baseline justify-center gap-x-[0.3em] px-4 font-serif text-[clamp(2.4rem,7vw,7.5rem)] font-normal italic leading-[1] tracking-[-0.02em] md:flex-nowrap md:gap-x-[clamp(9rem,24vw,22rem)]">
-            <span data-l1 className="inline-block">
-              {H.big.left[lang]}
+      <div ref={stage} className="sticky top-0 flex h-[100svh] flex-col items-center justify-center overflow-hidden px-4 motion-reduce:static">
+        {/* Holaaa! */}
+        <p
+          data-hello
+          aria-hidden
+          className="hello-grad relative z-0 flex overflow-hidden px-[0.06em] pb-[0.08em] text-center text-[clamp(4.2rem,19vw,17rem)] font-black italic leading-[0.85] tracking-[-0.06em]"
+        >
+          {H.hello[lang].split("").map((c, i) => (
+            <span key={i} className="hello-grad inline-block pr-[0.03em]">
+              {c}
             </span>
-            <span data-l1 className="inline-block">
-              {H.big.right[lang]}
-            </span>
-          </span>
-          <span data-l2 className="mt-1 block text-[clamp(3.6rem,15.5vw,15rem)] font-black leading-[0.85] tracking-[-0.05em] text-blue md:mt-[0.06em]">
-            {H.big.word[lang]}
-          </span>
-        </h1>
+          ))}
+        </p>
 
-        {/* Yo, recortada, ADELANTE de las letras */}
-        {cutout && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            data-me
-            src={cutout}
-            alt={es ? "Brigitte" : "Brigitte"}
-            className="pointer-events-none absolute bottom-0 left-1/2 z-10 w-auto max-w-none -translate-x-1/2 object-contain object-bottom [filter:grayscale(1)_contrast(1.06)_brightness(1.03)] max-md:h-[68%] md:h-[80%]"
-          />
-        )}
+        {/* La tele, con mi foto en la pantalla */}
+        <div ref={tv} className="relative z-10 -mt-[min(5vw,4rem)] w-[min(70vw,380px)] will-change-transform">
+          <RetroComputer>
+            {photo && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={photo} alt={es ? "Brigitte en su escritorio" : "Brigitte at her desk"} className="absolute inset-0 h-full w-full object-cover" />
+            )}
+            <div data-glare className="absolute inset-x-0 top-0 flex items-center justify-between bg-ink/85 px-2 py-1 font-mono text-[0.6rem] text-cream">
+              <span>{H.screenTitle}</span>
+              <span className="flex items-center gap-1">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red" /> {H.screenLabel[lang]}
+              </span>
+            </div>
+            <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,.08)_0,rgba(0,0,0,.08)_1px,transparent_1px,transparent_3px)]" aria-hidden />
+          </RetroComputer>
+          <Sparkle className="absolute -right-4 -top-4 h-9 w-9" />
+        </div>
 
-        {/* Abajo: qué hago · el botón · la frase */}
-        <div className="absolute inset-x-0 bottom-0 z-20 grid items-end gap-4 px-5 pb-6 sm:px-10 md:grid-cols-[1fr_auto_1fr] md:pb-9">
-          <p data-foot className="hidden max-w-[30ch] text-[0.82rem] font-extrabold uppercase leading-snug tracking-[0.04em] md:block">
-            <span className="mb-3 block h-[3px] w-14 bg-ink" aria-hidden />
-            {H.side[lang]}
-          </p>
-          <div data-foot className="flex flex-col items-center gap-2">
-            <a
-              href="#charlemos"
-              onClick={go("charlemos")}
-              className="rounded-full bg-blue px-10 py-4 text-[1.05rem] font-extrabold uppercase tracking-[0.04em] text-cream shadow-[0_10px_30px_-10px_rgba(78,117,229,.9)] transition-transform hover:-translate-y-0.5 active:translate-y-0.5"
-            >
-              {es ? "Charlemos ☎️" : "Let's talk ☎️"}
-            </a>
-            <a
-              href="#dejame"
-              onClick={(e) => {
-                go("dejame")(e);
-                setTimeout(() => window.dispatchEvent(new Event("camera:on")), 900);
-              }}
-              className="rounded-full bg-cream/90 px-3 py-1 text-[0.85rem] font-semibold text-ink underline decoration-pink decoration-2 underline-offset-4"
-            >
-              {es ? "o dejame una foto 📸" : "or leave me a photo 📸"}
-            </a>
+        <p data-hint className="floaty absolute bottom-6 left-1/2 -translate-x-1/2 font-hand text-[1.4rem] text-ink/60" aria-hidden>
+          {es ? "bajá y entrá ↓" : "scroll to go in ↓"}
+        </p>
+
+        {/* Lo que aparece cuando la tele ya ocupa toda la pantalla */}
+        <div
+          ref={final}
+          className="absolute inset-0 z-20 flex items-end bg-gradient-to-t from-black/80 via-black/35 to-black/10 opacity-0 motion-reduce:static motion-reduce:mt-8 motion-reduce:bg-none motion-reduce:opacity-100"
+          style={{ pointerEvents: "none" }}
+        >
+          <div data-final className="mx-auto w-full max-w-[1400px] px-6 pb-[12svh] text-cream sm:px-12 motion-reduce:text-ink">
+            <p className="font-hand text-[clamp(1.6rem,3vw,2.4rem)] leading-none text-yellow">{es ? "esta soy yo, hoy:" : "this is me, today:"}</p>
+            <h1 id="hero-title" className="mt-3 max-w-[18ch] text-[clamp(2.4rem,6vw,6rem)] font-black leading-[0.95] tracking-[-0.045em] [text-shadow:0_4px_30px_rgba(0,0,0,.35)]">
+              {words.map(([t, c], i) => (
+                <span key={i} style={{ color: TONE[c] }}>
+                  {t}
+                </span>
+              ))}
+            </h1>
+            <p className="mt-4 max-w-[52ch] text-[clamp(1rem,1.5vw,1.25rem)] font-semibold leading-snug text-cream/90 motion-reduce:text-ink/80">{H.side[lang]}</p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <a
+                href="#proyectos"
+                onClick={go("proyectos")}
+                className="rounded-full bg-cream px-6 py-3 text-[1rem] font-bold text-ink shadow-[0_6px_0_rgba(0,0,0,.35)] transition-transform hover:-translate-y-0.5"
+              >
+                {es ? "Ver lo que hago ↓" : "See what I do ↓"}
+              </a>
+              <a
+                href="#dejame"
+                onClick={(e) => {
+                  go("dejame")(e);
+                  setTimeout(() => window.dispatchEvent(new Event("camera:on")), 900);
+                }}
+                className="rounded-full bg-pink px-6 py-3 text-[1rem] font-bold text-cream shadow-[0_6px_0_#b23f86] transition-transform hover:-translate-y-0.5"
+              >
+                {H.cta.photo[lang]}
+              </a>
+            </div>
           </div>
-          <p data-foot className="hidden justify-self-end text-right text-[1rem] font-medium leading-snug text-ink/55 md:block md:max-w-[26ch]">
-            {H.statement[lang].map(([t]) => t).join("")}
-          </p>
         </div>
       </div>
-      {/* En celular, lo que hago va abajo de la tarjeta */}
-      <p className="mx-auto mt-4 max-w-[34ch] px-2 text-center text-[0.95rem] font-bold uppercase leading-snug tracking-[0.03em] md:hidden">{H.side[lang]}</p>
     </section>
   );
 }

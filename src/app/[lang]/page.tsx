@@ -26,11 +26,11 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const projectPhotos = Object.fromEntries([...featured, ...projects].map((p) => [p.id, findPhoto("proyectos", p.id)]));
   const covers = Object.fromEntries(programacion.books.map((b) => [b.id, findPhoto("libros", b.id)]));
   const firstVideo = (name: string) => ["mp4", "webm", "mov"].map((e) => `/video/${name}.${e}`).find(fileExists);
-  const [, , selfie, glasses] = photos.avatar;
+  const [, deskPic, selfie, glasses] = photos.avatar;
 
   return (
     <main id="main">
-      <Hero lang={lang} cutout={findPhoto("hero", "yo")} />
+      <Hero lang={lang} photo={deskPic} />
       <Hoy lang={lang} photos={[glasses, photos.ahora[0]].filter(Boolean) as string[]} />
       <Proyectos lang={lang} photos={projectPhotos} />
       <Foto lang={lang} />

@@ -355,7 +355,7 @@ export const perfil = {
     now: { es: "Ahora", en: "Now" },
     goal: { es: "Meta", en: "Goal" },
   },
-  nowValue: { es: "estudiante en ORT y partner en Grupo Mirrow", en: "student at ORT and partner at Grupo Mirrow" },
+  nowValue: { es: "partner y directora en Grupo Mirrow", en: "partner and director at Grupo Mirrow" },
   goalValue: { es: "dejar algo en el mundo", en: "leave something in the world" },
 };
 
@@ -432,8 +432,8 @@ export const extra = {
 export const charlemos = {
   title: { es: "Charlemos ☎️", en: "Let's talk ☎️" },
   sub: {
-    es: "¿Necesitás una charla con una amiga? ¿Querés hablar de un proyecto, de emprender, de programar o de lo que sea? Agendá una call: me llega un mail y te contesto para confirmar.",
-    en: "Need a chat with a friend? Want to talk about a project, starting something, coding, or anything at all? Book a call: I get an email and I'll reply to confirm.",
+    es: "Una call para hablar de lo que quieras, como con una amiga. Elegí un día y te escribo.",
+    en: "A call to talk about anything, like with a friend. Pick a day and I'll write to you.",
   },
   topicsLabel: { es: "¿De qué querés hablar?", en: "What do you want to talk about?" },
   topics: [
@@ -444,7 +444,7 @@ export const charlemos = {
     { id: "charla", label: { es: "una charla y ya", en: "just a chat" } },
     { id: "otro", label: { es: "otra cosa", en: "something else" } },
   ],
-  daysLabel: { es: "Elegí hasta 3 días", en: "Pick up to 3 days" },
+  daysLabel: { es: "¿Qué día te queda bien?", en: "Which day works for you?" },
   slotLabel: { es: "¿A qué hora más o menos?", en: "Roughly what time?" },
   slots: [
     { id: "mañana", label: { es: "mañana", en: "morning" } },
@@ -454,7 +454,7 @@ export const charlemos = {
   ],
   name: { es: "Tu nombre", en: "Your name" },
   email: { es: "Tu mail (para mandarte el link)", en: "Your email (to send you the link)" },
-  message: { es: "Algo más que quieras contarme (opcional)", en: "Anything else? (optional)" },
+  message: { es: "¿De qué querés hablar? (opcional)", en: "What do you want to talk about? (optional)" },
   send: { es: "Agendar ☎️", en: "Book it ☎️" },
   sending: { es: "Mandando…", en: "Sending…" },
   sent: { es: "¡Listo! Me llegó. Te escribo para confirmar el día.", en: "Done! I got it. I'll email you to confirm the day." },
