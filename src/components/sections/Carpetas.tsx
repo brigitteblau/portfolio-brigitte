@@ -7,7 +7,6 @@ import { useGSAP } from "@gsap/react";
 import type { Locale } from "@/lib/i18n";
 import type { Folder } from "@/lib/photos";
 import { carpetas as C } from "@/content/site";
-import { Blob, Doodle, Sparkle } from "../Stickers";
 import Video from "../Video";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -86,7 +85,7 @@ function Finder({ folder, color, lang, onClose }: { folder: Folder; color: strin
   );
 }
 
-export default function Carpetas({ lang, folders }: { lang: Locale; folders: Folder[] }) {
+export default function Carpetas({ lang, folders, journal }: { lang: Locale; folders: Folder[]; journal?: React.ReactNode }) {
   const root = useRef<HTMLElement>(null);
   const [open, setOpen] = useState<number | null>(null);
   const close = useCallback(() => setOpen(null), []);
@@ -107,47 +106,49 @@ export default function Carpetas({ lang, folders }: { lang: Locale; folders: Fol
     { scope: root },
   );
 
-  if (folders.length === 0) return null;
 
   return (
     <section ref={root} id="carpetas" className="relative px-3 py-6 sm:px-6" aria-labelledby="carpetas-title">
-      <div className="slide relative mx-auto max-w-[1500px] overflow-hidden px-5 py-12 sm:px-12">
-        <div className="relative flex flex-wrap items-end gap-x-6">
-          <h2 id="carpetas-title" className="font-serif text-[clamp(4.5rem,13vw,11rem)] font-bold italic leading-[0.85] tracking-[-0.03em] text-blue">
+      <div className="slide relative mx-auto max-w-[1500px] overflow-hidden px-6 py-14 sm:px-16 sm:py-20">
+        <div className="flex flex-wrap items-baseline gap-x-5">
+          <h2 id="carpetas-title" className="font-serif text-[clamp(3.6rem,9vw,7.5rem)] font-bold italic leading-[0.85] tracking-[-0.03em] text-pink">
             {C.title[lang]}
           </h2>
-          <p className="pb-3 font-serif text-[clamp(2rem,4.5vw,4rem)] italic leading-none">{C.sub[lang]}</p>
-          <Sparkle className="absolute -top-2 left-[min(40vw,30rem)] h-10 w-10" />
+          <p className="font-serif text-[clamp(1.6rem,3vw,2.6rem)] italic leading-none">{C.sub[lang]}</p>
         </div>
-        <p className="mt-3 font-hand text-[1.6rem] text-ink/60">{C.hint[lang]} ↓</p>
 
-        <ul className="relative mt-8 grid grid-cols-3 items-start gap-2 pb-4 sm:flex sm:flex-wrap sm:gap-x-20 sm:gap-y-8 sm:pb-10 md:pl-[6%]">
-          {folders.map((f, i) => (
-            <li key={f.name} data-folder className="sm:[margin-top:var(--mt)]" style={{ ["--mt" as string]: `${[0, 40, 10, 50, 20][i % 5]}px` }}>
-              <button onClick={() => setOpen(i)} className="group flex flex-col items-center gap-2 rounded-[14px] p-2 focus-visible:bg-blue/10">
-                <span className="relative isolate">
-                  <FolderIcon color={TINT[i % TINT.length]} className="h-auto w-[clamp(5.5rem,16vw,13rem)] transition-transform duration-300 group-hover:-translate-y-2 group-hover:-rotate-3" />
-                  {f.items[0]?.kind === "img" && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={f.items[0].src}
-                      alt=""
-                      className="absolute left-1/2 top-[-4%] -z-10 h-[56%] w-[58%] -translate-x-1/2 rotate-[-5deg] rounded-[4px] border-2 border-white object-cover shadow transition-transform duration-300 group-hover:-translate-y-6"
-                    />
-                  )}
-                </span>
-                <span className="rounded-[6px] bg-blue px-2.5 py-0.5 text-[1rem] font-semibold text-cream group-hover:bg-pink">{f.name}</span>
-                <span className="text-[0.78rem] text-ink/50">
-                  {f.items.length} {C.items[lang]}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-12 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+          {/* Lo que escribo */}
+          {journal && <div className="min-w-0">{journal}</div>}
 
-        <Blob color="var(--yellow)" face="smile" className="absolute bottom-8 right-[6%] hidden w-28 floaty md:block" />
-        <Blob color="var(--pink)" face="wink" className="absolute bottom-24 right-[20%] hidden w-20 md:block" />
-        <Doodle kind="zigzag" className="absolute right-[10%] top-14 hidden w-16 md:block" />
+          {/* Mis carpetas */}
+          <div className="min-w-0">
+            <p className="text-[0.72rem] font-extrabold uppercase tracking-[0.14em] text-ink/50">{lang === "es" ? "carpetas" : "folders"}</p>
+            <ul className="mt-5 grid grid-cols-3 items-start gap-4">
+              {folders.map((f, i) => (
+                <li key={f.name} data-folder>
+                  <button onClick={() => setOpen(i)} className="group flex w-full flex-col items-center gap-2 rounded-[14px] p-2 focus-visible:bg-pink/10">
+                    <span className="relative isolate">
+                      <FolderIcon color={TINT[i % TINT.length]} className="h-auto w-[clamp(5rem,10vw,8.5rem)] transition-transform duration-300 group-hover:-translate-y-1.5" />
+                      {f.items[0]?.kind === "img" && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={f.items[0].src}
+                          alt=""
+                          className="absolute left-1/2 top-[-4%] -z-10 h-[56%] w-[58%] -translate-x-1/2 rotate-[-5deg] rounded-[4px] border-2 border-white object-cover shadow transition-transform duration-300 group-hover:-translate-y-4"
+                        />
+                      )}
+                    </span>
+                    <span className="text-[0.95rem] font-semibold group-hover:text-pink">{f.name}</span>
+                    <span className="text-[0.75rem] text-ink/45">
+                      {f.items.length} {C.items[lang]}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
 
       {open !== null && folders[open] && <Finder folder={folders[open]} color={TINT[open % TINT.length]} lang={lang} onClose={close} />}

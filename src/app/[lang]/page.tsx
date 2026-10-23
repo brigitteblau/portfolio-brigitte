@@ -9,7 +9,7 @@ import Hoy from "@/components/sections/Hoy";
 import Proyectos from "@/components/sections/Proyectos";
 import Foto from "@/components/sections/Foto";
 import Carpetas from "@/components/sections/Carpetas";
-import Sigue from "@/components/sections/Sigue";
+import { JournalMini } from "@/components/sections/Sigue";
 import Final from "@/components/sections/Final";
 import Charlemos from "@/components/sections/Charlemos";
 import PhotoFab from "@/components/PhotoFab";
@@ -30,13 +30,12 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <main id="main">
-      <Hero lang={lang} photo={deskPic} />
+      <Hero lang={lang} photos={[deskPic, photos.ahora[0], selfie].filter(Boolean) as string[]} />
       <Hoy lang={lang} photos={[glasses, photos.ahora[0]].filter(Boolean) as string[]} />
       <Proyectos lang={lang} photos={projectPhotos} />
       <Foto lang={lang} />
       <Eras lang={lang} photos={photos} video={firstVideo("cumple")} golf={firstVideo("golf")} covers={covers} />
-      <Sigue lang={lang} entries={listEntries(lang)} />
-      <Carpetas lang={lang} folders={listCarpetas()} />
+      <Carpetas lang={lang} folders={listCarpetas()} journal={<JournalMini lang={lang} entries={listEntries(lang)} />} />
       <Final lang={lang} photos={photos.contacto}>
         <Charlemos lang={lang} />
       </Final>

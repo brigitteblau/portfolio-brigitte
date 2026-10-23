@@ -11,9 +11,13 @@ import { Polaroid, Sparkle, Tag } from "../Stickers";
 
 /** La tarjeta crema de cada diapositiva (en celular se apilan una abajo de la otra). */
 function Card({ children, className, tone }: { children: React.ReactNode; className?: string; tone?: string }) {
+  // Pantalla completa, como el video: sin bordes ni tarjeta, con aire alrededor del contenido
   return (
-    <div className="h-full px-3 pb-12 pt-14 sm:px-5 sm:pt-16 [.reel[data-flat]_&]:h-auto [.reel[data-flat]_&]:py-0">
-      <div className={clsx("slide relative h-full overflow-hidden", className)} style={tone ? { background: tone } : undefined}>
+    <div className="h-full [.reel[data-flat]_&]:h-auto">
+      <div
+        className={clsx("relative h-full overflow-hidden bg-cream pt-16 [.reel[data-flat]_&]:min-h-[100svh]", className)}
+        style={tone ? { background: tone } : undefined}
+      >
         {children}
       </div>
     </div>
@@ -112,7 +116,7 @@ function Camara({ lang, video }: { lang: Locale; video?: string }) {
 function Deportes({ lang, photos, video }: { lang: Locale; photos: string[]; video?: string }) {
   const list = deportes.sports.filter((s) => filled(s.name[lang]));
   return (
-    <Card className="grid gap-6 p-5 sm:p-8 md:grid-cols-[1fr_auto] md:items-center">
+    <Card className="grid gap-8 px-6 pb-12 sm:px-16 md:grid-cols-[1fr_auto] md:items-center lg:px-24">
       <div>
         <Label n={2} color="var(--green)">{deportes.era[lang]}</Label>
         <h3
@@ -169,7 +173,7 @@ function Editor({ lang }: { lang: Locale }) {
   const t = typed(p, P.typedWrong[lang], P.typedRight[lang]);
   const passion = p > 0.62;
   return (
-    <Card className="grid content-center gap-8 p-5 sm:p-10 lg:grid-cols-2 lg:items-center">
+    <Card className="grid content-center gap-10 px-6 pb-12 sm:px-16 lg:grid-cols-2 lg:items-center lg:px-24">
       <div>
         <Label n={3}>{P.era[lang]}</Label>
         <p className="mt-6 font-mono text-[clamp(1.8rem,4.5vw,4rem)] font-medium leading-[1] tracking-[-0.03em]">{P.from[lang]}</p>
@@ -219,7 +223,7 @@ const tl = (t: string | L, lang: Locale) => (typeof t === "string" ? t : t[lang]
 function Libros({ lang, photos, covers }: { lang: Locale; photos: string[]; covers: Record<string, string | undefined> }) {
   const books = P.books.filter((b) => filled(tl(b.title, lang)));
   return (
-    <Card className="flex flex-col justify-center gap-8 p-5 sm:p-10">
+    <Card className="flex flex-col justify-center gap-10 px-6 pb-12 sm:px-16 lg:px-24">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Label n={4} color="var(--pink)">{P.booksTitle[lang]}</Label>
@@ -270,7 +274,7 @@ function Historia({ lang }: { lang: Locale }) {
     if (root.current) root.current.style.transform = `translateX(${(1 - enter) * 25 - exit * 25}vw) rotate(-3deg)`;
   });
   return (
-    <Card className="flex items-center justify-center p-6" tone="var(--blue)">
+    <Card className="flex items-center justify-center px-6 pb-12" tone="var(--pink)">
       <p ref={root} className="max-w-[16ch] text-center font-serif text-[clamp(3rem,8vw,7.5rem)] italic leading-[0.95] tracking-[-0.02em] text-cream">
         {P.firstSite.caption[lang]}
       </p>

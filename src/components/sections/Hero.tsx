@@ -16,7 +16,7 @@ const go = (id: string) => (e: React.MouseEvent) => {
   window.dispatchEvent(new CustomEvent("goto", { detail: id }));
 };
 
-const TONE = { blue: "#9fb6ff", pink: "#ff9fd6", yellow: "var(--yellow)", "": undefined } as const;
+const TONE = { blue: "var(--ink)", pink: "var(--ink)", yellow: "var(--yellow)", "": undefined } as const;
 
 /** Suma offsetLeft/Top desde `el` hasta `stop` (sin que las transformaciones afecten la medida). */
 function offsetWithin(el: HTMLElement, stop: HTMLElement) {
@@ -35,7 +35,7 @@ function offsetWithin(el: HTMLElement, stop: HTMLElement) {
  * Portada: "Holaaa!" y la tele con mi foto. Al bajar, la tele se agranda hasta ocupar
  * toda la pantalla y adentro aparece lo que hago. Ahí arranca el portfolio.
  */
-export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) {
+export default function Hero({ lang, photos }: { lang: Locale; photos: string[] }) {
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const tv = useRef<HTMLDivElement>(null);
@@ -50,7 +50,7 @@ export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) 
           .timeline({ defaults: { ease: "back.out(1.6)" } })
           .from("[data-hello] span", { yPercent: 110, rotate: () => gsap.utils.random(-10, 10), stagger: 0.05, duration: 0.8 })
           .from(tv.current, { y: 120, opacity: 0, duration: 0.9, ease: "expo.out" }, "-=0.5")
-          .from("[data-hint]", { opacity: 0, duration: 0.4 }, "-=0.2");
+;
 
         // El zoom con el scroll: la pantalla de la tele termina tapando toda la vista
         const st = stage.current!;
@@ -84,10 +84,13 @@ export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) 
             },
           },
         });
-        tl.to("[data-hint]", { opacity: 0, duration: 0.08 }, 0)
-          .to("[data-hello]", { yPercent: -60, opacity: 0, duration: 0.35 }, 0)
+        tl.to("[data-hello]", { yPercent: -60, opacity: 0, duration: 0.35 }, 0)
           .to(box, { x: () => g.dx, y: () => g.dy, scale: () => g.scale, duration: 0.7, ease: "power2.in" }, 0.02)
-          .to("[data-glare]", { opacity: 0, duration: 0.2 }, 0.5)
+          .to("[data-glare]", { opacity: 0, duration: 0.2 }, 0.5);
+        // la pantalla va cambiando: cada foto aparece encima de la anterior, y al final rosa
+        const n = photos.length;
+        for (let i = 1; i <= n; i++) tl.to(`[data-scr="${i}"]`, { opacity: 1, duration: 0.06 }, 0.12 + (i - 1) * (0.56 / n));
+        tl
           .fromTo(final.current, { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0.72)
           .from("[data-final] > *", { y: 30, opacity: 0, stagger: 0.03, duration: 0.12 }, 0.76)
           .to({}, { duration: 0.1 });
@@ -123,34 +126,40 @@ export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) 
         {/* La tele, con mi foto en la pantalla */}
         <div ref={tv} className="relative z-10 -mt-[min(5vw,4rem)] w-[min(70vw,380px)] will-change-transform">
           <RetroComputer>
-            {photo && (
+            {/* Lo que pasa en la pantalla mientras entrás: fotos mías y al final rosa */}
+            {photos.map((src, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photo} alt={es ? "Brigitte en su escritorio" : "Brigitte at her desk"} className="absolute inset-0 h-full w-full object-cover" />
-            )}
+              <img
+                key={src}
+                data-scr={i}
+                src={src}
+                alt={i === 0 ? (es ? "Brigitte en su escritorio" : "Brigitte at her desk") : ""}
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ opacity: i === 0 ? 1 : 0 }}
+              />
+            ))}
+            <div data-scr={photos.length} className="absolute inset-0 bg-pink" style={{ opacity: 0 }} aria-hidden />
             <div data-glare className="absolute inset-x-0 top-0 flex items-center justify-between bg-ink/85 px-2 py-1 font-mono text-[0.6rem] text-cream">
               <span>{H.screenTitle}</span>
               <span className="flex items-center gap-1">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red" /> {H.screenLabel[lang]}
               </span>
             </div>
-            <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,.08)_0,rgba(0,0,0,.08)_1px,transparent_1px,transparent_3px)]" aria-hidden />
+            <div data-glare className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,.08)_0,rgba(0,0,0,.08)_1px,transparent_1px,transparent_3px)]" aria-hidden />
           </RetroComputer>
           <Sparkle className="absolute -right-4 -top-4 h-9 w-9" />
         </div>
 
-        <p data-hint className="floaty absolute bottom-6 left-1/2 -translate-x-1/2 font-hand text-[1.4rem] text-ink/60" aria-hidden>
-          {es ? "bajá y entrá ↓" : "scroll to go in ↓"}
-        </p>
 
         {/* Lo que aparece cuando la tele ya ocupa toda la pantalla */}
         <div
           ref={final}
-          className="absolute inset-0 z-20 flex items-end bg-gradient-to-t from-black/80 via-black/35 to-black/10 opacity-0 motion-reduce:static motion-reduce:mt-8 motion-reduce:bg-none motion-reduce:opacity-100"
+          className="absolute inset-0 z-20 flex items-center opacity-0 motion-reduce:static motion-reduce:mt-8 motion-reduce:bg-none motion-reduce:opacity-100"
           style={{ pointerEvents: "none" }}
         >
-          <div data-final className="mx-auto w-full max-w-[1400px] px-6 pb-[12svh] text-cream sm:px-12 motion-reduce:text-ink">
-            <p className="font-hand text-[clamp(1.6rem,3vw,2.4rem)] leading-none text-yellow">{es ? "esta soy yo, hoy:" : "this is me, today:"}</p>
-            <h1 id="hero-title" className="mt-3 max-w-[18ch] text-[clamp(2.4rem,6vw,6rem)] font-black leading-[0.95] tracking-[-0.045em] [text-shadow:0_4px_30px_rgba(0,0,0,.35)]">
+          <div data-final className="mx-auto w-full max-w-[1200px] px-6 text-cream sm:px-12 motion-reduce:text-ink">
+            <p className="font-hand text-[clamp(1.6rem,3vw,2.4rem)] leading-none text-cream/80">{es ? "esta soy yo, hoy:" : "this is me, today:"}</p>
+            <h1 id="hero-title" className="mt-3 max-w-[18ch] text-[clamp(2.4rem,6vw,6rem)] font-black leading-[0.95] tracking-[-0.045em] ">
               {words.map(([t, c], i) => (
                 <span key={i} style={{ color: TONE[c] }}>
                   {t}
@@ -162,7 +171,7 @@ export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) 
               <a
                 href="#proyectos"
                 onClick={go("proyectos")}
-                className="rounded-full bg-cream px-6 py-3 text-[1rem] font-bold text-ink shadow-[0_6px_0_rgba(0,0,0,.35)] transition-transform hover:-translate-y-0.5"
+                className="rounded-full bg-cream px-6 py-3 text-[1rem] font-bold text-ink transition-transform hover:-translate-y-0.5"
               >
                 {es ? "Ver lo que hago ↓" : "See what I do ↓"}
               </a>
@@ -172,7 +181,7 @@ export default function Hero({ lang, photo }: { lang: Locale; photo?: string }) 
                   go("dejame")(e);
                   setTimeout(() => window.dispatchEvent(new Event("camera:on")), 900);
                 }}
-                className="rounded-full bg-pink px-6 py-3 text-[1rem] font-bold text-cream shadow-[0_6px_0_#b23f86] transition-transform hover:-translate-y-0.5"
+                className="rounded-full bg-ink px-6 py-3 text-[1rem] font-bold text-cream transition-transform hover:-translate-y-0.5"
               >
                 {H.cta.photo[lang]}
               </a>

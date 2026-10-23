@@ -59,3 +59,47 @@ export default function Sigue({ lang, entries }: { lang: Locale; entries: EntryM
     </section>
   );
 }
+
+/** El journal en versión chiquita, para ir junto a las carpetas ("Yep! Esta soy yo"). */
+export function JournalMini({ lang, entries }: { lang: Locale; entries: EntryMeta[] }) {
+  const fmt = new Intl.DateTimeFormat(lang === "es" ? "es-AR" : "en-US", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const list = entries.slice(0, 4);
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-4">
+        <p className="text-[0.72rem] font-extrabold uppercase tracking-[0.14em] text-ink/50">journal</p>
+        <Link href={`/${lang}/journal`} className="text-[0.9rem] font-semibold hover:text-pink">
+          {S.allEntries[lang]} →
+        </Link>
+      </div>
+      {list.length === 0 ? (
+        <p className="mt-6 text-ink/60">{J.empty[lang]}</p>
+      ) : (
+        <ul className="mt-4 divide-y divide-ink/10 border-y border-ink/10">
+          {list.map((e) => (
+            <li key={e.slug}>
+              <Link href={`/${lang}/journal/${e.slug}`} className="group flex items-center gap-4 py-4">
+                <span className="block h-16 w-16 shrink-0 overflow-hidden rounded-[10px] bg-pink/15">
+                  {e.cover && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={e.cover} alt="" loading="lazy" className="h-full w-full object-cover" />
+                  )}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[1.15rem] font-bold leading-tight group-hover:text-pink">{e.title}</span>
+                  <span className="mt-0.5 block text-[0.8rem] text-ink/50">
+                    <time dateTime={e.date}>{e.date ? fmt.format(new Date(e.date)) : ""}</time>
+                    {e.excerpt ? ` · ${e.excerpt}` : ""}
+                  </span>
+                </span>
+                <span className="text-ink/30 transition-transform group-hover:translate-x-1 group-hover:text-pink" aria-hidden>
+                  →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

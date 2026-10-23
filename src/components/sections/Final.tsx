@@ -56,7 +56,10 @@ function Conocerme({ lang }: { lang: Locale }) {
     setTaunt(C.noTaunts[tries.current % C.noTaunts.length][lang]);
   };
 
-  const yes = () => window.dispatchEvent(new CustomEvent("goto", { detail: "charlemos" }));
+  const yes = () => {
+    window.dispatchEvent(new CustomEvent("goto", { detail: "charlemos" }));
+    setTimeout(() => window.dispatchEvent(new Event("call:open")), 900);
+  };
 
   return (
     <div ref={root} id="conocerme" className="slide relative flex min-h-[86svh] flex-col items-center justify-center overflow-hidden px-4 py-14">

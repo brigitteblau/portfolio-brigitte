@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import type { Locale } from "@/lib/i18n";
 import { charlemos as C } from "@/content/site";
-import { Sparkle } from "../Stickers";
+import Modal from "../Modal";
 
 type State = "idle" | "sending" | "sent" | "error";
 
@@ -23,6 +23,14 @@ function nextDays(lang: Locale) {
 
 export default function Charlemos({ lang }: { lang: Locale }) {
   const [state, setState] = useState<State>("idle");
+  const [open, setOpen] = useState(false);
+  const close = useCallback(() => setOpen(false), [setOpen]);
+  // El "Sí" de "¿Querés conocerme?" abre directo el pop-up
+  useEffect(() => {
+    const on = () => setOpen(true);
+    window.addEventListener("call:open", on);
+    return () => window.removeEventListener("call:open", on);
+  }, []);
   const [error, setError] = useState("");
   const topics: string[] = [];
   const [days, setDays] = useState<string[]>([]);
@@ -84,18 +92,27 @@ export default function Charlemos({ lang }: { lang: Locale }) {
 
   return (
     <section id="charlemos" className="relative scroll-mt-16 px-3 py-6 sm:px-6" aria-labelledby="charlemos-title">
-      <div
-        className="slide relative mx-auto max-w-[1500px] overflow-hidden px-5 py-10 sm:px-10 sm:py-12"
-        style={{ background: "radial-gradient(circle at 85% 10%, #dfe7ff 0, transparent 45%), var(--cream)" }}
-      >
-        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="relative">
-            <h2 id="charlemos-title" className="text-[clamp(2.9rem,9vw,7rem)] font-black italic leading-[0.85] tracking-[-0.06em]">
-              <span className="hello-grad pb-[0.06em] pr-[0.08em]">{C.title[lang].replace(" ☎️", "")}</span> <span aria-hidden>☎️</span>
-            </h2>
-            <p className="mt-4 max-w-[38ch] text-[clamp(1.05rem,1.6vw,1.25rem)] font-medium leading-snug">{C.sub[lang]}</p>
-            <Sparkle className="absolute right-4 top-2 h-9 w-9" />
-          </div>
+      {/* En la página: solo una frase y un botón. Lo demás, en el pop-up. */}
+      <div className="slide mx-auto flex max-w-[1500px] flex-col items-center px-6 py-20 text-center sm:py-28">
+        <h2 id="charlemos-title" className="text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.9] tracking-[-0.05em]">
+          {C.title[lang].replace(" ☎️", "")}
+        </h2>
+        <p className="mt-4 max-w-[34ch] text-[clamp(1.05rem,1.6vw,1.25rem)] leading-snug text-ink/70">{C.sub[lang]}</p>
+        <button
+          onClick={() => setOpen(true)}
+          aria-haspopup="dialog"
+          className="mt-8 rounded-full bg-pink px-8 py-4 text-[1.05rem] font-bold text-cream transition-transform hover:-translate-y-0.5 active:translate-y-0.5"
+        >
+          {lang === "es" ? "Agendá una call" : "Book a call"}
+        </button>
+      </div>
+
+      <Modal open={open} onClose={close} label={C.title[lang]} closeLabel={lang === "es" ? "Cerrar" : "Close"} className="sm:max-w-xl">
+        <div className="pr-8">
+          <p className="text-[1.6rem] font-black leading-tight tracking-[-0.03em]">{lang === "es" ? "Agendemos una call" : "Let's book a call"}</p>
+          <p className="mt-1 text-[0.95rem] text-ink/60">{C.sub[lang]}</p>
+        </div>
+        <div className="mt-6">
 
           {state === "sent" ? (
             <div className="flex flex-col items-start justify-center gap-4" role="status">
@@ -139,7 +156,7 @@ export default function Charlemos({ lang }: { lang: Locale }) {
                 </div>
               </fieldset>
 
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3">
                 <label className="flex flex-col gap-1 text-[0.72rem] font-extrabold uppercase tracking-[0.1em] text-ink/70">
                   {C.name[lang]}
                   <input name="name" required maxLength={80} autoComplete="name" onFocus={mark} className="rounded-[12px] border-2 border-ink/80 bg-white px-3 py-2.5 text-[1rem] font-normal normal-case tracking-normal text-ink focus:border-blue focus:outline-none" />
@@ -174,7 +191,7 @@ export default function Charlemos({ lang }: { lang: Locale }) {
             </form>
           )}
         </div>
-      </div>
+      </Modal>
     </section>
   );
 }
