@@ -61,7 +61,7 @@ export default function CallForm({ lang }: { lang: Locale }) {
 
   return (
     <div className="mt-4">
-      <button type="button" onClick={toggle} aria-expanded={open} className="inline-flex items-center gap-1.5 rounded-full bg-[#1d1d1f] px-4 py-2 text-[0.9rem] text-white transition-opacity hover:opacity-85">
+      <button type="button" onClick={toggle} aria-expanded={open} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8A9BC] px-3.5 py-1.5 text-[0.85rem] text-[#B5677E] transition-colors hover:bg-[#FDF2F5]">
         {t.open[lang]}
         <span aria-hidden className={`transition-transform ${open ? "rotate-90" : ""}`}>
           →
