@@ -71,8 +71,8 @@ export const sobrio = {
     {
       name: "tuspruebas.com",
       desc: {
-        es: "Empecé a programar para hacerla: una página con todas mis pruebas de la secundaria, para que otros pudieran estudiar. En dos meses estaba online y se armó una comunidad alrededor.",
-        en: "I learned to code to build it: a site with all my high school exams so others could study. It was live in two months and a community grew around it.",
+        es: "Empecé a programar para hacerla: una página con todas mis pruebas de la secundaria, para que otros pudieran estudiar. En dos meses estaba online y llegó a 200 usuarios.",
+        en: "I learned to code to build it: a site with all my high school exams so others could study. It was live in two months and reached 200 users.",
       },
       note: { es: "Ya no está online.", en: "No longer online." },
     },
