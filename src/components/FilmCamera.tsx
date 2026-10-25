@@ -156,7 +156,7 @@ function shutterSound() {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export default function FilmCamera({ lang, compact = false }: { lang: Locale; compact?: boolean }) {
+export default function FilmCamera({ lang, compact = false, me }: { lang: Locale; compact?: boolean; me?: string }) {
   const frame = useRef<HTMLDivElement>(null);
   const live = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
@@ -166,6 +166,7 @@ export default function FilmCamera({ lang, compact = false }: { lang: Locale; co
   const busy = useRef(false);
 
   const [phase, setPhase] = useState<Phase>("off");
+  const [ar, setAr] = useState<number | null>(null);
   const [mirror, setMirror] = useState(true);
   const [film, setFilm] = useState<Film>(
     FILMS.find((f) => f.id === "normal") ?? FILMS[0],
@@ -201,8 +202,7 @@ export default function FilmCamera({ lang, compact = false }: { lang: Locale; co
     const s = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: mode === "environment" ? { exact: "environment" } : "user",
-        width: { ideal: 1440 },
-        height: { ideal: 1920 },
+        width: { ideal: 1280 },
       },
       audio: false,
     });
@@ -214,6 +214,8 @@ export default function FilmCamera({ lang, compact = false }: { lang: Locale; co
       v.muted = true;
       v.playsInline = true;
       await v.play().catch(() => {});
+      // El espejo toma la forma real de la cámara: así no se recorta (ni parece zoom)
+      if (v.videoWidth && v.videoHeight) setAr(v.videoWidth / v.videoHeight);
     }
   }, []);
 
@@ -426,8 +428,14 @@ export default function FilmCamera({ lang, compact = false }: { lang: Locale; co
       {/* ───────── El espejo: la cámara ocupa toda la pantalla ───────── */}
       <div
         ref={frame}
-        className="relative h-[min(calc(100svh-8rem),760px)] min-h-[520px] w-full overflow-hidden rounded-[32px] sm:rounded-[40px]"
-        style={{ background: "linear-gradient(165deg,#FDF4F6 0%,#F9E3E9 55%,#F2CFD9 100%)" }}
+        className={clsx(
+          "relative mx-auto w-full overflow-hidden rounded-[32px] sm:rounded-[40px]",
+          ar && phase !== "off" ? "" : "h-[min(calc(100svh-8rem),720px)] min-h-[520px]",
+        )}
+        style={{
+          background: "linear-gradient(165deg,#FDF4F6 0%,#F9E3E9 55%,#F2CFD9 100%)",
+          ...(ar && phase !== "off" ? { aspectRatio: String(ar), width: `min(100%, calc(min(100svh - 8rem, 720px) * ${ar.toFixed(4)}))` } : {}),
+        }}
       >
         <video
           ref={live}
@@ -454,16 +462,36 @@ export default function FilmCamera({ lang, compact = false }: { lang: Locale; co
                 <p className="mt-4 max-w-[30ch] text-[clamp(1.05rem,1.6vw,1.25rem)] leading-snug text-ink/65">{X.photoSub[lang]}</p>
               </>
             )}
+            {/* La invitación: mi polaroid y una vacía al lado, "¿y vos?" */}
+            <button type="button" onClick={powerOn} className="group relative mt-2 flex items-end justify-center" aria-label={B.power[lang]}>
+              {me && (
+                <span className="relative z-[1] -mr-6 block w-[min(34vw,180px)] -rotate-6 bg-white p-2 pb-8 shadow-[0_14px_26px_-14px_rgba(0,0,0,.45)] transition-transform duration-300 group-hover:-rotate-[9deg]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={me} alt="" className="block aspect-[4/5] w-full object-cover" />
+                  <span className="absolute bottom-1.5 left-2.5 font-hand text-[1.2rem] text-ink">{es ? "yo ♡" : "me ♡"}</span>
+                </span>
+              )}
+              <span className="relative z-[2] block w-[min(38vw,200px)] rotate-[5deg] bg-white p-2 pb-9 shadow-[0_18px_30px_-14px_rgba(0,0,0,.5)] transition-transform duration-300 group-hover:rotate-[2deg] group-hover:-translate-y-1">
+                <span className="grid aspect-[4/5] w-full place-items-center border-2 border-dashed border-[#E8A9BC] bg-[#FDF4F6]">
+                  <span className="grid place-items-center gap-1 text-[#9C4F68]">
+                    <span className="text-[2.6rem] leading-none transition-transform duration-300 group-hover:scale-110">📸</span>
+                    <span className="font-hand text-[1.5rem] leading-none">{es ? "¿y vos?" : "and you?"}</span>
+                  </span>
+                </span>
+                <span className="absolute bottom-2 left-2.5 font-hand text-[1.2rem] text-ink/50">{es ? "tu foto va acá" : "your photo goes here"}</span>
+              </span>
+            </button>
             <button
               type="button"
               onClick={powerOn}
-              className="group mt-10 grid h-[84px] w-[84px] place-items-center rounded-full border-[5px] border-[#9C4F68] transition-transform hover:scale-105 active:scale-95"
-              aria-label={B.power[lang]}
+              className="mt-8 rounded-full bg-[#9C4F68] px-7 py-3.5 text-[1.05rem] font-bold text-white shadow-[0_6px_0_#7a3a50] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_#7a3a50]"
             >
-              <span className="block h-[60px] w-[60px] rounded-full bg-[#9C4F68] transition-transform group-active:scale-90" />
+              {es ? "Sacate una foto conmigo ✨" : "Take a photo with me ✨"}
             </button>
-            <p className="mt-3 text-[0.95rem] font-bold text-[#9C4F68]">{B.power[lang]}</p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-x-5 gap-y-2 text-[0.92rem] sm:flex-row text-ink/55">
+            <p className="mt-3 max-w-[34ch] text-[0.88rem] leading-snug text-ink/55">
+              {es ? "Con flash, cuenta regresiva y filtros. Me llega solo a mí." : "With flash, a countdown and filters. Only I get to see it."}
+            </p>
+            <div className="mt-5 flex flex-col items-center justify-center gap-x-5 gap-y-2 text-[0.92rem] sm:flex-row text-ink/55">
               <button type="button" onClick={() => fileInput.current?.click()} className="underline decoration-1 underline-offset-4 hover:text-[#9C4F68]">
                 {B.upload[lang]}
               </button>

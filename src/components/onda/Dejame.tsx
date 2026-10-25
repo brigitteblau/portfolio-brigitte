@@ -31,7 +31,7 @@ export default function Dejame({ lang }: { lang: Locale }) {
             <Polaroid src={b.src} note={b.note[lang]} rotate={4} className="ml-6" />
           </div>
           <div className="min-w-0">
-            <FilmCamera lang={lang} compact />
+            <FilmCamera lang={lang} compact me="/fotos/portada.webp" />
           </div>
           <div className="hidden flex-col gap-10 lg:flex">
             {mine ? (
