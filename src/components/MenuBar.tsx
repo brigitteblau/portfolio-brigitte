@@ -52,9 +52,9 @@ export default function MenuBar({ lang }: { lang: Locale }) {
           ) : (
             <Link
               key={id}
-              href={`/${lang}#${id}`}
+              href={`/${lang}/onda#${id}`}
               onClick={(e) => {
-                if (pathname === `/${lang}`) {
+                if (pathname === `/${lang}/onda`) {
                   e.preventDefault();
                   window.dispatchEvent(new CustomEvent("goto", { detail: id }));
                 }

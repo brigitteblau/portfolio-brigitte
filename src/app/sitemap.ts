@@ -23,5 +23,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${base}/es/journal/${e.slug}`, en: `${base}/en/journal/${e.slug}` } },
     })),
   );
-  return [...both("", 1, "weekly"), ...both("/journal", 0.8, "weekly"), ...both("/foto", 0.7, "monthly"), ...both("/charlemos", 0.6, "monthly"), ...entries];
+  return [...both("", 1, "weekly"), ...both("/onda", 0.8, "monthly"), ...both("/journal", 0.8, "weekly"), ...both("/foto", 0.7, "monthly"), ...both("/charlemos", 0.6, "monthly"), ...entries];
 }

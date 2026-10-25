@@ -10,7 +10,7 @@ export default function Footer({ lang }: { lang: Locale }) {
       <div className="mx-auto flex max-w-[1500px] flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t-2 border-ink/15 pt-5 text-[0.9rem]">
         <p>
           <strong className="text-ink">Brigitte Blau</strong> ·{" "}
-          {es ? "desarrolladora y emprendedora en Buenos Aires · partner y directora en Grupo Mirrow · estudiante en ORT" : "developer and entrepreneur in Buenos Aires · partner & director at Grupo Mirrow · student at ORT"}
+          {es ? "emprendedora y developer en Buenos Aires · socia y directora en Grupo Mirrow" : "entrepreneur and developer in Buenos Aires · partner & director at Grupo Mirrow"}
         </p>
         <nav className="flex flex-wrap gap-x-4 gap-y-1 font-semibold" aria-label={es ? "Pie" : "Footer"}>
           <Link href={`/${lang}/journal`} className="hover:text-blue">Journal</Link>

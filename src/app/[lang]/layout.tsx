@@ -9,9 +9,6 @@ import "@fontsource/vt323/index.css";
 import "@fontsource-variable/jetbrains-mono/index.css";
 import "../globals.css";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
-import SmoothScroll from "@/components/SmoothScroll";
-import MenuBar from "@/components/MenuBar";
-import Footer from "@/components/Footer";
 import { ui, contacto } from "@/content/site";
 import { siteUrl } from "@/lib/site-url";
 
@@ -25,11 +22,11 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
   const { lang } = await params;
   const es = lang === "es";
   const title = es
-    ? "Brigitte Blau — desarrolladora, emprendedora y estudiante en Buenos Aires"
-    : "Brigitte Blau — developer, young entrepreneur and student in Buenos Aires";
+    ? "Brigitte Blau — emprendedora y developer en Buenos Aires"
+    : "Brigitte Blau — entrepreneur and developer in Buenos Aires";
   const description = es
-    ? "Portfolio de Brigitte Blau: joven emprendedora y desarrolladora backend (y algo de frontend) de Buenos Aires. Partner y directora en Grupo Mirrow, estudiante en ORT. Proyectos con 3D y visión por computadora, un journal, y podés dejarme una foto o agendar una call."
-    : "Brigitte Blau's portfolio: young entrepreneur and backend developer (plus some frontend) from Buenos Aires. Partner and director at Grupo Mirrow, student at ORT. Projects with 3D and computer vision, a journal, and you can leave me a photo or book a call.";
+    ? "Brigitte Blau, emprendedora y developer de Buenos Aires. Socia y directora de Grupo Mirrow, una marca argentina de ropa y uniformes para empresas. Programo web y apps."
+    : "Brigitte Blau, entrepreneur and developer from Buenos Aires. Partner and director at Grupo Mirrow, an Argentine clothing and corporate uniform brand. I build web and mobile apps.";
   return {
     metadataBase: new URL(siteUrl()),
     title: { default: title, template: "%s · Brigitte Blau" },
@@ -83,13 +80,13 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
                   url: siteUrl(),
                   image: `${siteUrl()}/og.jpg`,
                   email: `mailto:${contacto.email}`,
-                  jobTitle: l === "es" ? "Desarrolladora backend y emprendedora" : "Backend developer and entrepreneur",
+                  jobTitle: l === "es" ? "Emprendedora y developer" : "Entrepreneur and developer",
                   description:
                     l === "es"
-                      ? "Joven emprendedora y desarrolladora de Buenos Aires. Partner y directora en Grupo Mirrow, estudiante en ORT."
-                      : "Young entrepreneur and developer from Buenos Aires. Partner and director at Grupo Mirrow, student at ORT.",
+                      ? "Emprendedora y developer de Buenos Aires. Socia y directora de Grupo Mirrow."
+                      : "Entrepreneur and developer from Buenos Aires. Partner and director at Grupo Mirrow.",
                   worksFor: { "@type": "Organization", name: "Grupo Mirrow", url: "https://grupomirrow.com" },
-                  affiliation: { "@type": "EducationalOrganization", name: "ORT Argentina" },
+                  alumniOf: { "@type": "EducationalOrganization", name: "ORT Argentina" },
                   knowsAbout: ["Backend", "FastAPI", "Node.js", "TypeScript", "Next.js", "Supabase", "Computer vision", "3D", "CadQuery", "SEO", "Entrepreneurship"],
                   sameAs: contacto.links.map((x) => x.href),
                   address: { "@type": "PostalAddress", addressLocality: "Buenos Aires", addressCountry: "AR" },
@@ -112,11 +109,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
         >
           {ui.skip[l]}
         </a>
-        <SmoothScroll>
-          <MenuBar lang={l} />
-          <div id="contenido">{children}</div>
-          <Footer lang={l} />
-        </SmoothScroll>
+        <div id="contenido">{children}</div>
       </body>
     </html>
   );
