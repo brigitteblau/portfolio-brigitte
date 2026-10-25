@@ -103,9 +103,10 @@ export const sobrio = {
   ] as { what: T; where: string; when: string }[],
 
   moreTitle: { es: "Contacto", en: "Contact" } as T,
-  /** LinkedIn e Instagram se suman cuando estén los links exactos. */
+  /** Instagram se suma cuando esté el link exacto. */
   links: [
     { label: "Mail", href: "mailto:brigitteyaelblau@gmail.com" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/brigitte-blau-17567835b/" },
     { label: "GitHub", href: "https://github.com/brigitteblau" },
   ],
 };

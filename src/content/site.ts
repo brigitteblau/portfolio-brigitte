@@ -209,7 +209,10 @@ export const contacto = {
   },
   email: "brigitteyaelblau@gmail.com",
   /** Solo links reales. ✎ Sumá LinkedIn e Instagram cuando tengas las URLs. */
-  links: [{ label: "GitHub", href: "https://github.com/brigitteblau" }],
+  links: [
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/brigitte-blau-17567835b/" },
+    { label: "GitHub", href: "https://github.com/brigitteblau" },
+  ],
   copy: { es: "Copiar mail", en: "Copy email" },
   copied: { es: "Mail copiado", en: "Email copied" },
   journalCta: { es: "Leer mi journal", en: "Read my journal" },
