@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site-url";
 import { listEntries } from "@/lib/journal";
+import { listEscritos } from "@/lib/escritos";
 
 /** Todo lo que Google tiene que encontrar: la portada, la cámara, la call, el journal y cada entrada. */
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -23,5 +24,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${base}/es/journal/${e.slug}`, en: `${base}/en/journal/${e.slug}` } },
     })),
   );
-  return [...both("", 1, "weekly"), ...both("/onda", 0.8, "monthly"), ...both("/journal", 0.8, "weekly"), ...both("/foto", 0.7, "monthly"), ...both("/charlemos", 0.6, "monthly"), ...entries];
+  const escritos = listEscritos("es").flatMap((e) =>
+    (["es", "en"] as const).map((lang) => ({
+      url: `${base}/${lang}/escritos/${e.slug}`,
+      lastModified: e.date ? new Date(e.date) : now,
+      changeFrequency: "monthly" as const,
+      priority: lang === "es" ? 0.9 : 0.6,
+      alternates: { languages: { es: `${base}/es/escritos/${e.slug}`, en: `${base}/en/escritos/${e.slug}` } },
+    })),
+  );
+  return [...escritos, ...both("", 1, "weekly"), ...both("/onda", 0.8, "monthly"), ...both("/journal", 0.8, "weekly"), ...both("/foto", 0.7, "monthly"), ...both("/charlemos", 0.6, "monthly"), ...entries];
 }

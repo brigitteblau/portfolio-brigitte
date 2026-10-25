@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import { sobrio as S, previews } from "@/content/sobrio";
+import { listEscritos } from "@/lib/escritos";
 
 /**
  * La portada: sobria, todo texto, mucho aire (inspirada en emilkowal.ski).
@@ -64,6 +65,7 @@ function OndaButton({ lang }: { lang: Locale }) {
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const lang = (await params).lang as Locale;
   const other: Locale = lang === "es" ? "en" : "es";
+  const escritos = listEscritos(lang);
 
   return (
     <div className="min-h-screen bg-white text-[15.5px] leading-[1.65] text-[#1d1d1f] antialiased">
@@ -142,7 +144,25 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </Section>
 
         <Section title={S.writingTitle[lang]}>
-          <p className="text-[#55555a]">{S.writingEmpty[lang]}</p>
+          {escritos.length === 0 ? (
+            <p className="text-[#55555a]">{S.writingEmpty[lang]}</p>
+          ) : (
+            <ul className="space-y-5">
+              {escritos.map((e) => (
+                <li key={e.slug}>
+                  <Link href={`/${lang}/escritos/${e.slug}`} className="group block">
+                    <span className="flex items-baseline justify-between gap-6">
+                      <span className="font-medium text-[#9C4F68] underline decoration-[#E8A9BC] decoration-[1.5px] underline-offset-[5px] group-hover:decoration-[#9C4F68]">{e.title}</span>
+                      <time dateTime={e.date} className="shrink-0 tabular-nums text-[#86868b]">
+                        {e.date ? new Intl.DateTimeFormat(lang === "es" ? "es-AR" : "en-US", { month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(e.date)) : ""}
+                      </time>
+                    </span>
+                    {e.excerpt && <span className="mt-1 block text-[#55555a]">{e.excerpt}</span>}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </Section>
 
         <Section title={S.studiesTitle[lang]}>
