@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import { sobrio as S, previews } from "@/content/sobrio";
 import { listEntries } from "@/lib/journal";
+import CallForm from "@/components/CallForm";
 
 /**
  * La portada: sobria, todo texto, mucho aire (inspirada en emilkowal.ski).
@@ -22,7 +23,7 @@ function A({ href, children, lang }: { href: string; children: React.ReactNode; 
       {p && (
         <span
           aria-hidden
-          className="pointer-events-none invisible absolute bottom-full left-1/2 z-20 mb-3 w-[17rem] -translate-x-1/2 translate-y-1 overflow-hidden rounded-[14px] border border-[#ececec] bg-white opacity-0 shadow-[0_18px_40px_-18px_rgba(0,0,0,.35)] transition-all duration-200 [@media(hover:hover)]:group-hover/pv:visible [@media(hover:hover)]:group-hover/pv:translate-y-0 [@media(hover:hover)]:group-hover/pv:opacity-100"
+          className="pointer-events-none invisible absolute bottom-full left-1/2 z-20 hidden [@media(hover:hover)]:block mb-3 w-[17rem] -translate-x-1/2 translate-y-1 overflow-hidden rounded-[14px] border border-[#ececec] bg-white opacity-0 shadow-[0_18px_40px_-18px_rgba(0,0,0,.35)] transition-all duration-200 [@media(hover:hover)]:group-hover/pv:visible [@media(hover:hover)]:group-hover/pv:translate-y-0 [@media(hover:hover)]:group-hover/pv:opacity-100"
         >
           <span className={`block aspect-[1.91/1] w-full ${p.fit === "contain" ? "bg-[#f5f5f7] p-8" : "bg-[#f5f5f7]"}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -39,9 +40,9 @@ function A({ href, children, lang }: { href: string; children: React.ReactNode; 
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, id, children }: { title: string; id?: string; children: React.ReactNode }) {
   return (
-    <section className="mt-14">
+    <section id={id} className="mt-14 scroll-mt-8">
       <h2 className="mb-4 text-[#86868b]">{title}</h2>
       {children}
     </section>
@@ -189,7 +190,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           </ul>
         </Section>
 
-        <Section title={S.moreTitle[lang]}>
+        <Section id="contacto" title={S.moreTitle[lang]}>
           <p>
             {S.links.map((l, i) => (
               <span key={l.label}>
@@ -200,6 +201,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               </span>
             ))}
           </p>
+                  <CallForm lang={lang} />
         </Section>
 
         <div className="mt-20 border-t border-[#ececec] pt-8">

@@ -61,8 +61,8 @@ export const sobrio = {
       ],
     },
     {
-      es: ["Tengo base técnica y programo web y apps. No me gusta hacer humo: quiero que lo que hago sea útil y funcione."],
-      en: ["I have a technical background and build web and mobile apps. I don't like hype: I want what I make to be useful and to actually work."],
+      es: ["Tengo base técnica y programo web y apps con TypeScript, React y Next.js; en el backend, Node.js y Python con FastAPI; Supabase para datos y Vercel para publicar. No me gusta hacer humo: quiero que lo que hago sea útil y funcione."],
+      en: ["I have a technical background and build web and mobile apps with TypeScript, React and Next.js; on the backend, Node.js and Python with FastAPI; Supabase for data and Vercel to ship. I don't like hype: I want what I make to be useful and to actually work."],
     },
   ] as { es: (string | [string, string])[]; en: (string | [string, string])[] }[],
 
@@ -102,7 +102,7 @@ export const sobrio = {
     { what: { es: "Escuela técnica, especialidad TIC", en: "Technical high school, ICT track" }, where: "ORT Argentina", when: "2021 – 2026" },
   ] as { what: T; where: string; when: string }[],
 
-  moreTitle: { es: "Más", en: "More" } as T,
+  moreTitle: { es: "Contacto", en: "Contact" } as T,
   /** LinkedIn e Instagram se suman cuando estén los links exactos. */
   links: [
     { label: "Mail", href: "mailto:brigitteyaelblau@gmail.com" },

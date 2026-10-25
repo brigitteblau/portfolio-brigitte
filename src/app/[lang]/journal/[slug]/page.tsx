@@ -134,6 +134,10 @@ export default async function JournalEntry({ params }: PageProps<"/[lang]/journa
           <Link href={`/${lang}`} className="text-[#9C4F68] hover:underline">
             Brigitte Blau
           </Link>
+          {" · "}
+          <Link href={`/${lang}#contacto`} className="text-[#9C4F68] hover:underline">
+            {es ? "Escribime o agendá una call" : "Write to me or book a call"}
+          </Link>
         </p>
       </main>
     </Shell>
