@@ -93,7 +93,7 @@ export const sobrio = {
     },
   ] as Item[],
 
-  writingTitle: { es: "Escritos", en: "Writing" } as T,
+  writingTitle: { es: "Journal", en: "Journal" } as T,
   writingEmpty: { es: "Pronto.", en: "Soon." } as T,
 
   studiesTitle: { es: "Estudios", en: "Education" } as T,

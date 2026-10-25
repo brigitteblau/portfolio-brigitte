@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import { sobrio as S, previews } from "@/content/sobrio";
-import { listEscritos } from "@/lib/escritos";
+import { listEntries } from "@/lib/journal";
 
 /**
  * La portada: sobria, todo texto, mucho aire (inspirada en emilkowal.ski).
@@ -65,7 +65,7 @@ function OndaButton({ lang }: { lang: Locale }) {
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const lang = (await params).lang as Locale;
   const other: Locale = lang === "es" ? "en" : "es";
-  const escritos = listEscritos(lang);
+  const escritos = listEntries(lang).slice(0, 5);
 
   return (
     <div className="min-h-screen bg-white text-[15.5px] leading-[1.65] text-[#1d1d1f] antialiased">
@@ -150,7 +150,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             <ul className="space-y-5">
               {escritos.map((e) => (
                 <li key={e.slug}>
-                  <Link href={`/${lang}/escritos/${e.slug}`} className="group block">
+                  <Link href={`/${lang}/journal/${e.slug}`} className="group block">
                     <span className="flex items-baseline justify-between gap-6">
                       <span className="font-medium text-[#9C4F68] underline decoration-[#E8A9BC] decoration-[1.5px] underline-offset-[5px] group-hover:decoration-[#9C4F68]">{e.title}</span>
                       <time dateTime={e.date} className="shrink-0 tabular-nums text-[#86868b]">
@@ -162,6 +162,13 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 </li>
               ))}
             </ul>
+          )}
+          {escritos.length > 0 && (
+            <p className="mt-6">
+              <Link href={`/${lang}/journal`} className="text-[#86868b] hover:text-[#1d1d1f]">
+                {lang === "es" ? "Todo el journal →" : "The whole journal →"}
+              </Link>
+            </p>
           )}
         </Section>
 
