@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site-url";
 import { listEntries } from "@/lib/journal";
+import { projects } from "@/content/onda";
 
 /** Todo lo que Google tiene que encontrar: la portada, la cámara, la call, el journal y cada entrada. */
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -25,5 +26,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${base}/es/journal/${e.slug}`, en: `${base}/en/journal/${e.slug}` } },
     })),
   );
-  return [...both("", 1, "weekly"), ...both("/journal", 0.9, "weekly"), ...both("/onda", 0.6, "monthly"), ...both("/foto", 0.7, "monthly"), ...both("/charlemos", 0.6, "monthly"), ...entries];
+  return [...both("", 1, "weekly"), ...both("/journal", 0.9, "weekly"), ...both("/onda", 0.6, "monthly"), ...both("/foto", 0.7, "monthly"), ...both("/charlemos", 0.6, "monthly"), ...projects.flatMap((p) => both(`/proyectos/${p.id}`, 0.7, "monthly")), ...entries];
 }

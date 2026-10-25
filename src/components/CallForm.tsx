@@ -22,12 +22,14 @@ const t = {
 
 const field = "w-full rounded-[10px] border border-[#e3e3e6] bg-white px-3 py-2.5 text-[15px] text-[#1d1d1f] placeholder:text-[#a1a1a6] focus:border-[#B5677E] focus:outline-none";
 
-export default function CallForm({ lang }: { lang: Locale }) {
-  const [open, setOpen] = useState(false);
+export default function CallForm({ lang, startOpen = false }: { lang: Locale; startOpen?: boolean }) {
+  const [open, setOpen] = useState(startOpen);
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
   const startedAt = useRef(0);
   const [min, setMin] = useState("");
+  // Si arranca abierto, no hace falta el botón
+  const showToggle = !startOpen;
 
   const toggle = () => {
     if (!startedAt.current) startedAt.current = Date.now();
@@ -61,12 +63,12 @@ export default function CallForm({ lang }: { lang: Locale }) {
 
   return (
     <div className="mt-4">
-      <button type="button" onClick={toggle} aria-expanded={open} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8A9BC] px-3.5 py-1.5 text-[0.85rem] text-[#B5677E] transition-colors hover:bg-[#FDF2F5]">
+      {showToggle && <button type="button" onClick={toggle} aria-expanded={open} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8A9BC] px-3.5 py-1.5 text-[0.85rem] text-[#B5677E] transition-colors hover:bg-[#FDF2F5]">
         {t.open[lang]}
         <span aria-hidden className={`transition-transform ${open ? "rotate-90" : ""}`}>
           →
         </span>
-      </button>
+      </button>}
       {open &&
         (state === "sent" ? (
           <p className="mt-5 text-[#55555a]" role="status">

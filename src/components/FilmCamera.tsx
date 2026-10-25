@@ -156,7 +156,7 @@ function shutterSound() {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export default function FilmCamera({ lang }: { lang: Locale }) {
+export default function FilmCamera({ lang, compact = false }: { lang: Locale; compact?: boolean }) {
   const frame = useRef<HTMLDivElement>(null);
   const live = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
@@ -290,6 +290,8 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
     setPreview(URL.createObjectURL(blob));
     setPrintKey((k) => k + 1);
     setPhase("print");
+    // Para el muro de polaroids: la foto "se pega" (solo en esta pantalla, no se publica)
+    window.dispatchEvent(new CustomEvent("photo:taken", { detail: URL.createObjectURL(blob) }));
     setSheet(true); // ¡pum! la foto aparece en un pop-up
   };
 
@@ -424,8 +426,8 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
       {/* ───────── El espejo: la cámara ocupa toda la pantalla ───────── */}
       <div
         ref={frame}
-        className="relative h-[calc(100svh-5.5rem)] min-h-[520px] w-full overflow-hidden rounded-[32px] sm:rounded-[40px]"
-        style={{ background: "linear-gradient(165deg,#fdeef5 0%,#f9d6e7 55%,#f4bfd9 100%)" }}
+        className="relative h-[min(calc(100svh-8rem),760px)] min-h-[520px] w-full overflow-hidden rounded-[32px] sm:rounded-[40px]"
+        style={{ background: "linear-gradient(165deg,#FDF4F6 0%,#F9E3E9 55%,#F2CFD9 100%)" }}
       >
         <video
           ref={live}
@@ -441,30 +443,32 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
         )}
 
         {/* el marquito rosa del espejo */}
-        <div className="pointer-events-none absolute inset-3 z-[1] rounded-[24px] border-[3px] border-[#f4a3d0] sm:inset-4 sm:rounded-[30px]" aria-hidden />
+        <div className="pointer-events-none absolute inset-3 z-[1] rounded-[24px] border-[3px] border-[#E8A9BC] sm:inset-4 sm:rounded-[30px]" aria-hidden />
 
         {/* ── apagada: título, un solo botón ── */}
         {phase === "off" && (
           <div className="absolute inset-0 z-[2] flex flex-col items-center justify-center px-8 text-center">
-            <h2 className="text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.9] tracking-[-0.05em]">
-              {X.photoTitle[lang]}
-            </h2>
-            <p className="mt-4 max-w-[30ch] text-[clamp(1.05rem,1.6vw,1.25rem)] leading-snug text-ink/65">{X.photoSub[lang]}</p>
+            {!compact && (
+              <>
+                <h2 className="text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.9] tracking-[-0.05em]">{X.photoTitle[lang]}</h2>
+                <p className="mt-4 max-w-[30ch] text-[clamp(1.05rem,1.6vw,1.25rem)] leading-snug text-ink/65">{X.photoSub[lang]}</p>
+              </>
+            )}
             <button
               type="button"
               onClick={powerOn}
-              className="group mt-10 grid h-[84px] w-[84px] place-items-center rounded-full border-[5px] border-pink transition-transform hover:scale-105 active:scale-95"
+              className="group mt-10 grid h-[84px] w-[84px] place-items-center rounded-full border-[5px] border-[#9C4F68] transition-transform hover:scale-105 active:scale-95"
               aria-label={B.power[lang]}
             >
-              <span className="block h-[60px] w-[60px] rounded-full bg-pink transition-transform group-active:scale-90" />
+              <span className="block h-[60px] w-[60px] rounded-full bg-[#9C4F68] transition-transform group-active:scale-90" />
             </button>
-            <p className="mt-3 text-[0.95rem] font-bold text-pink">{B.power[lang]}</p>
+            <p className="mt-3 text-[0.95rem] font-bold text-[#9C4F68]">{B.power[lang]}</p>
             <div className="mt-8 flex flex-col items-center justify-center gap-x-5 gap-y-2 text-[0.92rem] sm:flex-row text-ink/55">
-              <button type="button" onClick={() => fileInput.current?.click()} className="underline decoration-1 underline-offset-4 hover:text-pink">
+              <button type="button" onClick={() => fileInput.current?.click()} className="underline decoration-1 underline-offset-4 hover:text-[#9C4F68]">
                 {B.upload[lang]}
               </button>
               <span aria-hidden className="hidden sm:inline">·</span>
-              <button type="button" onClick={() => setSheet(true)} className="underline decoration-1 underline-offset-4 hover:text-pink">
+              <button type="button" onClick={() => setSheet(true)} className="underline decoration-1 underline-offset-4 hover:text-[#9C4F68]">
                 {es ? "o mandame solo un mensaje" : "or just send me a message"}
               </button>
             </div>
@@ -482,7 +486,7 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
             <button
               type="button"
               onClick={() => setSheet(true)}
-              className="rounded-full bg-pink px-8 py-4 text-[1.05rem] font-bold text-white transition-transform hover:-translate-y-0.5"
+              className="rounded-full bg-[#9C4F68] px-8 py-4 text-[1.05rem] font-bold text-white transition-transform hover:-translate-y-0.5"
             >
               {es ? "Ver mi foto y mandarla" : "See my photo and send it"}
             </button>
@@ -555,7 +559,7 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
                 setMsg("");
                 setSend("idle");
               }}
-              className="font-semibold underline decoration-2 underline-offset-4 hover:text-pink"
+              className="font-semibold underline decoration-2 underline-offset-4 hover:text-[#9C4F68]"
             >
               {D.another[lang]}
             </button>
@@ -581,13 +585,13 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
                       const on = f.id === film.id;
                       return (
                         <button key={f.id} type="button" onClick={() => pickFilm(f)} aria-pressed={on} className="flex w-[4rem] shrink-0 flex-col items-center gap-1">
-                          <span className={clsx("block aspect-square w-full overflow-hidden rounded-full border-[3px] transition-colors", on ? "border-pink" : "border-transparent")}>
+                          <span className={clsx("block aspect-square w-full overflow-hidden rounded-full border-[3px] transition-colors", on ? "border-[#9C4F68]" : "border-transparent")}>
                             {thumbs[f.id] && (
                               // eslint-disable-next-line @next/next/no-img-element
                               <img src={thumbs[f.id]} alt="" className="h-full w-full object-cover" />
                             )}
                           </span>
-                          <span className={clsx("text-center text-[0.7rem] font-bold leading-tight", on ? "text-pink" : "text-ink/60")}>{f.name[lang]}</span>
+                          <span className={clsx("text-center text-[0.7rem] font-bold leading-tight", on ? "text-[#9C4F68]" : "text-ink/60")}>{f.name[lang]}</span>
                         </button>
                       );
                     })}
@@ -607,7 +611,7 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
               onChange={(e) => setMsg(e.target.value)}
               onFocus={mark}
               placeholder={preview ? B.caption[lang] : B.captionOnly[lang].replace("…o d", "D").replace("…or j", "J")}
-              className="mt-4 w-full resize-none rounded-[14px] border border-ink/15 bg-white px-3.5 py-3 text-[1rem] leading-snug text-ink placeholder:text-ink/35 focus:border-pink focus:outline-none"
+              className="mt-4 w-full resize-none rounded-[14px] border border-ink/15 bg-white px-3.5 py-3 text-[1rem] leading-snug text-ink placeholder:text-ink/35 focus:border-[#9C4F68] focus:outline-none"
             />
 
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -617,7 +621,7 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
                 autoComplete="name"
                 placeholder={D.name[lang]}
                 aria-label={D.name[lang]}
-                className="rounded-[14px] border border-ink/15 bg-white px-3.5 py-3 text-[1rem] text-ink placeholder:text-ink/35 focus:border-pink focus:outline-none"
+                className="rounded-[14px] border border-ink/15 bg-white px-3.5 py-3 text-[1rem] text-ink placeholder:text-ink/35 focus:border-[#9C4F68] focus:outline-none"
               />
               <input
                 name="email"
@@ -626,7 +630,7 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
                 autoComplete="email"
                 placeholder={D.email[lang]}
                 aria-label={D.email[lang]}
-                className="rounded-[14px] border border-ink/15 bg-white px-3.5 py-3 text-[1rem] text-ink placeholder:text-ink/35 focus:border-pink focus:outline-none"
+                className="rounded-[14px] border border-ink/15 bg-white px-3.5 py-3 text-[1rem] text-ink placeholder:text-ink/35 focus:border-[#9C4F68] focus:outline-none"
               />
             </div>
             {/* Trampa para bots: invisible para personas */}
@@ -640,7 +644,7 @@ export default function FilmCamera({ lang }: { lang: Locale }) {
               <button
                 type="submit"
                 disabled={send === "sending"}
-                className="rounded-full bg-pink px-8 py-3.5 text-[1.05rem] font-bold text-white transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+                className="rounded-full bg-[#9C4F68] px-8 py-3.5 text-[1.05rem] font-bold text-white transition-transform hover:-translate-y-0.5 disabled:opacity-60"
               >
                 {send === "sending" ? D.sending[lang] : D.send[lang]}
               </button>
