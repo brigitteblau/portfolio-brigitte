@@ -1,4 +1,5 @@
 import "@fontsource/pixelify-sans/700.css";
+import "@fontsource/shrikhand/400.css";
 import type { Locale } from "@/lib/i18n";
 import OndaNav from "@/components/onda/OndaNav";
 

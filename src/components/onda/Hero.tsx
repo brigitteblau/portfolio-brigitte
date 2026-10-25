@@ -1,6 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { hero as H } from "@/content/onda";
-import { Hand, Pix, Tag, type Tone } from "./Kit";
+import { Hand, Tag, type Tone } from "./Kit";
 
 /** Portada: BRIGITTE en un marco, etiquetitas alrededor, dos fotitos y una línea clara. */
 const spots = [
@@ -20,9 +20,7 @@ export default function Hero({ lang }: { lang: Locale }) {
 
         <div className="relative mx-auto mt-2 w-fit lg:px-40 lg:py-14">
           <div className="relative inline-block border-2 border-[#9C4F68] bg-white/60 px-[clamp(1rem,3vw,2.2rem)] pb-[clamp(.4rem,1vw,.8rem)] pt-[clamp(.6rem,1.4vw,1rem)]">
-            <Pix as="h1" className="text-[clamp(3.4rem,13vw,10rem)]">
-              Brigitte
-            </Pix>
+            <h1 className="font-[Shrikhand] text-[clamp(3.4rem,12vw,9rem)] leading-[1.05] tracking-[-0.01em] text-[#2A1F24]">Brigitte</h1>
             {["-left-1.5 -top-1.5", "-right-1.5 -top-1.5", "-bottom-1.5 -left-1.5", "-bottom-1.5 -right-1.5"].map((p) => (
               <span key={p} aria-hidden className={`absolute h-2.5 w-2.5 border-2 border-[#9C4F68] bg-white ${p}`} />
             ))}
