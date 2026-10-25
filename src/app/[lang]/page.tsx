@@ -81,15 +81,11 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <OndaButton lang={lang} />
       </header>
 
-      <main className="mx-auto max-w-[38rem] px-6 pb-20 pt-20 sm:pt-28">
-        <div className="flex items-center gap-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={S.photo} alt={S.name} width={64} height={64} className="h-16 w-16 shrink-0 rounded-full object-cover object-[50%_25%]" />
-          <div>
-            <h1 className="font-medium">{S.name}</h1>
-            <p className="text-[#86868b]">{S.role[lang]}</p>
-          </div>
-        </div>
+      <main className="mx-auto max-w-[38rem] px-6 pb-20 pt-14 sm:pt-20">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={S.photo} alt={S.name} width={800} height={1000} className="mb-7 aspect-[4/5] w-44 rounded-[20px] object-cover sm:w-52" />
+        <h1 className="font-medium">{S.name}</h1>
+        <p className="text-[#86868b]">{S.role[lang]}</p>
 
         <Section title={S.todayTitle[lang]}>
           {S.today.map((p, i) => (

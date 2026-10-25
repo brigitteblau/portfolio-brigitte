@@ -28,7 +28,7 @@ export const previews: Record<string, { title: string; desc: T; img: string; fit
 };
 
 export const sobrio = {
-  photo: "/fotos/avatar/3.webp",
+  photo: "/fotos/portada.webp",
   name: "Brigitte Blau",
   role: { es: "Emprendedora y developer · Buenos Aires", en: "Entrepreneur and developer · Buenos Aires" } as T,
   onda: { es: "Ver mi versión con onda", en: "See the fun version" } as T,
