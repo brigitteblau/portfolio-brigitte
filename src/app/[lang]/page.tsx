@@ -1,13 +1,42 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
-import { sobrio as S } from "@/content/sobrio";
+import { sobrio as S, previews } from "@/content/sobrio";
 
 /**
  * La portada: sobria, todo texto, mucho aire (inspirada en emilkowal.ski).
  * Lo divertido vive en /onda, detrás del botón.
  */
 
-const link = "underline decoration-[#E8A9BC] decoration-1 underline-offset-[5px] transition-colors hover:decoration-[#B5677E] hover:text-[#B5677E]";
+const link = "text-[#9C4F68] underline decoration-[#E8A9BC] decoration-[1.5px] underline-offset-[5px] transition-colors hover:decoration-[#9C4F68]";
+
+/** Un link con vista previa: en compu, al pasar el mouse aparece una tarjetita con la página. */
+function A({ href, children, lang }: { href: string; children: React.ReactNode; lang: Locale }) {
+  const p = previews[href];
+  const external = href.startsWith("http");
+  return (
+    <span className="group/pv relative inline-block">
+      <a href={href} target={external ? "_blank" : undefined} rel="noreferrer me" className={link}>
+        {children}
+      </a>
+      {p && (
+        <span
+          aria-hidden
+          className="pointer-events-none invisible absolute bottom-full left-1/2 z-20 mb-3 w-[17rem] -translate-x-1/2 translate-y-1 overflow-hidden rounded-[14px] border border-[#ececec] bg-white opacity-0 shadow-[0_18px_40px_-18px_rgba(0,0,0,.35)] transition-all duration-200 [@media(hover:hover)]:group-hover/pv:visible [@media(hover:hover)]:group-hover/pv:translate-y-0 [@media(hover:hover)]:group-hover/pv:opacity-100"
+        >
+          <span className={`block aspect-[1.91/1] w-full ${p.fit === "contain" ? "bg-[#f5f5f7] p-8" : "bg-[#f5f5f7]"}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p.img} alt="" loading="lazy" className={`h-full w-full ${p.fit === "contain" ? "object-contain" : "object-cover"}`} />
+          </span>
+          <span className="block px-3.5 py-3 text-[0.82rem] leading-snug">
+            <span className="block font-medium text-[#1d1d1f]">{p.title}</span>
+            <span className="block text-[#6e6e73]">{p.desc[lang]}</span>
+            <span className="mt-1 block text-[#a1a1a6]">{new URL(href).hostname.replace(/^www\./, "")}</span>
+          </span>
+        </span>
+      )}
+    </span>
+  );
+}
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -53,8 +82,14 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       </header>
 
       <main className="mx-auto max-w-[38rem] px-6 pb-20 pt-20 sm:pt-28">
-        <h1 className="font-medium">{S.name}</h1>
-        <p className="text-[#86868b]">{S.role[lang]}</p>
+        <div className="flex items-center gap-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={S.photo} alt={S.name} width={64} height={64} className="h-16 w-16 shrink-0 rounded-full object-cover object-[50%_25%]" />
+          <div>
+            <h1 className="font-medium">{S.name}</h1>
+            <p className="text-[#86868b]">{S.role[lang]}</p>
+          </div>
+        </div>
 
         <Section title={S.todayTitle[lang]}>
           {S.today.map((p, i) => (
@@ -63,13 +98,29 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 typeof part === "string" ? (
                   part
                 ) : (
-                  <a key={j} href={part[1]} target="_blank" rel="noreferrer" className={link}>
+                  <A key={j} href={part[1]} lang={lang}>
                     {part[0]}
-                  </a>
+                  </A>
                 ),
               )}
             </p>
           ))}
+          {/* En el celu no hay "pasar el mouse": las vistas previas van abajo, deslizables */}
+          <div className="-mx-6 mt-6 flex snap-x gap-3 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:hidden">
+            {Object.entries(previews)
+              .map(([href, p]) => (
+                <a key={href} href={href} target="_blank" rel="noreferrer" className="w-[13.5rem] shrink-0 snap-start overflow-hidden rounded-[14px] border border-[#ececec] bg-white">
+                  <span className={`block aspect-[1.91/1] w-full bg-[#f5f5f7] ${p.fit === "contain" ? "p-6" : ""}`}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.img} alt="" loading="lazy" className={`h-full w-full ${p.fit === "contain" ? "object-contain" : "object-cover"}`} />
+                  </span>
+                  <span className="block px-3 py-2.5 text-[0.8rem] leading-snug">
+                    <span className="block font-medium">{p.title}</span>
+                    <span className="block text-[#6e6e73]">{p.desc[lang]}</span>
+                  </span>
+                </a>
+              ))}
+          </div>
         </Section>
 
         <Section title={S.projectsTitle[lang]}>
@@ -78,9 +129,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               <li key={p.name}>
                 <p className="font-medium">
                   {p.href ? (
-                    <a href={p.href} target="_blank" rel="noreferrer" className={link}>
+                    <A href={p.href} lang={lang}>
                       {p.name}
-                    </a>
+                    </A>
                   ) : (
                     p.name
                   )}
@@ -120,9 +171,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             {S.links.map((l, i) => (
               <span key={l.label}>
                 {i > 0 && <span className="text-[#c7c7cc]"> · </span>}
-                <a href={l.href} target={l.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer me" className={link}>
+                <A href={l.href} lang={lang}>
                   {l.label}
-                </a>
+                </A>
               </span>
             ))}
           </p>

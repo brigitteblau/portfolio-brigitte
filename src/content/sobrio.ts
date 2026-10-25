@@ -7,7 +7,28 @@ type T = { es: string; en: string };
 
 export type Item = { name: string; href?: string; desc: T; note?: T };
 
+/** Vista previa de cada link (al pasar el mouse). Imágenes y textos sacados de cada página. */
+export const previews: Record<string, { title: string; desc: T; img: string; fit?: "contain" }> = {
+  "https://www.grupomirrow.com.ar": {
+    title: "Grupo Mirrow",
+    desc: { es: "Mayorista de ropa de hombre. 56 años de fábrica propia.", en: "Menswear wholesaler. 56 years with our own factory." },
+    img: "https://www.grupomirrow.com.ar/images/fabrica-fachada.jpg",
+  },
+  "https://uniformesmirrow.com": {
+    title: "MIRROW Uniformes",
+    desc: { es: "Uniformes para empresas con tu logo, bordado o estampado.", en: "Company uniforms with your logo, embroidered or printed." },
+    img: "https://www.uniformesmirrow.com/og-image.png",
+  },
+  "https://tiendamirrow.com": {
+    title: "Tienda Mirrow",
+    desc: { es: "La tienda online: remeras, chombas, buzos y jeans.", en: "The online store: tees, polos, sweatshirts and jeans." },
+    img: "https://acdn-us.mitiendanube.com/stores/002/745/865/themes/common/logo-7921355818590155275-1790164912-c7c349edaa66959c22f818e591d34a5e1790164913.png?0",
+    fit: "contain",
+  },
+};
+
 export const sobrio = {
+  photo: "/fotos/avatar/3.webp",
   name: "Brigitte Blau",
   role: { es: "Emprendedora y developer · Buenos Aires", en: "Entrepreneur and developer · Buenos Aires" } as T,
   onda: { es: "Ver mi versión con onda", en: "See the fun version" } as T,
@@ -18,22 +39,22 @@ export const sobrio = {
     {
       es: [
         "Soy socia y directora de ",
-        ["Grupo Mirrow", "https://grupomirrow.com"],
+        ["Grupo Mirrow", "https://www.grupomirrow.com.ar"],
         ", una marca argentina de ropa y uniformes para empresas. Programo y mantengo nuestras tres páginas: ",
         ["uniformes", "https://uniformesmirrow.com"],
         ", ",
-        ["venta mayorista", "https://grupomirrow.com"],
+        ["venta mayorista", "https://www.grupomirrow.com.ar"],
         " y ",
         ["venta minorista", "https://tiendamirrow.com"],
         ". El resto del día estoy en el negocio: stock, qué mejorar, qué sigue.",
       ],
       en: [
         "I'm a partner and director at ",
-        ["Grupo Mirrow", "https://grupomirrow.com"],
+        ["Grupo Mirrow", "https://www.grupomirrow.com.ar"],
         ", an Argentine clothing and corporate uniform brand. I build and run our three sites: ",
         ["uniforms", "https://uniformesmirrow.com"],
         ", ",
-        ["wholesale", "https://grupomirrow.com"],
+        ["wholesale", "https://www.grupomirrow.com.ar"],
         " and ",
         ["retail", "https://tiendamirrow.com"],
         ". The rest of the day I'm in the business: stock, what to improve, what's next.",
