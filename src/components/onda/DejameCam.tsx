@@ -23,22 +23,17 @@ export default function DejameCam({ lang, title }: { lang: Locale; title: string
         <p className="mt-4 max-w-[32ch] text-[1.1rem] leading-snug opacity-75">
           {es ? "Sacate una foto y dejámela. Quiero ver quién pasó por acá. Me llega solo a mí." : "Snap a photo and leave it for me. I want to see who stopped by. Only I get to see it."}
         </p>
-        <div className="mt-8 flex items-end">
-          <div className="w-[min(36vw,150px)]">
-            <Polaroid src="/fotos/portada.webp" note={es ? "yo ♡" : "me ♡"} rotate={-6} />
-          </div>
-          <div className="-ml-4 w-[min(38vw,160px)]">
-            {mine ? (
-              <Polaroid src={mine} note={es ? "¡vos! ♡" : "you! ♡"} rotate={5} className="animate-[pop_.7s_cubic-bezier(.2,.9,.3,1.3)_both]" />
-            ) : (
-              <figure style={{ rotate: "5deg" }} className="relative bg-white p-2.5 pb-9 shadow-[0_14px_26px_-14px_rgba(0,0,0,.45)]">
-                <span className="grid aspect-[4/5] w-full place-items-center border-2 border-dashed border-[#E8A9BC] bg-[#FDF4F6] text-center">
-                  <span className="font-hand text-[1.4rem] leading-none text-[#9C4F68]">{es ? "¿y vos?" : "and you?"}</span>
-                </span>
-                <figcaption className="absolute bottom-1.5 left-3 font-hand text-[1.15rem] text-[#4A2C2A]/50">{es ? "tu foto va acá" : "your photo goes here"}</figcaption>
-              </figure>
-            )}
-          </div>
+        <div className="mt-8 w-[min(42vw,170px)]">
+          {mine ? (
+            <Polaroid src={mine} note={es ? "¡vos! ♡" : "you! ♡"} rotate={-4} className="animate-[pop_.7s_cubic-bezier(.2,.9,.3,1.3)_both]" />
+          ) : (
+            <figure style={{ rotate: "-4deg" }} className="relative bg-white p-2.5 pb-9 shadow-[0_14px_26px_-14px_rgba(0,0,0,.45)]">
+              <span className="grid aspect-[4/5] w-full place-items-center border-2 border-dashed border-[#E8A9BC] bg-[#FDF4F6] text-center">
+                <span className="font-hand text-[1.4rem] leading-none text-[#9C4F68]">{es ? "¿y vos?" : "and you?"}</span>
+              </span>
+              <figcaption className="absolute bottom-1.5 left-3 font-hand text-[1.15rem] text-[#4A2C2A]/50">{es ? "tu foto va acá" : "your photo goes here"}</figcaption>
+            </figure>
+          )}
         </div>
       </div>
       <div className="min-w-0 flex-1">

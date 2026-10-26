@@ -616,7 +616,7 @@ export default function FilmCamera({ lang, compact = false, me, maxH = "min(100s
           >
             <div className="flex items-center justify-between px-1 pb-3">
               <span className="h-7 w-12 rounded-[7px] bg-[#4A2C2A] shadow-[inset_0_2px_6px_rgba(0,0,0,.6)]" aria-hidden />
-              <span className="font-[Shrikhand] text-[1.25rem] text-[#4A2C2A]">brigitte·cam</span>
+              
               <span
                 aria-hidden
                 className={clsx("h-7 w-12 rounded-[7px] border-2 border-[#4A2C2A]/20 transition-all duration-100", flash ? "bg-white shadow-[0_0_30px_10px_rgba(255,255,255,.9)]" : "bg-[#FBF4EE]")}
