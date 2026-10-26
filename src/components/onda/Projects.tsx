@@ -5,7 +5,7 @@ import { projects, projectsCopy as P, type Project } from "@/content/onda";
 import { Hand, Pix, Sheet } from "./Kit";
 import Reveal from "./Reveal";
 
-const bg = { ink: "bg-[#2A1F24] text-white", butter: "bg-[#F6E3A1]", sky: "bg-[#CFE3F2]", blush: "bg-[#F7DCE4]" };
+const bg = { ink: "bg-[#4A2C2A] text-white", butter: "bg-[#E9D6C4]", sky: "bg-[#F2C9D3]", blush: "bg-[#F7DCE4]" };
 
 function Card({ p, lang, big }: { p: Project; lang: Locale; big?: boolean }) {
   const dark = p.color === "ink";
@@ -19,9 +19,9 @@ function Card({ p, lang, big }: { p: Project; lang: Locale; big?: boolean }) {
         <img src={p.photo} alt="" className="absolute inset-y-0 right-0 hidden h-full w-[48%] object-cover transition-transform duration-700 group-hover:scale-[1.03] sm:block" />
       )}
       <div className={clsx("relative flex flex-1 flex-col", big && "sm:max-w-[48%]")}>
-        <p className={clsx("w-fit text-[0.72rem] font-bold uppercase tracking-[0.08em]", big && "-ml-7 -mt-7 bg-[#E8A9BC] px-3.5 py-2 text-[#2A1F24]")}>● {p.kicker[lang]}</p>
+        <p className={clsx("w-fit text-[0.72rem] font-bold uppercase tracking-[0.08em]", big && "-ml-7 -mt-7 bg-[#E8A9BC] px-3.5 py-2 text-[#4A2C2A]")}>● {p.kicker[lang]}</p>
         <h3 className={clsx("mt-4 font-extrabold leading-none", p.stat && "pr-24 sm:pr-0", " tracking-[-0.03em]", big ? "text-[clamp(2.3rem,4vw,3rem)]" : "text-[1.9rem]")}>{p.name}</h3>
-        <p className={clsx("mt-3 max-w-[34ch] text-[0.98rem] leading-snug", p.stat && "pr-20 sm:pr-24", dark ? "text-white/75" : "text-[#2A1F24]/75")}>{p.short[lang]}</p>
+        <p className={clsx("mt-3 max-w-[34ch] text-[0.98rem] leading-snug", p.stat && "pr-20 sm:pr-24", dark ? "text-white/75" : "text-[#4A2C2A]/75")}>{p.short[lang]}</p>
         {big && p.links && (
           <ul className="mt-6 flex flex-col gap-2 text-[0.88rem]">
             {p.links.slice(0, 3).map((l) => (
@@ -34,7 +34,7 @@ function Card({ p, lang, big }: { p: Project; lang: Locale; big?: boolean }) {
         <p className="mt-auto pt-6 text-[0.75rem] font-bold uppercase tracking-[0.08em]">{P.see[lang]}</p>
       </div>
       {p.stat && (
-        <span className="absolute right-5 top-5 rotate-[4deg] rounded-[5px] bg-white px-3.5 py-2 text-center text-[#2A1F24] shadow-[0_3px_0_rgba(0,0,0,.08)] sm:top-14">
+        <span className="absolute right-5 top-5 rotate-[4deg] rounded-[5px] bg-white px-3.5 py-2 text-center text-[#4A2C2A] shadow-[0_3px_0_rgba(0,0,0,.08)] sm:top-14">
           <span className="block font-[Shrikhand] text-[1.9rem] font-bold leading-none">{p.stat.n}</span>
           <span className="text-[0.72rem] font-bold">{p.stat.label[lang]}</span>
         </span>

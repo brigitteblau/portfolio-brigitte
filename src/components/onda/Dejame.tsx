@@ -22,7 +22,7 @@ export default function Dejame({ lang }: { lang: Locale }) {
         <div className="text-center">
           <Hand className="text-[1.7rem]">{D.kicker[lang]}</Hand>
           <Pix className="mt-1 text-[clamp(2.4rem,7vw,5.5rem)]">{D.title[lang]}</Pix>
-          <p className="mx-auto mt-4 max-w-[34ch] text-[1.1rem] text-[#2A1F24]/70">{D.sub[lang]}</p>
+          <p className="mx-auto mt-4 max-w-[34ch] text-[1.1rem] text-[#4A2C2A]/70">{D.sub[lang]}</p>
         </div>
 
         <div className="mt-10 grid items-center gap-8 lg:grid-cols-[190px_minmax(0,1fr)_190px]">

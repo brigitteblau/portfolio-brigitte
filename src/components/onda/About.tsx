@@ -12,11 +12,11 @@ export default function About({ lang }: { lang: Locale }) {
       <div className="mt-10 grid items-start gap-12 lg:grid-cols-[1fr_300px]">
         <Reveal>
           <div className="relative rounded-[6px] border-[1.5px] border-[#E8A9BC] bg-white/70 p-6 sm:p-9">
-            <span className="absolute -top-3 left-6 rounded-[4px] bg-[#F6E3A1] px-2 py-0.5 text-[0.72rem] font-bold uppercase tracking-[0.06em]">
+            <span className="absolute -top-3 left-6 rounded-[4px] bg-[#E9D6C4] px-2 py-0.5 text-[0.72rem] font-bold uppercase tracking-[0.06em]">
               {lang === "es" ? "mi historia corta" : "the short version"}
             </span>
-            <p className="font-hand text-[clamp(1.55rem,2.4vw,1.95rem)] leading-[1.25] text-[#2A1F24]">{A.hand[lang]}</p>
-            <p className="mt-6 text-[1.02rem] leading-relaxed text-[#2A1F24]/75">{A.body[lang]}</p>
+            <p className="font-hand text-[clamp(1.55rem,2.4vw,1.95rem)] leading-[1.25] text-[#4A2C2A]">{A.hand[lang]}</p>
+            <p className="mt-6 text-[1.02rem] leading-relaxed text-[#4A2C2A]/75">{A.body[lang]}</p>
             <ul className="mt-7 flex flex-wrap gap-2">
               {A.skills.map((s, i) => (
                 <li key={s.t}>

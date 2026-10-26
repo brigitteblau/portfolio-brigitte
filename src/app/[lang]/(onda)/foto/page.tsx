@@ -22,7 +22,7 @@ export default async function FotoPage({ params }: PageProps<"/[lang]/foto">) {
   return (
     <main id="main">
       <Dejame lang={lang} />
-      <p className="px-6 pb-6 text-center text-[0.95rem] text-[#2A1F24]/70">
+      <p className="px-6 pb-6 text-center text-[0.95rem] text-[#4A2C2A]/70">
         {es ? "Esta cámara es parte del portfolio de " : "This camera is part of "}
         <Link href={`/${lang}`} className="font-semibold underline underline-offset-2">
           Brigitte Blau

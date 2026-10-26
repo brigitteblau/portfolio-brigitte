@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/proyectos/
   };
 }
 
-const band = { ink: "bg-[#2A1F24] text-white", butter: "bg-[#F6E3A1]", sky: "bg-[#CFE3F2]", blush: "bg-[#F7DCE4]" };
+const band = { ink: "bg-[#4A2C2A] text-white", butter: "bg-[#E9D6C4]", sky: "bg-[#F2C9D3]", blush: "bg-[#F7DCE4]" };
 
 /** La página de cada proyecto, como "Wayline" en la referencia: título pixelado, fichas y la historia. */
 export default async function ProjectPage({ params }: PageProps<"/[lang]/proyectos/[id]">) {
@@ -55,7 +55,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/proyect
     <main id="main" className="px-5 pb-20 pt-12 sm:px-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <div className="mx-auto max-w-[1100px]">
-        <Link href={`/${lang}/onda#proyectos`} className="text-[0.8rem] font-bold uppercase tracking-[0.06em] text-[#2A1F24]/60 hover:text-[#2A1F24]">
+        <Link href={`/${lang}/onda#proyectos`} className="text-[0.8rem] font-bold uppercase tracking-[0.06em] text-[#4A2C2A]/60 hover:text-[#4A2C2A]">
           {P.back[lang]}
         </Link>
         <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
@@ -64,11 +64,11 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/proyect
             <Pix as="h1" className="mt-3 text-[clamp(2.8rem,8vw,5.5rem)]">
               {p.name}
             </Pix>
-            <p className="mt-5 max-w-[40ch] text-[1.15rem] leading-snug text-[#2A1F24]/75">{p.short[lang]}</p>
+            <p className="mt-5 max-w-[40ch] text-[1.15rem] leading-snug text-[#4A2C2A]/75">{p.short[lang]}</p>
             {p.stack && (
               <ul className="mt-6 flex flex-wrap gap-2">
                 {p.stack.map((s) => (
-                  <li key={s} className="rounded-[4px] border-[1.5px] border-[#2A1F24] bg-white px-2 py-0.5 text-[0.75rem] font-bold uppercase tracking-[0.04em]">
+                  <li key={s} className="rounded-[4px] border-[1.5px] border-[#4A2C2A] bg-white px-2 py-0.5 text-[0.75rem] font-bold uppercase tracking-[0.04em]">
                     {s}
                   </li>
                 ))}
@@ -112,11 +112,11 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/proyect
           ))}
           {p.links && (
             <div className="pt-4">
-              <p className="text-[0.75rem] font-bold uppercase tracking-[0.08em] text-[#2A1F24]/60">{P.links[lang]}</p>
+              <p className="text-[0.75rem] font-bold uppercase tracking-[0.08em] text-[#4A2C2A]/60">{P.links[lang]}</p>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {p.links.map((x) => (
                   <li key={x.href}>
-                    <a href={x.href} target="_blank" rel="noreferrer" className="inline-block rounded-[6px] border-[1.5px] border-[#2A1F24] bg-white px-3 py-1.5 text-[0.9rem] font-bold hover:bg-[#F7DCE4]">
+                    <a href={x.href} target="_blank" rel="noreferrer" className="inline-block rounded-[6px] border-[1.5px] border-[#4A2C2A] bg-white px-3 py-1.5 text-[0.9rem] font-bold hover:bg-[#F7DCE4]">
                       {x.label} ↗
                     </a>
                   </li>
@@ -126,11 +126,11 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/proyect
           )}
         </div>
 
-        <div className="mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-[#2A1F24]/20 pt-8">
-          <Link href={`/${lang}/onda#proyectos`} className="text-[0.85rem] font-bold uppercase tracking-[0.06em] text-[#2A1F24]/60 hover:text-[#2A1F24]">
+        <div className="mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-[#4A2C2A]/20 pt-8">
+          <Link href={`/${lang}/onda#proyectos`} className="text-[0.85rem] font-bold uppercase tracking-[0.06em] text-[#4A2C2A]/60 hover:text-[#4A2C2A]">
             {P.back[lang]}
           </Link>
-          <Link href={`/${lang}/proyectos/${next.id}`} className="rounded-[6px] bg-[#2A1F24] px-4 py-2.5 text-[0.85rem] font-bold uppercase tracking-[0.04em] text-white">
+          <Link href={`/${lang}/proyectos/${next.id}`} className="rounded-[6px] bg-[#4A2C2A] px-4 py-2.5 text-[0.85rem] font-bold uppercase tracking-[0.04em] text-white">
             {next.name} →
           </Link>
         </div>

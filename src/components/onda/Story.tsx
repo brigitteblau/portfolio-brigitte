@@ -14,9 +14,9 @@ export default function Story({ lang, video, golf }: { lang: Locale; video?: str
 
       {video && (
         <Reveal className="mt-10">
-          <div className="relative overflow-hidden rounded-[8px] bg-[#2A1F24] shadow-[0_24px_50px_-28px_rgba(0,0,0,.6)]">
+          <div className="relative overflow-hidden rounded-[8px] bg-[#4A2C2A] shadow-[0_24px_50px_-28px_rgba(0,0,0,.6)]">
             <Video src={video} poster={video.replace(/\.\w+$/, ".jpg")} lang={lang} loop={false} soundFirst={S.playWithSound[lang]} label={S.baby[lang]} className="relative aspect-video max-h-[80svh] w-full" />
-            <span className="pointer-events-none absolute left-4 top-4 rounded-[4px] bg-[#F6E3A1] px-2.5 py-1 text-[0.75rem] font-bold uppercase tracking-[0.06em] text-[#2A1F24]">
+            <span className="pointer-events-none absolute left-4 top-4 rounded-[4px] bg-[#E9D6C4] px-2.5 py-1 text-[0.75rem] font-bold uppercase tracking-[0.06em] text-[#4A2C2A]">
               {S.baby[lang]}
             </span>
           </div>
@@ -51,19 +51,19 @@ export default function Story({ lang, video, golf }: { lang: Locale; video?: str
             <Pix as="p" className="text-[1.9rem]">
               {S.booksTitle[lang]}
             </Pix>
-            <ol className="mt-5 divide-y divide-dashed divide-[#2A1F24]/15">
+            <ol className="mt-5 divide-y divide-dashed divide-[#4A2C2A]/15">
               {S.books.map((b, i) => (
                 <li key={b.title} className="flex items-baseline gap-4 py-3">
                   <span className="font-[Shrikhand] text-[1.2rem] font-bold text-[#9C4F68]">{String(i + 1).padStart(2, "0")}</span>
                   <span>
                     <span className="block text-[1.1rem] font-bold italic leading-tight">{b.title}</span>
-                    <span className="text-[0.9rem] text-[#2A1F24]/60">{b.author}</span>
+                    <span className="text-[0.9rem] text-[#4A2C2A]/60">{b.author}</span>
                   </span>
                 </li>
               ))}
             </ol>
-            <p className="mt-4 font-hand text-[1.4rem] text-[#2A1F24]/60">{S.booksSoon[lang]}</p>
-            <Link href={`/${lang}/journal`} className="mt-4 inline-block rounded-[6px] bg-[#2A1F24] px-4 py-2 text-[0.82rem] font-bold uppercase tracking-[0.04em] text-white">
+            <p className="mt-4 font-hand text-[1.4rem] text-[#4A2C2A]/60">{S.booksSoon[lang]}</p>
+            <Link href={`/${lang}/journal`} className="mt-4 inline-block rounded-[6px] bg-[#4A2C2A] px-4 py-2 text-[0.82rem] font-bold uppercase tracking-[0.04em] text-white">
               {S.journal[lang]}
             </Link>
           </div>

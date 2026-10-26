@@ -26,11 +26,11 @@ export default async function CharlemosPage({ params }: PageProps<"/[lang]/charl
         <Pix as="h1" className="text-[clamp(2.6rem,8vw,4.5rem)]">
           {T.title[lang]}
         </Pix>
-        <p className="mx-auto mt-3 max-w-[36ch] text-[1.1rem] text-[#2A1F24]/70">{T.sub[lang]}</p>
+        <p className="mx-auto mt-3 max-w-[36ch] text-[1.1rem] text-[#4A2C2A]/70">{T.sub[lang]}</p>
         <div className="mt-6 text-left">
           <CallForm lang={lang} startOpen />
         </div>
-        <p className="mt-12 text-[0.95rem] text-[#2A1F24]/70">
+        <p className="mt-12 text-[0.95rem] text-[#4A2C2A]/70">
           <Link href={`/${lang}`} className="font-semibold underline underline-offset-2">
             {es ? "Ver el portfolio de Brigitte Blau" : "See Brigitte Blau's portfolio"}
           </Link>

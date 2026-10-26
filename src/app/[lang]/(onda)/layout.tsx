@@ -8,10 +8,10 @@ export default async function OndaLayout({ children, params }: LayoutProps<"/[la
   const lang = (await params).lang as Locale;
   return (
     <div
-      className="min-h-screen text-[#2A1F24]"
-      style={{ background: "repeating-linear-gradient(0deg, transparent 0 31px, #ECE3E6 31px 32px), #FBF8F1" }}
+      className="min-h-screen text-[#4A2C2A]"
+      style={{ background: "repeating-linear-gradient(0deg, transparent 0 31px, #F1E4E0 31px 32px), #FBF4EE" }}
     >
-      <style>{"html{scroll-behavior:smooth}body{background:#FBF8F1}"}</style>
+      <style>{"html{scroll-behavior:smooth}body{background:#FBF4EE}"}</style>
       <OndaNav lang={lang} />
       {children}
     </div>

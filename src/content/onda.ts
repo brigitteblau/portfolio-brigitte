@@ -6,10 +6,10 @@
 type T = { es: string; en: string };
 
 export const nav: { id: string; label: T }[] = [
-  { id: "inicio", label: { es: "inicio", en: "home" } },
-  { id: "sobre-mi", label: { es: "sobre mí", en: "about" } },
+  { id: "hola", label: { es: "inicio", en: "start" } },
+  { id: "nacer", label: { es: "historia", en: "story" } },
+  { id: "libros", label: { es: "libros", en: "books" } },
   { id: "proyectos", label: { es: "proyectos", en: "projects" } },
-  { id: "historia", label: { es: "historia", en: "story" } },
   { id: "dejame", label: { es: "dejame una foto", en: "leave a photo" } },
 ];
 
@@ -268,4 +268,85 @@ export const contact = {
   ],
   sober: { es: "Ver la versión sobria", en: "See the simple version" } as T,
   photos: ["/fotos/contacto/1.webp", "/fotos/deportes/2.webp"],
+};
+
+/* ───────────── La presentación (versión con onda) ───────────── */
+
+export const NAME = "Brigitte";
+
+export const deck = {
+  hint: { es: "scroll → o flechas", en: "scroll → or arrow keys" } as T,
+  hola: {
+    hello: { es: "hola, soy", en: "hi, I'm" } as T,
+    line: { es: "Te cuento mi historia en diapositivas.", en: "Here's my story, in slides." } as T,
+    sub: { es: "Con cada una vas a ir descubriendo mi nombre.", en: "With each one you'll uncover a bit more of my name." } as T,
+    tags: [
+      { t: { es: "emprendedora", en: "entrepreneur" }, c: "choco" },
+      { t: { es: "developer ✿", en: "developer ✿" }, c: "white" },
+      { t: { es: "socia en Mirrow", en: "partner at Mirrow" }, c: "latte" },
+    ],
+  },
+  nacer: {
+    label: { es: "nacer", en: "day one" } as T,
+    title: { es: "Así empezó todo", en: "How it all started" } as T,
+    play: { es: "Tocá play · con sonido 🔊", en: "Tap play · sound on 🔊" } as T,
+  },
+  deportes: {
+    label: { es: "deportes", en: "sports" } as T,
+    kicker: { es: "mi cable a tierra", en: "what keeps me grounded" } as T,
+    title: { es: "Golf", en: "Golf" } as T,
+  },
+  perfeccion: {
+    label: { es: "de la perfección a la pasión", en: "from perfection to passion" } as T,
+    before: { es: "a los 13 escribía en mayúsculas:", en: "at 13 I wrote in all caps:" } as T,
+    wrong: { es: "QUIERO SER PERFECTA", en: "I WANT TO BE PERFECT" } as T,
+    now: { es: "hoy:", en: "today:" } as T,
+    right: { es: "quiero dejar algo en el mundo.", en: "I want to leave something in the world." } as T,
+    from: { es: "de la perfección", en: "from perfection" } as T,
+    to: { es: "a la pasión ♡", en: "to passion ♡" } as T,
+  },
+  libros: {
+    label: { es: "libros", en: "books" } as T,
+    kicker: { es: "los que me cambiaron la cabeza", en: "the ones that changed how I think" } as T,
+    title: { es: "Libros", en: "Books" } as T,
+    soon: { es: "pronto: mis 10 lecturas obligatorias, en el journal", en: "soon: my 10 must-reads, on the journal" } as T,
+    /** Tapa real: public/fotos/libros/<id>.webp si existe; si no, la de Open Library (si carga); si no, una dibujada. */
+    books: [
+      { id: "living-inspired", title: "Living Inspired", author: "Akiva Tatz", bg: "#F2C9D3", fg: "#4A2C2A" },
+      { id: "frankl", title: { es: "El hombre en busca de sentido", en: "Man's Search for Meaning" }, author: "Viktor Frankl", bg: "#4A2C2A", fg: "#FBF4EE", isbn: "9788425432026" },
+      { id: "demian", title: "Demian", author: "Hermann Hesse", bg: "#E9D6C4", fg: "#4A2C2A", isbn: "9788420674360" },
+      { id: "fragmentos", title: { es: "Fragmentos sagrados", en: "Sacred Fragments" }, author: "Neil Gillman", bg: "#A47551", fg: "#FBF4EE" },
+    ] as { id: string; title: string | T; author: string; bg: string; fg: string; isbn?: string }[],
+  },
+  programar: {
+    label: { es: "programar", en: "coding" } as T,
+    kicker: { es: "cómo empecé", en: "how I started" } as T,
+    title: { es: "Quería que una página existiera", en: "I wanted a website to exist" } as T,
+    hand: {
+      es: "Tenía guardadas todas mis pruebas de la secundaria y no tenía hermanos más chicos a quién dárselas. Probé con Canva, no funcionó. Me dijeron que tenía que programar, así que fui al piso de tecnología del colegio a que me explicaran.",
+      en: "I'd kept every exam from high school and had no younger siblings to pass them on to. I tried Canva, it didn't work. People told me I had to code, so I went to my school's tech floor to learn.",
+    } as T,
+    result: { es: "Dos meses después, tuspruebas.com estaba online.", en: "Two months later, tuspruebas.com was live." } as T,
+  },
+  proyectos: {
+    label: { es: "proyectos", en: "projects" } as T,
+    kicker: { es: "lo que hice y lo que hago", en: "what I've built and what I'm building" } as T,
+  },
+  hoy: {
+    label: { es: "hoy", en: "today" } as T,
+    title: { es: "Hoy", en: "Today" } as T,
+    body: {
+      es: "Soy socia y directora en Grupo Mirrow, una marca argentina de ropa y uniformes para empresas. Hago nuestras tres páginas, el SEO y lidero el Instagram. El resto del día estoy en el negocio: stock, qué mejorar, qué sigue.",
+      en: "I'm a partner and director at Grupo Mirrow, an Argentine clothing and corporate uniform brand. I build our three sites, run SEO and lead the Instagram. The rest of the day I'm in the business: stock, what to improve, what's next.",
+    } as T,
+    workaholic: { es: "workaholic, lo admito", en: "workaholic, I admit it" } as T,
+  },
+  dejame: {
+    label: { es: "dejame una foto", en: "leave a photo" } as T,
+    title: { es: "Dejame una foto", en: "Leave me a photo" } as T,
+  },
+  fin: {
+    label: { es: "¿y?", en: "so?" } as T,
+    end: { es: "ahora sí, mi nombre completo:", en: "now, my full name:" } as T,
+  },
 };

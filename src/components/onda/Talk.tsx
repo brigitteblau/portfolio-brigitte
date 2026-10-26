@@ -40,7 +40,7 @@ export default function Talk({ lang }: { lang: Locale }) {
               <button
                 type="button"
                 onClick={() => setYes(true)}
-                className="absolute left-[24%] top-1/2 -translate-y-1/2 rounded-[8px] bg-[#2A1F24] px-12 py-4 font-[Shrikhand] text-[1.8rem] font-bold text-white shadow-[0_6px_0_#9C4F68] transition-transform hover:scale-105 active:translate-y-[calc(-50%+4px)] active:shadow-[0_2px_0_#9C4F68]"
+                className="absolute left-[24%] top-1/2 -translate-y-1/2 rounded-[8px] bg-[#4A2C2A] px-12 py-4 font-[Shrikhand] text-[1.8rem] font-bold text-white shadow-[0_6px_0_#9C4F68] transition-transform hover:scale-105 active:translate-y-[calc(-50%+4px)] active:shadow-[0_2px_0_#9C4F68]"
               >
                 {T.yes[lang]}
               </button>
@@ -58,7 +58,7 @@ export default function Talk({ lang }: { lang: Locale }) {
                   flee();
                 }}
                 style={{ left: `${pos.left}%`, top: `${pos.top}%`, rotate: `${pos.r}deg` }}
-                className="absolute rounded-[8px] border-[1.5px] border-[#2A1F24] bg-white px-10 py-4 font-[Shrikhand] text-[1.8rem] font-bold transition-[left,top,rotate] duration-300"
+                className="absolute rounded-[8px] border-[1.5px] border-[#4A2C2A] bg-white px-10 py-4 font-[Shrikhand] text-[1.8rem] font-bold transition-[left,top,rotate] duration-300"
               >
                 {T.no[lang]}
               </button>
@@ -69,11 +69,11 @@ export default function Talk({ lang }: { lang: Locale }) {
           </>
         ) : (
           <div className="animate-[pop_.6s_cubic-bezier(.2,.9,.3,1.3)_both]">
-            <div aria-hidden className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-[#F6E3A1] text-[3rem] shadow-[0_6px_0_rgba(0,0,0,.08)]">
+            <div aria-hidden className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-[#E9D6C4] text-[3rem] shadow-[0_6px_0_rgba(0,0,0,.08)]">
               ☺
             </div>
             <Pix className="mt-6 text-[clamp(2.6rem,7vw,5rem)]">{T.title[lang]}</Pix>
-            <p className="mx-auto mt-3 max-w-[36ch] text-[1.1rem] text-[#2A1F24]/70">{T.sub[lang]}</p>
+            <p className="mx-auto mt-3 max-w-[36ch] text-[1.1rem] text-[#4A2C2A]/70">{T.sub[lang]}</p>
             <div className="mx-auto mt-6 max-w-[520px] text-left [&>div>button]:mx-auto [&>div>button]:flex">
               <CallForm lang={lang} startOpen />
             </div>

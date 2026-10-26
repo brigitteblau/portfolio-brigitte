@@ -20,9 +20,9 @@ export default function Contact({ lang }: { lang: Locale }) {
           <div className="relative mx-auto mt-2 w-fit border-2 border-[#9C4F68] bg-white/60 px-6 pb-2 pt-3">
             <Pix className="text-[clamp(2.6rem,7vw,4.5rem)]">{C.title[lang]}</Pix>
           </div>
-          <div className="mt-8 rotate-[-1deg] rounded-[6px] bg-[#F6E3A1] p-6 text-left shadow-[0_10px_24px_-14px_rgba(0,0,0,.4)]">
-            <p className="text-[1.05rem] leading-snug text-[#2A1F24]/80">{C.body[lang]}</p>
-            <a href={`mailto:${C.email}`} className="mt-4 inline-block break-all rounded-[6px] bg-[#2A1F24] px-4 py-2.5 text-[0.9rem] font-bold text-white">
+          <div className="mt-8 rotate-[-1deg] rounded-[6px] bg-[#E9D6C4] p-6 text-left shadow-[0_10px_24px_-14px_rgba(0,0,0,.4)]">
+            <p className="text-[1.05rem] leading-snug text-[#4A2C2A]/80">{C.body[lang]}</p>
+            <a href={`mailto:${C.email}`} className="mt-4 inline-block break-all rounded-[6px] bg-[#4A2C2A] px-4 py-2.5 text-[0.9rem] font-bold text-white">
               {C.email}
             </a>
           </div>
@@ -30,20 +30,20 @@ export default function Contact({ lang }: { lang: Locale }) {
             {C.links.map((l) => (
               <li key={l.label}>
                 {l.href.startsWith("/") ? (
-                  <Link href={`/${lang}${l.href}`} className="inline-block rounded-[6px] border-[1.5px] border-[#2A1F24] bg-white px-3 py-2 hover:bg-[#F7DCE4]">
+                  <Link href={`/${lang}${l.href}`} className="inline-block rounded-[6px] border-[1.5px] border-[#4A2C2A] bg-white px-3 py-2 hover:bg-[#F7DCE4]">
                     {l.label}
                   </Link>
                 ) : (
-                  <a href={l.href} target="_blank" rel="noreferrer me" className="inline-block rounded-[6px] border-[1.5px] border-[#2A1F24] bg-white px-3 py-2 hover:bg-[#F7DCE4]">
+                  <a href={l.href} target="_blank" rel="noreferrer me" className="inline-block rounded-[6px] border-[1.5px] border-[#4A2C2A] bg-white px-3 py-2 hover:bg-[#F7DCE4]">
                     {l.label} ↗
                   </a>
                 )}
               </li>
             ))}
           </ul>
-          <p className="mt-14 text-[0.9rem] text-[#2A1F24]/50">
+          <p className="mt-14 text-[0.9rem] text-[#4A2C2A]/50">
             Brigitte Blau · {new Date().getFullYear()} ·{" "}
-            <Link href={`/${lang}`} className="underline underline-offset-4 hover:text-[#2A1F24]">
+            <Link href={`/${lang}`} className="underline underline-offset-4 hover:text-[#4A2C2A]">
               {C.sober[lang]}
             </Link>
           </p>

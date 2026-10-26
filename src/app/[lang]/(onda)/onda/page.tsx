@@ -1,41 +1,59 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n";
-import { fileExists } from "@/lib/photos";
-import Hero from "@/components/onda/Hero";
-import Fun from "@/components/onda/Fun";
-import About from "@/components/onda/About";
-import Projects from "@/components/onda/Projects";
-import Story from "@/components/onda/Story";
-import Dejame from "@/components/onda/Dejame";
-import Talk from "@/components/onda/Talk";
-import Contact from "@/components/onda/Contact";
+import { fileExists, findPhoto } from "@/lib/photos";
+import { deck as D } from "@/content/onda";
+import Deck, { type SlideMeta } from "@/components/onda/Deck";
+import { Hola, Nacer, Deportes, Perfeccion, Libros, Programar, Proyectos, Hoy, Dejame, Final } from "@/components/onda/Slides";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/onda">): Promise<Metadata> {
   const { lang } = await params;
   const es = lang === "es";
   return {
-    title: es ? "Brigitte Blau, versión con onda" : "Brigitte Blau, the fun version",
+    title: es ? "Brigitte Blau, mi historia" : "Brigitte Blau, my story",
     description: es
-      ? "La versión con onda del portfolio de Brigitte Blau: quién soy, mis proyectos (Grupo Mirrow, tuspruebas, Hunda, Tevila It), mi historia, dejame una foto y charlemos."
-      : "The fun version of Brigitte Blau's portfolio: who I am, my projects (Grupo Mirrow, tuspruebas, Hunda, Tevila It), my story, leave me a photo and let's talk.",
+      ? "Mi historia en diapositivas: de querer ser perfecta a querer dejar algo en el mundo. Golf, los libros que me marcaron, cómo empecé a programar, Grupo Mirrow y una foto para dejarme."
+      : "My story in slides: from wanting to be perfect to wanting to leave something in the world. Golf, the books that shaped me, how I started coding, Grupo Mirrow and a photo to leave me.",
     alternates: { canonical: `/${lang}/onda`, languages: { es: "/es/onda", en: "/en/onda" } },
   };
 }
 
-/** Portada → just for fun → sobre mí → proyectos → historia → dejame una foto → ¿querés conocerme? → contacto */
+const ROSA = "#F2C9D3";
+const CHOCO = "#4A2C2A";
+const CREMA = "#FBF4EE";
+const LATTE = "#E9D6C4";
+const BLUSH = "#F9E4E9";
+
+/** La versión con onda: mi historia en 10 diapositivas, en rosa y marrón. */
 export default async function Onda({ params }: PageProps<"/[lang]/onda">) {
   const lang = (await params).lang as Locale;
   const firstVideo = (name: string) => ["mp4", "webm", "mov"].map((e) => `/video/${name}.${e}`).find(fileExists);
+  const covers = Object.fromEntries(D.libros.books.map((b) => [b.id, findPhoto("libros", b.id)]));
+  const slides: SlideMeta[] = [
+    { id: "hola", label: lang === "es" ? "hola" : "hi", bg: ROSA },
+    { id: "nacer", label: D.nacer.label[lang], bg: CHOCO, dark: true },
+    { id: "deportes", label: D.deportes.label[lang], bg: LATTE },
+    { id: "perfeccion", label: D.perfeccion.label[lang], bg: CHOCO, dark: true },
+    { id: "libros", label: D.libros.label[lang], bg: CREMA },
+    { id: "programar", label: D.programar.label[lang], bg: ROSA },
+    { id: "proyectos", label: D.proyectos.label[lang], bg: CREMA },
+    { id: "hoy", label: D.hoy.label[lang], bg: CHOCO, dark: true },
+    { id: "dejame", label: D.dejame.label[lang], bg: BLUSH },
+    { id: "conocerme", label: D.fin.label[lang], bg: ROSA },
+  ];
   return (
     <main id="main">
-      <Hero lang={lang} />
-      <Fun lang={lang} />
-      <About lang={lang} />
-      <Projects lang={lang} />
-      <Story lang={lang} video={firstVideo("cumple")} golf={firstVideo("golf")} />
-      <Dejame lang={lang} />
-      <Talk lang={lang} />
-      <Contact lang={lang} />
+      <Deck lang={lang} slides={slides}>
+        <Hola lang={lang} />
+        <Nacer lang={lang} video={firstVideo("cumple")} />
+        <Deportes lang={lang} golf={firstVideo("golf")} />
+        <Perfeccion lang={lang} />
+        <Libros lang={lang} covers={covers} />
+        <Programar lang={lang} />
+        <Proyectos lang={lang} />
+        <Hoy lang={lang} />
+        <Dejame lang={lang} />
+        <Final lang={lang} />
+      </Deck>
     </main>
   );
 }

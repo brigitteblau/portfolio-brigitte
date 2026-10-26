@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import type { Locale } from "@/lib/i18n";
 import { bereal as B, dejame as D, extra as X } from "@/content/site";
@@ -156,7 +157,7 @@ function shutterSound() {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export default function FilmCamera({ lang, compact = false, me }: { lang: Locale; compact?: boolean; me?: string }) {
+export default function FilmCamera({ lang, compact = false, me, maxH = "min(100svh - 8rem, 720px)" }: { lang: Locale; compact?: boolean; me?: string; maxH?: string }) {
   const frame = useRef<HTMLDivElement>(null);
   const live = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
@@ -430,11 +431,11 @@ export default function FilmCamera({ lang, compact = false, me }: { lang: Locale
         ref={frame}
         className={clsx(
           "relative mx-auto w-full overflow-hidden rounded-[32px] sm:rounded-[40px]",
-          ar && phase !== "off" ? "" : "h-[min(calc(100svh-8rem),720px)] min-h-[520px]",
+          ar && phase !== "off" ? "" : "min-h-[480px]",
         )}
         style={{
           background: "linear-gradient(165deg,#FDF4F6 0%,#F9E3E9 55%,#F2CFD9 100%)",
-          ...(ar && phase !== "off" ? { aspectRatio: String(ar), width: `min(100%, calc(min(100svh - 8rem, 720px) * ${ar.toFixed(4)}))` } : {}),
+          ...(ar && phase !== "off" ? { aspectRatio: String(ar), width: `min(100%, calc(${maxH} * ${ar.toFixed(4)}))` } : { height: `calc(${maxH})` }),
         }}
       >
         <video
@@ -691,7 +692,7 @@ export default function FilmCamera({ lang, compact = false, me }: { lang: Locale
       </Modal>
 
       {/* flash de pantalla: te ilumina la cara con la cámara de adelante */}
-      {flash === "screen" && <div className="fixed inset-0 z-[90] bg-white" aria-hidden />}
+      {flash === "screen" && typeof document !== "undefined" && createPortal(<div className="fixed inset-0 z-[90] bg-white" aria-hidden />, document.body)}
     </>
   );
 }
