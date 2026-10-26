@@ -122,23 +122,18 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           </div>
         </Section>
 
-        <Section title={S.projectsTitle[lang]}>
-          <ul className="space-y-6">
-            {S.projects.map((p) => (
-              <li key={p.name}>
-                <p className="font-medium">
-                  {p.href ? (
-                    <A href={p.href} lang={lang}>
-                      {p.name}
-                    </A>
-                  ) : (
-                    p.name
-                  )}
-                </p>
-                <p className="text-[#55555a]">
-                  {p.desc[lang]}
-                  {p.note && <span className="text-[#a1a1a6]"> {p.note[lang]}</span>}
-                </p>
+        <Section title={S.studiesTitle[lang]}>
+          <ul className="space-y-3">
+            {S.studies.map((s) => (
+              <li key={s.where} className="flex items-baseline justify-between gap-6">
+                <span>
+                  {s.what[lang]}
+                  <span className="block text-[#86868b] sm:inline">
+                    <span className="hidden sm:inline"> · </span>
+                    {s.where}
+                  </span>
+                </span>
+                <span className="shrink-0 tabular-nums text-[#86868b]">{s.when}</span>
               </li>
             ))}
           </ul>
@@ -173,18 +168,23 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           )}
         </Section>
 
-        <Section title={S.studiesTitle[lang]}>
-          <ul className="space-y-3">
-            {S.studies.map((s) => (
-              <li key={s.where} className="flex items-baseline justify-between gap-6">
-                <span>
-                  {s.what[lang]}
-                  <span className="block text-[#86868b] sm:inline">
-                    <span className="hidden sm:inline"> · </span>
-                    {s.where}
-                  </span>
-                </span>
-                <span className="shrink-0 tabular-nums text-[#86868b]">{s.when}</span>
+        <Section title={S.projectsTitle[lang]}>
+          <ul className="space-y-6">
+            {S.projects.map((p) => (
+              <li key={p.name}>
+                <p className="font-medium">
+                  {p.href ? (
+                    <A href={p.href} lang={lang}>
+                      {p.name}
+                    </A>
+                  ) : (
+                    p.name
+                  )}
+                </p>
+                <p className="text-[#55555a]">
+                  {p.desc[lang]}
+                  {p.note && <span className="text-[#a1a1a6]"> {p.note[lang]}</span>}
+                </p>
               </li>
             ))}
           </ul>

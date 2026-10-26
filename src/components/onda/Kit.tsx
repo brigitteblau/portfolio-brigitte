@@ -14,7 +14,7 @@ export type Tone = keyof typeof tone;
 
 export function Pix({ as: As = "h2", className, children, id }: { as?: "h1" | "h2" | "p" | "span"; className?: string; children: React.ReactNode; id?: string }) {
   return (
-    <As id={id} className={clsx("font-[Pixelify_Sans] font-bold uppercase leading-[0.9] tracking-[-0.01em] text-[#2A1F24]", className)}>
+    <As id={id} className={clsx("font-[Shrikhand] leading-[1] tracking-[-0.01em] text-[#2A1F24]", className)}>
       {children}
     </As>
   );

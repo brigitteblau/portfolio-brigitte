@@ -40,7 +40,7 @@ export default function Talk({ lang }: { lang: Locale }) {
               <button
                 type="button"
                 onClick={() => setYes(true)}
-                className="absolute left-[24%] top-1/2 -translate-y-1/2 rounded-[8px] bg-[#2A1F24] px-12 py-4 font-[Pixelify_Sans] text-[1.8rem] font-bold text-white shadow-[0_6px_0_#9C4F68] transition-transform hover:scale-105 active:translate-y-[calc(-50%+4px)] active:shadow-[0_2px_0_#9C4F68]"
+                className="absolute left-[24%] top-1/2 -translate-y-1/2 rounded-[8px] bg-[#2A1F24] px-12 py-4 font-[Shrikhand] text-[1.8rem] font-bold text-white shadow-[0_6px_0_#9C4F68] transition-transform hover:scale-105 active:translate-y-[calc(-50%+4px)] active:shadow-[0_2px_0_#9C4F68]"
               >
                 {T.yes[lang]}
               </button>
@@ -58,7 +58,7 @@ export default function Talk({ lang }: { lang: Locale }) {
                   flee();
                 }}
                 style={{ left: `${pos.left}%`, top: `${pos.top}%`, rotate: `${pos.r}deg` }}
-                className="absolute rounded-[8px] border-[1.5px] border-[#2A1F24] bg-white px-10 py-4 font-[Pixelify_Sans] text-[1.8rem] font-bold transition-[left,top,rotate] duration-300"
+                className="absolute rounded-[8px] border-[1.5px] border-[#2A1F24] bg-white px-10 py-4 font-[Shrikhand] text-[1.8rem] font-bold transition-[left,top,rotate] duration-300"
               >
                 {T.no[lang]}
               </button>

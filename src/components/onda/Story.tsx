@@ -54,7 +54,7 @@ export default function Story({ lang, video, golf }: { lang: Locale; video?: str
             <ol className="mt-5 divide-y divide-dashed divide-[#2A1F24]/15">
               {S.books.map((b, i) => (
                 <li key={b.title} className="flex items-baseline gap-4 py-3">
-                  <span className="font-[Pixelify_Sans] text-[1.2rem] font-bold text-[#9C4F68]">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-[Shrikhand] text-[1.2rem] font-bold text-[#9C4F68]">{String(i + 1).padStart(2, "0")}</span>
                   <span>
                     <span className="block text-[1.1rem] font-bold italic leading-tight">{b.title}</span>
                     <span className="text-[0.9rem] text-[#2A1F24]/60">{b.author}</span>

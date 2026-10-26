@@ -31,7 +31,7 @@ export const hero = {
 
 export const fun = {
   kicker: { es: "fuera de la compu", en: "away from the screen" } as T,
-  title: "JUST FOR FUN",
+  title: "Just for fun",
   photos: [
     { src: "/fotos/carpetas/design/2.webp", note: { es: "lettering 🎨", en: "lettering 🎨" } },
     { src: "/fotos/deportes/1.webp", note: { es: "golf, mi cable a tierra", en: "golf keeps me grounded" } },
@@ -49,7 +49,7 @@ export const fun = {
 
 export const about = {
   kicker: { es: "quién soy", en: "who I am" } as T,
-  title: { es: "SOBRE MÍ", en: "ABOUT" } as T,
+  title: { es: "Sobre mí", en: "About" } as T,
   hand: {
     es: "Soy emprendedora y siempre ando buscando ideas nuevas. Empecé a programar porque quería que una página existiera: tenía guardadas todas mis pruebas de la secundaria y quise compartirlas. Probé con Canva, no funcionó, y fui al piso de tecnología del colegio a que me explicaran. Dos meses después estaba online.",
     en: "I'm an entrepreneur, always looking for new ideas. I started coding because I wanted a website to exist: I'd kept every exam from high school and wanted to share them. I tried Canva, it didn't work, so I went to my school's tech floor and asked them to teach me. Two months later it was live.",
@@ -87,7 +87,7 @@ export type Project = {
 
 export const projectsCopy = {
   kicker: { es: "lo que hice y lo que hago", en: "what I've built and what I'm building" } as T,
-  title: { es: "PROYECTOS", en: "PROJECTS" } as T,
+  title: { es: "Proyectos", en: "Projects" } as T,
   see: { es: "Ver proyecto →", en: "See project →" } as T,
   back: { es: "← Todos los proyectos", en: "← All projects" } as T,
   role: { es: "Mi rol", en: "My role" } as T,
@@ -204,7 +204,7 @@ export const projects: Project[] = [
 
 export const story = {
   kicker: { es: "de dónde vengo", en: "where I come from" } as T,
-  title: { es: "MI HISTORIA", en: "MY STORY" } as T,
+  title: { es: "Mi historia", en: "My story" } as T,
   baby: { es: "Así empezó todo ♡", en: "How it all started ♡" } as T,
   playWithSound: { es: "Tocá play · con sonido 🔊", en: "Tap play · sound on 🔊" } as T,
   golfTitle: { es: "Golf", en: "Golf" } as T,
@@ -222,7 +222,7 @@ export const story = {
 
 export const dejame = {
   kicker: { es: "lo más lindo del portfolio", en: "the best part of this site" } as T,
-  title: { es: "DEJAME UNA FOTO", en: "LEAVE ME A PHOTO" } as T,
+  title: { es: "Dejame una foto", en: "Leave me a photo" } as T,
   sub: {
     es: "Sacate una foto y dejámela. Quiero ver quién pasó por acá.",
     en: "Snap a photo and leave it for me. I want to see who stopped by.",
@@ -237,7 +237,7 @@ export const dejame = {
 };
 
 export const talk = {
-  question: { es: "¿QUERÉS CONOCERME?", en: "WANT TO MEET ME?" } as T,
+  question: { es: "¿Querés conocerme?", en: "Want to meet me?" } as T,
   yes: { es: "Sí", en: "Yes" } as T,
   no: { es: "No", en: "No" } as T,
   taunts: [
@@ -246,7 +246,7 @@ export const talk = {
     { es: "esa opción no existe.", en: "that's not an option." },
     { es: "el otro botón.", en: "the other button." },
   ] as T[],
-  title: { es: "CHARLEMOS", en: "LET'S TALK" } as T,
+  title: { es: "Charlemos", en: "Let's talk" } as T,
   sub: {
     es: "Un proyecto, una idea o una charla. Elegí un día y te escribo.",
     en: "A project, an idea or just a chat. Pick a day and I'll write to you.",
@@ -255,7 +255,7 @@ export const talk = {
 
 export const contact = {
   kicker: { es: "¿seguimos?", en: "shall we?" } as T,
-  title: { es: "CONTACTO", en: "CONTACT" } as T,
+  title: { es: "Contacto", en: "Contact" } as T,
   body: {
     es: "Escribime por lo que sea: un proyecto, una idea o una charla. Respondo todo.",
     en: "Write to me about anything: a project, an idea or a chat. I answer everything.",

@@ -35,7 +35,7 @@ function Card({ p, lang, big }: { p: Project; lang: Locale; big?: boolean }) {
       </div>
       {p.stat && (
         <span className="absolute right-5 top-5 rotate-[4deg] rounded-[5px] bg-white px-3.5 py-2 text-center text-[#2A1F24] shadow-[0_3px_0_rgba(0,0,0,.08)] sm:top-14">
-          <span className="block font-[Pixelify_Sans] text-[1.9rem] font-bold leading-none">{p.stat.n}</span>
+          <span className="block font-[Shrikhand] text-[1.9rem] font-bold leading-none">{p.stat.n}</span>
           <span className="text-[0.72rem] font-bold">{p.stat.label[lang]}</span>
         </span>
       )}

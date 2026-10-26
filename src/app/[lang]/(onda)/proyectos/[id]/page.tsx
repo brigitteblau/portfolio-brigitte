@@ -87,7 +87,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/proyect
             {p.stat && (
               <li>
                 <Tag c="mint" className="block !p-4 text-left rotate-1">
-                  <span className="block font-[Pixelify_Sans] text-[2.6rem] leading-none">{p.stat.n}</span>
+                  <span className="block font-[Shrikhand] text-[2.6rem] leading-none">{p.stat.n}</span>
                   <span className="text-[0.85rem]">{p.stat.label[lang]}</span>
                 </Tag>
               </li>
