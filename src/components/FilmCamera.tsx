@@ -157,7 +157,8 @@ function shutterSound() {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export default function FilmCamera({ lang, compact = false, me, maxH = "min(100svh - 8rem, 720px)" }: { lang: Locale; compact?: boolean; me?: string; maxH?: string }) {
+export default function FilmCamera({ lang, compact = false, me, maxH = "min(100svh - 8rem, 720px)", skin }: { lang: Locale; compact?: boolean; me?: string; maxH?: string; skin?: "camera" }) {
+  const cam = skin === "camera";
   const frame = useRef<HTMLDivElement>(null);
   const live = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
@@ -424,17 +425,16 @@ export default function FilmCamera({ lang, compact = false, me, maxH = "min(100s
       on ? "border-white bg-white text-ink" : "border-white/60 bg-black/10 text-white",
     );
 
-  return (
-    <>
-      {/* ───────── El espejo: la cámara ocupa toda la pantalla ───────── */}
+  const screen = (
       <div
         ref={frame}
         className={clsx(
-          "relative mx-auto w-full overflow-hidden rounded-[32px] sm:rounded-[40px]",
+          "relative mx-auto w-full overflow-hidden",
+          cam ? "rounded-[12px]" : "rounded-[32px] sm:rounded-[40px]",
           ar && phase !== "off" ? "" : "min-h-[480px]",
         )}
         style={{
-          background: "linear-gradient(165deg,#FDF4F6 0%,#F9E3E9 55%,#F2CFD9 100%)",
+          background: cam ? "radial-gradient(circle at 30% 20%, #6b4542 0, #3a2321 70%)" : "linear-gradient(165deg,#FDF4F6 0%,#F9E3E9 55%,#F2CFD9 100%)",
           ...(ar && phase !== "off" ? { aspectRatio: String(ar), width: `min(100%, calc(${maxH} * ${ar.toFixed(4)}))` } : { height: `calc(${maxH})` }),
         }}
       >
@@ -452,10 +452,34 @@ export default function FilmCamera({ lang, compact = false, me, maxH = "min(100s
         )}
 
         {/* el marquito rosa del espejo */}
-        <div className="pointer-events-none absolute inset-3 z-[1] rounded-[24px] border-[3px] border-[#E8A9BC] sm:inset-4 sm:rounded-[30px]" aria-hidden />
+        {!cam && <div className="pointer-events-none absolute inset-3 z-[1] rounded-[24px] border-[3px] border-[#E8A9BC] sm:inset-4 sm:rounded-[30px]" aria-hidden />}
 
         {/* ── apagada: título, un solo botón ── */}
-        {phase === "off" && (
+        {phase === "off" && cam && (
+          <div className="absolute inset-0 z-[2] flex flex-col items-center justify-center gap-3 px-6 text-center text-[#FBF4EE]">
+            <span className="text-[2.6rem] leading-none" aria-hidden>
+              📸
+            </span>
+            <p className="font-[Shrikhand] text-[clamp(1.4rem,2.4vw,2rem)] leading-tight">{es ? "¿Nos sacamos una foto?" : "Shall we take a photo?"}</p>
+            <button type="button" onClick={powerOn} className="mt-1 rounded-full bg-[#F2C9D3] px-6 py-2.5 font-bold text-[#4A2C2A] shadow-[0_5px_0_#c98fa0] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_1px_0_#c98fa0]">
+              {es ? "Prender la cámara ✨" : "Turn it on ✨"}
+            </button>
+            <div className="mt-1 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[0.85rem] text-[#FBF4EE]/70">
+              <button type="button" onClick={() => fileInput.current?.click()} className="underline underline-offset-4 hover:text-white">
+                {B.upload[lang]}
+              </button>
+              <button type="button" onClick={() => setSheet(true)} className="underline underline-offset-4 hover:text-white">
+                {es ? "o mandame solo un mensaje" : "or just send me a message"}
+              </button>
+            </div>
+            {camError && (
+              <p className="max-w-[32ch] text-[0.85rem] font-semibold text-[#F2C9D3]" role="alert">
+                {camError}
+              </p>
+            )}
+          </div>
+        )}
+        {phase === "off" && !cam && (
           <div className="absolute inset-0 z-[2] flex flex-col items-center justify-center px-8 text-center">
             {!compact && (
               <>
@@ -572,6 +596,46 @@ export default function FilmCamera({ lang, compact = false, me, maxH = "min(100s
 
         <input ref={fileInput} type="file" accept="image/*" className="sr-only" tabIndex={-1} onChange={onFile} aria-label={B.upload[lang]} />
       </div>
+  );
+
+  return (
+    <>
+      {cam ? (
+        <div className="relative mx-auto w-full max-w-[720px] pt-6">
+          {/* el disparador de verdad, arriba */}
+          <button
+            type="button"
+            onClick={camOn ? shoot : powerOn}
+            disabled={locked}
+            aria-label={camOn ? B.shoot[lang] : B.power[lang]}
+            className="absolute right-[13%] top-0 h-7 w-20 rounded-t-[12px] bg-[#4A2C2A] shadow-[inset_0_-5px_0_#2c1a19] transition-transform active:translate-y-1.5 disabled:opacity-80"
+          />
+          <div
+            className="rounded-[30px] p-3.5 shadow-[inset_0_4px_0_rgba(255,255,255,.55),inset_0_-8px_0_rgba(0,0,0,.08),0_34px_50px_-26px_rgba(74,44,42,.7)] sm:p-5"
+            style={{ background: "radial-gradient(circle at 1px 1px, rgba(74,44,42,.10) 1px, transparent 1.6px) 0 0/7px 7px, #F2C9D3" }}
+          >
+            <div className="flex items-center justify-between px-1 pb-3">
+              <span className="h-7 w-12 rounded-[7px] bg-[#4A2C2A] shadow-[inset_0_2px_6px_rgba(0,0,0,.6)]" aria-hidden />
+              <span className="font-[Shrikhand] text-[1.25rem] text-[#4A2C2A]">brigitte·cam</span>
+              <span
+                aria-hidden
+                className={clsx("h-7 w-12 rounded-[7px] border-2 border-[#4A2C2A]/20 transition-all duration-100", flash ? "bg-white shadow-[0_0_30px_10px_rgba(255,255,255,.9)]" : "bg-[#FBF4EE]")}
+              />
+            </div>
+            <div className="rounded-[18px] bg-[#4A2C2A] p-2 shadow-[inset_0_3px_8px_rgba(0,0,0,.5)] sm:p-2.5">{screen}</div>
+            <div className="flex items-center justify-between px-2 pt-3">
+              <span className="flex gap-2" aria-hidden>
+                <span className="h-3 w-3 rounded-full bg-[#4A2C2A]/70" />
+                <span className="h-3 w-3 rounded-full bg-[#4A2C2A]/40" />
+                <span className="h-3 w-3 rounded-full bg-[#4A2C2A]/20" />
+              </span>
+              <span className="font-hand text-[1.15rem] text-[#4A2C2A]/70">{es ? "sonreí :)" : "say cheese :)"}</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        screen
+      )}
 
       {/* ───────── Después de la foto: pop-up con la foto, los filtros y el mensaje ───────── */}
       <Modal open={sheet} onClose={closeSheet} label={B.title[lang]} closeLabel={X.close[lang]} className="sm:max-w-[28rem]">

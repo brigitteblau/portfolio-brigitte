@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n";
-import { fileExists, findPhoto } from "@/lib/photos";
+import { fileExists, findPhoto, listCarpetas } from "@/lib/photos";
+import { listEntries } from "@/lib/journal";
+import CarpetasSlide from "@/components/onda/CarpetasSlide";
 import { deck as D } from "@/content/onda";
 import Deck, { type SlideMeta } from "@/components/onda/Deck";
-import { Hola, Nacer, Deportes, Perfeccion, Libros, Programar, Proyectos, Hoy, Dejame, Final } from "@/components/onda/Slides";
+import { Hola, Nacer, Deportes, Perfeccion, Libros, Programar, Proyectos, Hoy, Journal, Dejame, Final } from "@/components/onda/Slides";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/onda">): Promise<Metadata> {
   const { lang } = await params;
@@ -37,6 +39,8 @@ export default async function Onda({ params }: PageProps<"/[lang]/onda">) {
     { id: "programar", label: D.programar.label[lang], bg: ROSA },
     { id: "proyectos", label: D.proyectos.label[lang], bg: CREMA },
     { id: "hoy", label: D.hoy.label[lang], bg: CHOCO, dark: true },
+    { id: "carpetas", label: lang === "es" ? "esta soy yo" : "this is me", bg: LATTE },
+    { id: "journal", label: "journal", bg: CHOCO, dark: true },
     { id: "dejame", label: D.dejame.label[lang], bg: BLUSH },
     { id: "conocerme", label: D.fin.label[lang], bg: ROSA },
   ];
@@ -51,6 +55,8 @@ export default async function Onda({ params }: PageProps<"/[lang]/onda">) {
         <Programar lang={lang} />
         <Proyectos lang={lang} />
         <Hoy lang={lang} />
+        <CarpetasSlide lang={lang} folders={listCarpetas()} />
+        <Journal lang={lang} entries={listEntries(lang)} />
         <Dejame lang={lang} />
         <Final lang={lang} />
       </Deck>

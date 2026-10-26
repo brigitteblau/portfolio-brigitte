@@ -10,6 +10,7 @@ export const nav: { id: string; label: T }[] = [
   { id: "nacer", label: { es: "historia", en: "story" } },
   { id: "libros", label: { es: "libros", en: "books" } },
   { id: "proyectos", label: { es: "proyectos", en: "projects" } },
+  { id: "carpetas", label: { es: "esta soy yo", en: "this is me" } },
   { id: "dejame", label: { es: "dejame una foto", en: "leave a photo" } },
 ];
 

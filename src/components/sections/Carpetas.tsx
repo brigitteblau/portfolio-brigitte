@@ -14,7 +14,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 const TINT = ["#5aa7ef", "#f08ac6", "#f6c744", "#7ccf8f", "#a78bfa"];
 
 /** Carpeta estilo Mac */
-function FolderIcon({ color, className }: { color: string; className?: string }) {
+export function FolderIcon({ color, className }: { color: string; className?: string }) {
   return (
     <svg viewBox="0 0 120 96" className={className} aria-hidden>
       <path d="M6 18 Q6 10 14 10 H44 L54 20 H106 Q114 20 114 28 V82 Q114 90 106 90 H14 Q6 90 6 82Z" fill={color} />
@@ -24,7 +24,7 @@ function FolderIcon({ color, className }: { color: string; className?: string })
   );
 }
 
-function Finder({ folder, color, lang, onClose }: { folder: Folder; color: string; lang: Locale; onClose: () => void }) {
+export function Finder({ folder, color, lang, onClose }: { folder: Folder; color: string; lang: Locale; onClose: () => void }) {
   const box = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
 
